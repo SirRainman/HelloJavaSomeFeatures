@@ -24,7 +24,7 @@ public class Join {
         };
 
         t.start();
-        //t.join();
+        t.join();
         log.debug("end");
         log.debug("i = {}", i);
 
@@ -47,6 +47,7 @@ public class Join {
         });
         t1.start();
         t2.start();
+
         long start = System.currentTimeMillis();
         log.debug("join begin");
         t2.join();

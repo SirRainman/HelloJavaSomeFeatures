@@ -24,6 +24,7 @@ public class CreateThread {
         t2.setName("t2");
         t2.start();
 
+        // 推荐
         Runnable runnable = () -> {
             log.debug("t3 running");
         };
