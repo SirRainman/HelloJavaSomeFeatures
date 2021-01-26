@@ -9,7 +9,7 @@ import java.net.Socket;
 
 public class Stub {
 
-    // Í¨¹ı¶¯Ì¬´úÀíµÄ·½Ê½µÃµ½ClassµÄ¶ÔÏó
+    // é€šè¿‡åŠ¨æ€ä»£ç†çš„æ–¹å¼å¾—åˆ°Classçš„å¯¹è±¡
     public static Object getStub(Class clazz) {
         InvocationHandler handler = new InvocationHandler() {
             @Override

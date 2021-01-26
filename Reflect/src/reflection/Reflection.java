@@ -12,60 +12,60 @@ import java.util.Properties;
 public class Reflection {
     public static void main(String[] args) throws Exception {
         /**
-            ĞèÇó£ºÔÚ²»ÄÜ¸Ä±äÀàµÄÈÎºÎ´úÂëµÄÇ°ÌáÏÂ£¬¿ÉÒÔ´´½¨ÈÎÒâµÄÀàµÄ¶ÔÏó£¬²¢ÇÒÖ´ĞĞÆäÖĞÈÎÒâ·½·¨
+         éœ€æ±‚ï¼šåœ¨ä¸èƒ½æ”¹å˜ç±»çš„ä»»ä½•ä»£ç çš„å‰æä¸‹ï¼Œå¯ä»¥åˆ›å»ºä»»æ„çš„ç±»çš„å¯¹è±¡ï¼Œå¹¶ä¸”æ‰§è¡Œå…¶ä¸­ä»»æ„æ–¹æ³•
 
-            ²½Öè£º
-                1.½«ĞèÒª´´½¨µÄ¶ÔÏóµÄÈ«ÀàÃûºÍĞèÒªÖ´ĞĞµÄ·½·¨£¬¶¨ÒåÔÚÅäÖÃÎÄ¼şÖĞ
-                2.ÔÚ³ÌĞòÖĞ¼ÓÔØÖ´ĞĞÅäÖÃÎÄ¼ş
-                3.Ê¹ÓÃ·´Éä¼¼ÊõÀ´¼ÓÔØÎÄ¼ş½øÄÚ´æ
-                4.´´½¨¶ÔÏó
-                5.Ö´ĞĞ·½·¨
+         æ­¥éª¤ï¼š
+         1.å°†éœ€è¦åˆ›å»ºçš„å¯¹è±¡çš„å…¨ç±»åå’Œéœ€è¦æ‰§è¡Œçš„æ–¹æ³•ï¼Œå®šä¹‰åœ¨é…ç½®æ–‡ä»¶ä¸­
+         2.åœ¨ç¨‹åºä¸­åŠ è½½æ‰§è¡Œé…ç½®æ–‡ä»¶
+         3.ä½¿ç”¨åå°„æŠ€æœ¯æ¥åŠ è½½æ–‡ä»¶è¿›å†…å­˜
+         4.åˆ›å»ºå¯¹è±¡
+         5.æ‰§è¡Œæ–¹æ³•
          * */
 
-        //1.¼ÓÔØÅäÖÃÎÄ¼ş
-        //1.1´´½¨¶ÔÏó
+        //1.åŠ è½½é…ç½®æ–‡ä»¶
+        //1.1åˆ›å»ºå¯¹è±¡
         Properties pro = new Properties();
-        //1.2¼ÓÔØÅäÖÃÎÄ¼ş£¬×ª»»ÎªÒ»¸ö¼¯ºÏ£¨Ë«ÁĞmap¼¯ºÏ£¬Properties±¾Éí¾ÍÊÇmapµÄ×ÓÀà£©
-        //1.2.1»ñÈ¡ClassÄ¿Â¼ÏÂµÄÅäÖÃÎÄ¼ş£¨ÓÃÀà¼ÓÔØÆ÷Íê³É£©
-        //»ñÈ¡×Ö½ÚÂëÎÄ¼ş¶ÔÓ¦µÄÀà¼ÓÔØÆ÷£ºÀà¼ÓÔØÆ÷°Ñ×Ö½ÚÂëÎÄ¼ş¼ÓÔØ½øÄÚ´æ£¬·µ»ØÒ»¸öClassLoader
+        //1.2åŠ è½½é…ç½®æ–‡ä»¶ï¼Œè½¬æ¢ä¸ºä¸€ä¸ªé›†åˆï¼ˆåŒåˆ—mapé›†åˆï¼ŒPropertiesæœ¬èº«å°±æ˜¯mapçš„å­ç±»ï¼‰
+        //1.2.1è·å–Classç›®å½•ä¸‹çš„é…ç½®æ–‡ä»¶ï¼ˆç”¨ç±»åŠ è½½å™¨å®Œæˆï¼‰
+        //è·å–å­—èŠ‚ç æ–‡ä»¶å¯¹åº”çš„ç±»åŠ è½½å™¨ï¼šç±»åŠ è½½å™¨æŠŠå­—èŠ‚ç æ–‡ä»¶åŠ è½½è¿›å†…å­˜ï¼Œè¿”å›ä¸€ä¸ªClassLoader
         ClassLoader classLoader = Reflection.class.getClassLoader();
-        //ÓÃClassLoaderÕÒÅäÖÃÎÄ¼ş×Ö½ÚÁ÷ÎÄ¼ş
+        //ç”¨ClassLoaderæ‰¾é…ç½®æ–‡ä»¶å­—èŠ‚æµæ–‡ä»¶
         InputStream is = classLoader.getResourceAsStream("reflection/util/pro.properties");
-        //°Ñ×Ö½ÚÁ÷´«½øÈ¥¼´Íê³É¼ÓÔØ£¬Å×³öÒì³£
+        //æŠŠå­—èŠ‚æµä¼ è¿›å»å³å®ŒæˆåŠ è½½ï¼ŒæŠ›å‡ºå¼‚å¸¸
         pro.load(is);
 
-        //2.»ñÈ¡ÅäÖÃÎÄ¼şÖĞ¶¨ÒåµÄÊı¾İ
+        //2.è·å–é…ç½®æ–‡ä»¶ä¸­å®šä¹‰çš„æ•°æ®
         String className = pro.getProperty("className");
         String methodName = pro.getProperty("methodName");
 
-        //3.¼ÓÔØ¸ÃÀà½øÄÚ´æ
+        //3.åŠ è½½è¯¥ç±»è¿›å†…å­˜
         Class cls = Class.forName(className);
-        //4.´´½¨¶ÔÏó
+        //4.åˆ›å»ºå¯¹è±¡
         Object obj = cls.newInstance();
-        //5.»ñÈ¡·½·¨¶ÔÏó
+        //5.è·å–æ–¹æ³•å¯¹è±¡
         Method method = cls.getDeclaredMethod(methodName);
         method.setAccessible(true);
-        //6.Ö´ĞĞ·½·¨
+        //6.æ‰§è¡Œæ–¹æ³•
         method.invoke(obj);
     }
 
     @Test
     public void testClass() throws Exception {
         /**
-         ÔËĞĞÊ±¼ÓÔØÀàÓĞÈıÖÖ·½Ê½£¬·Ö±ğ¶ÔÓ¦¼ÓÔØ¹ı³ÌµÄÈıÖÖ×´Ì¬
-             1.»¹ÔÚ.classÎÄ¼şÖĞ£¬jvmÎ´¼ÓÔØ¸ÃÀàÊ±£¬ÊÖ¶¯ÊäÈë°üÃû½øĞĞ¼ÓÔØ
-                ¶àÓÃÓÚÅäÖÃÎÄ¼şÖĞ£¬Í¨¹ı¶ÁÈ¡ÎÄ¼ş£¬¼ÓÔØÀà
-             2.ÈôjvmÄÚ´æÒÑ¾­¼ÓÔØ¹ı¸ÃÀà£¬ÔòÖ±½Ó¼ÓÔØ¸ÃÀà
-                ¶àÓÃÓÚ²ÎÊıµÄ´«µİ
-             3.Èôjvm¶ÑÖĞÒÑ¾­ÓĞÁË¸ÃÀàµÄ¶ÔÏó£¬ÔòÍ¨¹ı¸Ã¶ÔÏó½øĞĞ¼ÓÔØ
-                Í¨¹ı¶ÔÏó»ñÈ¡×Ö½ÚÂë
+         è¿è¡Œæ—¶åŠ è½½ç±»æœ‰ä¸‰ç§æ–¹å¼ï¼Œåˆ†åˆ«å¯¹åº”åŠ è½½è¿‡ç¨‹çš„ä¸‰ç§çŠ¶æ€
+         1.è¿˜åœ¨.classæ–‡ä»¶ä¸­ï¼ŒjvmæœªåŠ è½½è¯¥ç±»æ—¶ï¼Œæ‰‹åŠ¨è¾“å…¥åŒ…åè¿›è¡ŒåŠ è½½
+         å¤šç”¨äºé…ç½®æ–‡ä»¶ä¸­ï¼Œé€šè¿‡è¯»å–æ–‡ä»¶ï¼ŒåŠ è½½ç±»
+         2.è‹¥jvmå†…å­˜å·²ç»åŠ è½½è¿‡è¯¥ç±»ï¼Œåˆ™ç›´æ¥åŠ è½½è¯¥ç±»
+         å¤šç”¨äºå‚æ•°çš„ä¼ é€’
+         3.è‹¥jvmå †ä¸­å·²ç»æœ‰äº†è¯¥ç±»çš„å¯¹è±¡ï¼Œåˆ™é€šè¿‡è¯¥å¯¹è±¡è¿›è¡ŒåŠ è½½
+         é€šè¿‡å¯¹è±¡è·å–å­—èŠ‚ç 
          * */
 
-        //1.Î´¼ÓÔØ¸ÃÀà
+        //1.æœªåŠ è½½è¯¥ç±»
         Class cls = Class.forName("reflection.util.Foo");
-        //2.¼ÓÔØ¹ı¸ÄÀà
+        //2.åŠ è½½è¿‡æ”¹ç±»
         Class cls2 = Foo.class;
-        //3.Í¨¹ı¶ÔÏó¼ÓÔØ¸ÃÀà
+        //3.é€šè¿‡å¯¹è±¡åŠ è½½è¯¥ç±»
         Object o = new Foo();
         Class cls3 = o.getClass();
 
@@ -89,13 +89,13 @@ public class Reflection {
 
     @Test
     public void testField() throws Exception {
-        // ÔËĞĞÊ±µÚÒ»´Î¼ÓÔØ¸ÃÀà
+        // è¿è¡Œæ—¶ç¬¬ä¸€æ¬¡åŠ è½½è¯¥ç±»
         Class c = Foo.class;
         Field field = c.getDeclaredField("fooName");
         Foo foo = new Foo();
-        // ±©Á¦·´Éä£¬ºöÂÔ°²È«¼ì²é£¬²»È»»á±¨´í
+        // æš´åŠ›åå°„ï¼Œå¿½ç•¥å®‰å…¨æ£€æŸ¥ï¼Œä¸ç„¶ä¼šæŠ¥é”™
         field.setAccessible(true);
-        // ¸üĞÂÖµ
+        // æ›´æ–°å€¼
         field.set(foo, "zhangsan");
         System.out.println(field.get(foo));
     }
@@ -104,7 +104,7 @@ public class Reflection {
     public void testConstructor() throws Exception {
         Class cls = Foo.class;
         Constructor con = cls.getConstructor(String.class);
-        // ¹¹½¨¶ÔÏó
+        // æ„å»ºå¯¹è±¡
         Object o = con.newInstance("lisi");
         System.out.println(o);
     }
@@ -114,9 +114,9 @@ public class Reflection {
         Class cls = Foo.class;
         //Method method = cls.getDeclaredMethod("say");
         Method method = cls.getDeclaredMethod("say", String.class);
-        //´´½¨Ò»¸ö¶ÔÏó²»Ê¹ÓÃconstructorµÄÒ»¸ö°ì·¨
+        //åˆ›å»ºä¸€ä¸ªå¯¹è±¡ä¸ä½¿ç”¨constructorçš„ä¸€ä¸ªåŠæ³•
         Object o = cls.newInstance();
-        //±©Á¦·´Éä£¬ÌÓ±Ü°²È«¼ì²é
+        //æš´åŠ›åå°„ï¼Œé€ƒé¿å®‰å…¨æ£€æŸ¥
         method.setAccessible(true);
         method.invoke(o, " lisi");
     }

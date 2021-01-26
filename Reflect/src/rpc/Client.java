@@ -3,10 +3,11 @@ package rpc;
 public class Client {
     public static void main(String[] args) {
 
-        // Ê¹ÓÃ¶¯Ì¬´úÀíµÄ·½Ê½»ñÈ¡Ò»¸ö½Ó¿ÚµÄ¶ÔÏó
-        // ---Êµ¼ÊÉÏÊÇÍ¨¹ıÔËÓÃ¶¯Ì¬´úÀí+·´ÉäµÈ¼¼ÊõÊµÊ±µÄ´´½¨ÁËÒ»¸öÊµÏÖ¸Ã½Ó¿ÚµÄÀàµÄ¶ÔÏó
+        // ä½¿ç”¨åŠ¨æ€ä»£ç†çš„æ–¹å¼è·å–ä¸€ä¸ªæ¥å£çš„å¯¹è±¡
+        // ---å®é™…ä¸Šæ˜¯é€šè¿‡è¿ç”¨åŠ¨æ€ä»£ç†+åå°„ç­‰æŠ€æœ¯å®æ—¶çš„åˆ›å»ºäº†ä¸€ä¸ªå®ç°è¯¥æ¥å£çš„ç±»çš„å¯¹è±¡
         ProductServiceInterface productServiceInterface = (ProductServiceInterface) Stub.getStub(ProductServiceInterface.class);
         System.out.println(productServiceInterface.findProductById("321"));
         System.out.println(productServiceInterface.findProductById("123"));
     }
 }
+

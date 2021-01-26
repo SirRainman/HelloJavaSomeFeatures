@@ -7,14 +7,19 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="Thread" />
+        <module name="HelloJavaSomeFeatures" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="HelloJavaSomeFeatures" target="1.8" />
       <module name="Thread" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_STRING" value="-encoding utf-8" />
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="HelloJavaSomeFeatures" options="" />
+      <module name="Thread" options="" />
+    </option>
   </component>
 </project>

@@ -33,7 +33,7 @@ public class Server {
 
         Class clazz = null;
 
-        // Í¨¹ıclazzName´Ó·şÎñ×¢²á±íÕÒµ½µÄ¾ßÌåµÄÀà
+        // é€šè¿‡clazzNameä»æœåŠ¡æ³¨å†Œè¡¨æ‰¾åˆ°çš„å…·ä½“çš„ç±»
         clazz = ServerProductServiceImpl.class;
 
         Method method = clazz.getMethod(methodName, parameterTypes);
