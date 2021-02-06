@@ -1,7 +1,7 @@
-package main.java.reflection;
+package reflection;
 
 import org.junit.Test;
-import main.java.reflection.util.Foo;
+import reflection.util.Foo;
 
 import java.io.InputStream;
 import java.lang.reflect.Constructor;

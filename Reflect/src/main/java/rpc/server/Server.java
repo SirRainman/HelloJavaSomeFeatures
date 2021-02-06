@@ -34,7 +34,7 @@ public class Server {
         // 通过clazzName从服务注册表找到的具体的类，这里省略掉
         clazz = UserServiceInterfaceImpl.class;
 
-        // 调用相应的方法进行处理，得到处理结果
+        // 通过反射，调用相应的方法进行处理，得到处理结果
         Method method = clazz.getMethod(methodName, parametersTypes);
         Object object = method.invoke(clazz.newInstance(), args);
 
@@ -43,5 +43,8 @@ public class Server {
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
         objectOutputStream.writeObject(object);
         objectOutputStream.flush();
+
+        objectOutputStream.close();
+        objectInputStream.close();
     }
 }
