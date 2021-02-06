@@ -11,7 +11,7 @@ public class State {
         Thread t = new Thread("t1") {
             @Override
             public void run() {
-                log.debug("t1 enter sleeping ...");
+                log.info("t1 enter sleeping ...");
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
@@ -19,22 +19,22 @@ public class State {
                 }
             }
         };
-        log.debug("t1 state: {}", t.getState());
+        log.info("t1 state: {}", t.getState());
         t.start();
-        log.debug("t1 state: {}", t.getState());
+        log.info("t1 state: {}", t.getState());
 
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        log.debug("t1 state: {}", t.getState());
+        log.info("t1 state: {}", t.getState());
 
-        log.debug("interrupt t1 ...");
+        log.info("interrupt t1 ...");
         // 在sleep期间打断会报错
         t.interrupt();
-        log.debug("t1 state: {}", t.getState());
-        log.debug("t1's isInterrupted: {}", t.isInterrupted());
+        log.info("t1 state: {}", t.getState());
+        log.info("t1's isInterrupted: {}", t.isInterrupted());
 
 
 //        testState();
@@ -44,7 +44,7 @@ public class State {
         Thread t1 = new Thread("t1") {
             @Override
             public void run() {
-                log.debug("running...");
+                log.info("running...");
             }
         };
 
@@ -61,7 +61,7 @@ public class State {
         Thread t3 = new Thread("t3") {
             @Override
             public void run() {
-                log.debug("running...");
+                log.info("running...");
             }
         };
         t3.start();
@@ -111,12 +111,12 @@ public class State {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        log.debug("t1 state {}", t1.getState());
-        log.debug("t2 state {}", t2.getState());
-        log.debug("t3 state {}", t3.getState());
-        log.debug("t4 state {}", t4.getState());
-        log.debug("t5 state {}", t5.getState());
-        log.debug("t6 state {}", t6.getState());
+        log.info("t1 state {}", t1.getState());
+        log.info("t2 state {}", t2.getState());
+        log.info("t3 state {}", t3.getState());
+        log.info("t4 state {}", t4.getState());
+        log.info("t5 state {}", t5.getState());
+        log.info("t6 state {}", t6.getState());
 
         try {
             System.in.read();

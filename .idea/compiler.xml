@@ -7,11 +7,16 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="HelloJavaSomeFeatures" />
+        <module name="Reflection" />
+        <module name="Reflect" />
+        <module name="Thread" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="HelloJavaSomeFeatures" target="1.8" />
+      <module name="rain-java-ideas" target="1.8" />
+      <module name="Reflect" target="1.8" />
+      <module name="Reflection" target="1.8" />
       <module name="Thread" target="1.8" />
     </bytecodeTargetLevel>
   </component>
@@ -19,7 +24,10 @@
     <option name="ADDITIONAL_OPTIONS_STRING" value="-encoding utf-8" />
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="HelloJavaSomeFeatures" options="" />
+      <module name="Reflect" options="" />
+      <module name="Reflection" options="" />
       <module name="Thread" options="" />
+      <module name="rain-java-ideas" options="" />
     </option>
   </component>
 </project>

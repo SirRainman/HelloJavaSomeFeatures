@@ -13,25 +13,25 @@ public class TestMakeTea {
 
     private static void s1() {
         Thread t1 = new Thread(() -> {
-            log.debug("洗水壶");
+            log.info("洗水壶");
             Sleeper.sleep(1);
-            log.debug("烧开水");
+            log.info("烧开水");
             Sleeper.sleep(15);
         }, "老王");
 
         Thread t2 = new Thread(() -> {
-            log.debug("洗茶壶");
+            log.info("洗茶壶");
             Sleeper.sleep(1);
-            log.debug("洗茶杯");
+            log.info("洗茶杯");
             Sleeper.sleep(2);
-            log.debug("拿茶叶");
+            log.info("拿茶叶");
             Sleeper.sleep(1);
             try {
                 t1.join();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            log.debug("泡茶");
+            log.info("泡茶");
         }, "小王");
 
         t1.start();
@@ -48,9 +48,9 @@ class S2 {
 
     public static void makeTea() {
         new Thread(() -> {
-            log.debug("洗水壶");
+            log.info("洗水壶");
             Sleeper.sleep(1);
-            log.debug("烧开水");
+            log.info("烧开水");
             Sleeper.sleep(5);
             synchronized (lock) {
                 kettle = "开水";
@@ -63,18 +63,18 @@ class S2 {
                     }
                 }
                 if (!maked) {
-                    log.debug("拿({})泡({})", kettle, tea);
+                    log.info("拿({})泡({})", kettle, tea);
                     maked = true;
                 }
             }
         }, "老王").start();
 
         new Thread(() -> {
-            log.debug("洗茶壶");
+            log.info("洗茶壶");
             Sleeper.sleep(1);
-            log.debug("洗茶杯");
+            log.info("洗茶杯");
             Sleeper.sleep(2);
-            log.debug("拿茶叶");
+            log.info("拿茶叶");
             Sleeper.sleep(1);
             synchronized (lock) {
                 tea = "花茶";
@@ -87,7 +87,7 @@ class S2 {
                     }
                 }
                 if (!maked) {
-                    log.debug("拿({})泡({})", kettle, tea);
+                    log.info("拿({})泡({})", kettle, tea);
                     maked = true;
                 }
             }
@@ -103,9 +103,9 @@ class S3 {
 
     public static void makeTea() {
         new Thread(() -> {
-            log.debug("洗水壶");
+            log.info("洗水壶");
             Sleeper.sleep(1);
-            log.debug("烧开水");
+            log.info("烧开水");
             Sleeper.sleep(5);
             synchronized (lock) {
                 kettle = "开水";
@@ -114,11 +114,11 @@ class S3 {
         }, "老王").start();
 
         new Thread(() -> {
-            log.debug("洗茶壶");
+            log.info("洗茶壶");
             Sleeper.sleep(1);
-            log.debug("洗茶杯");
+            log.info("洗茶杯");
             Sleeper.sleep(2);
-            log.debug("拿茶叶");
+            log.info("拿茶叶");
             Sleeper.sleep(1);
             synchronized (lock) {
                 tea = "花茶";
@@ -135,7 +135,7 @@ class S3 {
                         e.printStackTrace();
                     }
                 }
-                log.debug("拿({})泡({})", kettle, tea);
+                log.info("拿({})泡({})", kettle, tea);
             }
         }, "王夫人").start();
 

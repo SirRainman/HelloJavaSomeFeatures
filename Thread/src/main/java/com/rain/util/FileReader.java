@@ -13,7 +13,7 @@ public class FileReader {
         String shortName = filename.substring(idx + 1);
         try (FileInputStream in = new FileInputStream(filename)) {
             long start = System.currentTimeMillis();
-            log.debug("read [{}] start ...", shortName);
+            log.info("read [{}] start ...", shortName);
 
             byte[] buf = new byte[1024];
             int n = -1;
@@ -21,7 +21,7 @@ public class FileReader {
                 n = in.read(buf);
             } while (n != -1);
             long end = System.currentTimeMillis();
-            log.debug("read [{}] end ... cost: {} ms", shortName, end - start);
+            log.info("read [{}] end ... cost: {} ms", shortName, end - start);
         } catch (IOException e) {
             e.printStackTrace();
         }

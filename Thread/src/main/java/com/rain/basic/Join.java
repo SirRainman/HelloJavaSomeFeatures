@@ -11,22 +11,22 @@ public class Join {
 
     public static void main(String[] args) throws InterruptedException {
 
-        log.debug("begin");
+        log.info("begin");
 
         Thread t = new Thread("t") {
             @Override
             public void run() {
-                log.debug("begin");
+                log.info("begin");
                 Sleeper.sleep(1);
-                log.debug("end");
+                log.info("end");
                 i = 20;
             }
         };
 
         t.start();
         t.join();
-        log.debug("end");
-        log.debug("i = {}", i);
+        log.info("end");
+        log.info("i = {}", i);
 
 
         // test2();
@@ -49,12 +49,12 @@ public class Join {
         t2.start();
 
         long start = System.currentTimeMillis();
-        log.debug("join begin");
+        log.info("join begin");
         t2.join();
-        log.debug("t2 join end");
+        log.info("t2 join end");
         t1.join();
-        log.debug("t1 join end");
+        log.info("t1 join end");
         long end = System.currentTimeMillis();
-        log.debug("r1: {} r2: {} cost: {}", r1, r2, end - start);
+        log.info("r1: {} r2: {} cost: {}", r1, r2, end - start);
     }
 }

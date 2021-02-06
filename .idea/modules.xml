@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/HelloJavaSomeFeatures.iml" filepath="$PROJECT_DIR$/.idea/HelloJavaSomeFeatures.iml" />
       <module fileurl="file://$PROJECT_DIR$/Reflect/Reflect.iml" filepath="$PROJECT_DIR$/Reflect/Reflect.iml" />
       <module fileurl="file://$PROJECT_DIR$/Thread/Thread.iml" filepath="$PROJECT_DIR$/Thread/Thread.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rain-java-ideas.iml" filepath="$PROJECT_DIR$/rain-java-ideas.iml" />
     </modules>
   </component>
 </project>

@@ -10,7 +10,7 @@ public class Interrupt {
         Thread t = new Thread(() -> {
             while(true) {
                 if (Thread.currentThread().isInterrupted()) {
-                    log.debug("t is interrupted, exit now");
+                    log.info("t is interrupted, exit now");
                     break;
                 }
             }
@@ -18,7 +18,7 @@ public class Interrupt {
         t.start();
 
         Sleeper.sleep(1);
-        log.debug("begin interrupt");
+        log.info("begin interrupt");
         t.interrupt();
     }
 
@@ -28,7 +28,7 @@ public class Interrupt {
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
-                log.debug("error: interrupt while sleep");
+                log.info("error: interrupt while sleep");
             }
         }, "t1");
         t.start();
@@ -36,7 +36,7 @@ public class Interrupt {
         Sleeper.sleep(1);
         // 不能在线程睡眠的时候打断
         t.interrupt();
-        log.debug("t's isInterrupted={}", t.isInterrupted());
+        log.info("t's isInterrupted={}", t.isInterrupted());
 
 //        testTwoPhaseTermination();
     }
@@ -47,7 +47,7 @@ public class Interrupt {
         twoPhaseTermination.start();
 
         Sleeper.sleep(3.5);
-        log.debug("end monitoring");
+        log.info("end monitoring");
         twoPhaseTermination.stop();
     }
 
@@ -73,14 +73,14 @@ class TwoPhaseTermination {
         this.monitorThread = new Thread(() -> {
             while(true) {
                 if (this.stop) {
-                    log.debug("end:do somethings");
+                    log.info("end:do somethings");
                     break;
                 }
                 try {
                     Thread.sleep(1000);
-                    log.debug("monitor...");
+                    log.info("monitor...");
                 } catch (InterruptedException e) {
-                    log.debug("---interrupt while sleeping---");
+                    log.info("---interrupt while sleeping---");
                     // e.printStackTrace();
                 }
             }
@@ -89,7 +89,7 @@ class TwoPhaseTermination {
     }
 
     public void stop() {
-        log.debug("stop two phase termination");
+        log.info("stop two phase termination");
         this.stop = true;
         this.monitorThread.interrupt();
     }

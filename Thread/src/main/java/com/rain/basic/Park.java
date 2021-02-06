@@ -10,10 +10,10 @@ public class Park {
     public static void main(String[] args) {
         Thread t = new Thread(() -> {
             for (int i = 0; i < 5; i++) {
-                log.debug("park");
+                log.info("park");
                 LockSupport.park();
-                log.debug("interrupted = {}", Thread.interrupted());
-//                log.debug("isInterrupted = {}", Thread.currentThread().isInterrupted());
+                log.info("interrupted = {}", Thread.interrupted());
+//                log.info("isInterrupted = {}", Thread.currentThread().isInterrupted());
             }
         }, "t");
         t.start();
@@ -23,7 +23,7 @@ public class Park {
 
 
         for (int i = 0; i < 5; i++) {
-            log.debug("unpark");
+            log.info("unpark");
             LockSupport.unpark(t);
             Sleeper.sleep(1);
         }
