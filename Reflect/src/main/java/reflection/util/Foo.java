@@ -1,23 +1,27 @@
 package reflection.util;
 
+@MyAnnotation
 public class Foo {
     private String fooName = "foo";
-    public String fooPublicName;
+    public String fooPublicName = "fooPublicName";
 
-    private void say() {
-        System.out.println("hello");
+    @MyAnnotation
+    private String say() {
+        return this.fooName + " say hello";
     }
-    private void say(String s) {
-        System.out.println("hello" + s);
+    private String say(String name) {
+        return this.fooName + " say hello to " + name;
     }
-    public void shout() {
-        System.out.println("public: shout");
+    public String shout() {
+        return this.fooName + " shout";
     }
 
+    @MyAnnotation
     public Foo(String name) {
         this.fooName = name;
     }
 
+    @MyAnnotation
     public Foo() {
     }
 
@@ -41,6 +45,7 @@ public class Foo {
     public String toString() {
         return "Foo{" +
                 "fooName='" + fooName + '\'' +
+                ", fooPublicName='" + fooPublicName + '\'' +
                 '}';
     }
 }
