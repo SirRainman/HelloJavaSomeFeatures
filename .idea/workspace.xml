@@ -5,14 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="eb203a3c-be5b-4781-a8cc-2b91b2155480" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/Reflect/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Reflect/src/main/java/reflection/util/MyAnnotation.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Reflect/src/main/java/dynamicProxy/DynamicProxyTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Reflect/src/main/java/dynamicProxy/Human.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Reflect/src/main/java/dynamicProxy/SuperMan.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Reflect/src/main/java/dynamicProxy/staticProxyPattern/Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Reflect/src/main/java/dynamicProxy/staticProxyPattern/UserServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Reflect/src/main/java/dynamicProxy/staticProxyPattern/UserServiceInterface.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Reflect/src/main/java/dynamicProxy/staticProxyPattern/UserServiceProxy.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Reflect/src/main/java/dynamicProxy/DynamicProxy.java" beforeDir="false" afterPath="$PROJECT_DIR$/Reflect/src/main/java/dynamicProxy/DynamicProxy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Reflect/src/main/java/reflection/Reflection.java" beforeDir="false" afterPath="$PROJECT_DIR$/Reflect/src/main/java/reflection/Reflection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Reflect/src/main/java/reflection/util/Foo.java" beforeDir="false" afterPath="$PROJECT_DIR$/Reflect/src/main/java/reflection/util/Foo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Reflect/src/main/java/reflection/util/pro.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Reflect/src/main/java/reflection/util/pro.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Reflect/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/Reflect/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Reflect/src/main/java/dynamicProxy/DynamicProxy.java" beforeDir="false" afterPath="$PROJECT_DIR$/Reflect/src/main/java/dynamicProxy/DynamicProxyFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Reflect/src/main/java/dynamicProxy/Hello.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,9 +69,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="AnnotationType" />
         <option value="Interface" />
         <option value="Class" />
-        <option value="AnnotationType" />
       </list>
     </option>
   </component>
@@ -254,7 +257,7 @@
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15122874" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
+    <property name="settings.editor.selected.configurable" value="copyright" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -269,7 +272,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.Reflection.testConstructor">
+  <component name="RunManager" selected="Application.DynamicProxyTest">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="HTML_USED" value="false" />
       <option name="WIDTH" value="400" />
@@ -277,21 +280,47 @@
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <module />
     </configuration>
+    <configuration name="DynamicProxyTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="dynamicProxy.DynamicProxyTest" />
+      <module name="Reflect" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="dynamicProxy.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="dynamicProxy.staticProxyPattern.Main" />
+      <module name="Reflect" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="dynamicProxy.staticProxyPattern.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration default="true" type="Application" factoryName="Application">
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
       <option name="arquillianRunConfiguration">
         <value>
           <option name="containerStateName" value="" />
         </value>
       </option>
-      <option name="TEST_OBJECT" value="CLASS" />
-      <properties />
-      <listeners />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -330,23 +359,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Reflection.testMethod" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="Reflect" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="reflection.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="reflection" />
-      <option name="MAIN_CLASS_NAME" value="reflection.Reflection" />
-      <option name="METHOD_NAME" value="testMethod" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Reflection.testPackage" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="Reflect" />
       <extension name="coverage">
@@ -358,23 +370,6 @@
       <option name="PACKAGE_NAME" value="reflection" />
       <option name="MAIN_CLASS_NAME" value="reflection.Reflection" />
       <option name="METHOD_NAME" value="testPackage" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Reflection.testParentClass" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="Reflect" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="reflection.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="reflection" />
-      <option name="MAIN_CLASS_NAME" value="reflection.Reflection" />
-      <option name="METHOD_NAME" value="testParentClass" />
       <option name="TEST_OBJECT" value="method" />
       <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
       <method v="2">
@@ -408,11 +403,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.DynamicProxyTest" />
+        <item itemvalue="Application.Main" />
         <item itemvalue="JUnit.Reflection.testConstructor" />
         <item itemvalue="JUnit.Reflection.testPackage" />
         <item itemvalue="JUnit.Reflection.testInterface" />
-        <item itemvalue="JUnit.Reflection.testParentClass" />
-        <item itemvalue="JUnit.Reflection.testMethod" />
       </list>
     </recent_temporary>
   </component>
@@ -448,7 +443,10 @@
       <workItem from="1612495892403" duration="1647000" />
       <workItem from="1612578161686" duration="8272000" />
       <workItem from="1612690114458" duration="4328000" />
-      <workItem from="1613380868954" duration="6904000" />
+      <workItem from="1613380868954" duration="7451000" />
+      <workItem from="1613444833308" duration="85000" />
+      <workItem from="1613445495954" duration="172000" />
+      <workItem from="1613445893115" duration="6073000" />
     </task>
     <servers />
   </component>
