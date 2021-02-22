@@ -15,7 +15,7 @@ public class Yield {
         Runnable task2 = () -> {
             int count = 0;
             while (true) {
-//                Thread.yield();
+                // Thread.yield();
                 System.out.println("                   2= " + count++);
             }
         };

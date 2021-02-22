@@ -1,5 +1,6 @@
 package com.rain.test;
 
+
 public class Test {
     private static int count = 0;
     private static Object lock = new Object();
