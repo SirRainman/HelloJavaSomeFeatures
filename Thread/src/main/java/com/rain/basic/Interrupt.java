@@ -4,6 +4,8 @@ import com.rain.util.Sleeper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
+import java.util.concurrent.TimeUnit;
+
 @Slf4j(topic = "c.Interrupt")
 public class Interrupt {
 
@@ -49,21 +51,53 @@ public class Interrupt {
         twoPhaseTermination.start();
 
         Sleeper.sleep(3.5);
+
         log.info("end monitoring");
         twoPhaseTermination.stop();
     }
 
     class TwoPhaseTermination {
-        // 监控线程
         private Thread monitorThread;
-        // 停止标记
-        private volatile boolean stop = false;
-        // 判断是否执行过start方法
-        private boolean starting = false;
 
         public void start() {
-            synchronized (this) {
-                if (this.starting) {
+            monitorThread = new Thread(() -> {
+                while (true) {
+                    Thread currentThread = Thread.currentThread();
+                    if (currentThread.isInterrupted()) {
+                        log.info("monitor thread is interrupted, do something to end");
+                        break;
+                    }
+
+                    try {
+                        Thread.sleep(1000);
+                        log.info("nothing, just save result");
+                    } catch (InterruptedException e) { // current thread is interrupted while sleeping
+                        // 在睡眠时出现异常后，会清楚打断标记，需要重置打断标记
+                        log.info("{}", e);
+                        currentThread.interrupt();
+                    }
+                }
+            }, "MonitorThread");
+            monitorThread.start();
+        }
+
+        public void stop() {
+            monitorThread.interrupt();
+        }
+    }
+
+    class TwoPhaseTermination2 {
+        // 监控线程
+        private Thread monitorThread;
+        // 停止标记, 停止标记用 volatile 是为了保证该变量在多个线程之间的可见性
+        private volatile boolean stop = false;
+        // 判断是否执行过start方法
+        private volatile boolean starting = false;
+
+        public void start() {
+            System.out.println();
+            synchronized (this) { // 防止多个线程同时读到start = false，还是会重复创建monitor线程，加锁进行保护
+                if (this.starting) { // balking 模式，防止多次调用start方法多次创建monitor线程
                     return;
                 }
                 starting = true;

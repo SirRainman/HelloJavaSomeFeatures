@@ -5,254 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="eb203a3c-be5b-4781-a8cc-2b91b2155480" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter01/ConcurrencyTest$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter01/ConcurrencyTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter01/DeadLockDemo$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter01/DeadLockDemo$2.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter01/DeadLockDemo.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter02/Counter$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter02/Counter.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter03/DoubleCheckedLocking$Instance.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter03/DoubleCheckedLocking.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter03/FinalExample.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter03/FinalReferenceEscapeExample.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter03/FinalReferenceExample.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter03/InstanceFactory$Instance.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter03/InstanceFactory$InstanceHolder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter03/InstanceFactory.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter03/MonitorExample.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter03/ReentrantLockExample.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter03/ReorderExample.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter03/SafeDoubleCheckedLocking$Instance.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter03/SafeDoubleCheckedLocking.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter03/SafeLazyInitialization$Instance.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter03/SafeLazyInitialization.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter03/SynchronizedExample.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter03/UnsafeLazyInitialization$Instance.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter03/UnsafeLazyInitialization.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter03/VolatileBarrierExample.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter03/VolatileExample.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter03/VolatileFeaturesExample.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter03/VolatileFeaturesExample1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/ConnectionDriver$ConnectionHandler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/ConnectionDriver.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/ConnectionPool.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/ConnectionPoolTest$ConnetionRunner.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/ConnectionPoolTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/Daemon$DaemonRunner.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/Daemon.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/DefaultThreadPool$Worker.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/DefaultThreadPool.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/Deprecated$Runner.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/Deprecated.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/Interrupted$BusyRunner.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/Interrupted$SleepRunner.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/Interrupted.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/Join$Domino.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/Join.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/MultiThread.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/Piped$Print.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/Piped.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/Priority$Job.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/Priority.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/Profiler$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/Profiler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/Shutdown$Runner.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/Shutdown.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/SimpleHttpServer$HttpRequestHandler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/SimpleHttpServer.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/SleepUtils.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/Synchronized.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/ThreadPool.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/ThreadState$Blocked.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/ThreadState$Sync.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/ThreadState$TimeWaiting.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/ThreadState$Waiting.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/ThreadState.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/WaitNotify$Notify.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/WaitNotify$Wait.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter04/WaitNotify.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter05/BoundedQueue.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter05/Cache.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter05/ConditionUseCase.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter05/FairAndUnfairTest$Job.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter05/FairAndUnfairTest$ReentrantLock2.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter05/FairAndUnfairTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter05/LockUseCase.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter05/Mutex$Sync.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter05/Mutex.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter05/ProcessData.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter05/TwinsLock$Sync.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter05/TwinsLock.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter05/TwinsLockTest$1Worker.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter05/TwinsLockTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter06/ConcurrentPutHashMap$1$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter06/ConcurrentPutHashMap$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter06/ConcurrentPutHashMap.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter06/CountTask.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter07/AtomicIntegerArrayTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter07/AtomicIntegerFieldUpdaterTest$User.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter07/AtomicIntegerFieldUpdaterTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter07/AtomicIntegerTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter07/AtomicReferenceTest$User.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter07/AtomicReferenceTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter08/CountDownLatchTest$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter08/CountDownLatchTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter08/CyclicBarrierTest$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter08/CyclicBarrierTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter08/CyclicBarrierTest2$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter08/CyclicBarrierTest2$A.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter08/CyclicBarrierTest2.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter08/CyclicBarrierTest3$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter08/CyclicBarrierTest3.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter08/ExchangerTest$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter08/ExchangerTest$2.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter08/ExchangerTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter08/JoinCountDownLatchTest$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter08/JoinCountDownLatchTest$2.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter08/JoinCountDownLatchTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter08/SemaphoreTest$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter08/SemaphoreTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter10/ConcurrentTask$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter10/ConcurrentTask.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter11/IMsgQueue.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter11/Message.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/bin/chapter11/MsgQueueManager.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter01/ConcurrencyTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter01/DeadLockDemo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter02/Counter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter03/DoubleCheckedLocking.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter03/FinalExample.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter03/FinalReferenceEscapeExample.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter03/FinalReferenceExample.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter03/InstanceFactory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter03/MonitorExample.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter03/ReentrantLockExample.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter03/ReorderExample.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter03/SafeDoubleCheckedLocking.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter03/SafeLazyInitialization.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter03/SynchronizedExample.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter03/UnsafeLazyInitialization.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter03/VolatileBarrierExample.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter03/VolatileExample.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter03/VolatileFeaturesExample.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter03/VolatileFeaturesExample1.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter04/ConnectionDriver.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter04/ConnectionPool.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter04/ConnectionPoolTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter04/Daemon.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter04/DefaultThreadPool.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter04/Deprecated.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter04/Interrupted.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter04/Join.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter04/MultiThread.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter04/Piped.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter04/Priority.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter04/Profiler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter04/Shutdown.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter04/SimpleHttpServer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter04/SleepUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter04/Synchronized.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter04/ThreadPool.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter04/ThreadState.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter04/WaitNotify.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter05/BoundedQueue.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter05/Cache.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter05/ConditionUseCase.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter05/FairAndUnfairTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter05/LockUseCase.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter05/Mutex.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter05/ProcessData.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter05/TwinsLock.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter05/TwinsLockTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter06/ConcurrentPutHashMap.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter06/CountTask.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter07/AtomicIntegerArrayTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter07/AtomicIntegerFieldUpdaterTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter07/AtomicIntegerTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter07/AtomicReferenceTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter08/CountDownLatchTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter08/CyclicBarrierTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter08/CyclicBarrierTest2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter08/CyclicBarrierTest3.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter08/ExchangerTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter08/JoinCountDownLatchTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter08/SemaphoreTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter10/ConcurrentTask.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter11/IMsgQueue.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter11/Message.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/ArtConcurrentBook/src/chapter11/MsgQueueManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/com/rain/basic/DeadLock.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/com/rain/basic/WaitNotify.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/1 Reflect.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/2 DynamicProxy.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/3 RPC.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/4 Thread.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Thread/src/main/java/com/rain/advance/Synchronize.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Reflect/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Thread/Thread.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Thread/Thread.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Thread/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Thread/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Thread/src/main/java/com/rain/basic/CreateThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/Thread/src/main/java/com/rain/basic/CreateThread.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Thread/src/main/java/com/rain/basic/Daemon.java" beforeDir="false" afterPath="$PROJECT_DIR$/Thread/src/main/java/com/rain/basic/Daemon.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Reflect/Reflect.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Reflect/Reflect.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Thread/src/main/java/com/rain/basic/DeadLock.java" beforeDir="false" afterPath="$PROJECT_DIR$/Thread/src/main/java/com/rain/advance/DeadLock.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Thread/src/main/java/com/rain/basic/Interrupt.java" beforeDir="false" afterPath="$PROJECT_DIR$/Thread/src/main/java/com/rain/basic/Interrupt.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Thread/src/main/java/com/rain/basic/Join.java" beforeDir="false" afterPath="$PROJECT_DIR$/Thread/src/main/java/com/rain/basic/Join.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Thread/src/main/java/com/rain/basic/Park.java" beforeDir="false" afterPath="$PROJECT_DIR$/Thread/src/main/java/com/rain/basic/Park.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Thread/src/main/java/com/rain/basic/State.java" beforeDir="false" afterPath="$PROJECT_DIR$/Thread/src/main/java/com/rain/basic/State.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Thread/src/main/java/com/rain/basic/TestMakeTea.java" beforeDir="false" afterPath="$PROJECT_DIR$/Thread/src/main/java/com/rain/test/TestMakeTea.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Thread/src/main/java/com/rain/basic/Yield.java" beforeDir="false" afterPath="$PROJECT_DIR$/Thread/src/main/java/com/rain/basic/Yield.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Thread/src/main/java/com/rain/test/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/Thread/src/main/java/com/rain/test/Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Thread/src/main/resources/log4j.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Thread/src/main/resources/logback.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Thread/src/main/java/com/rain/basic/WaitNotify.java" beforeDir="false" afterPath="$PROJECT_DIR$/Thread/src/main/java/com/rain/basic/WaitNotify.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/4 Thread.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/4 Thread.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Park.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Thread/src/main/java/com/rain/basic/Park.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="312">
-              <caret line="23" column="0" lean-forward="true" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="CreateThread.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Thread/src/main/java/com/rain/basic/CreateThread.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="21">
-              <caret line="20" column="28" lean-forward="false" selection-start-line="20" selection-start-column="28" selection-end-line="20" selection-end-column="28" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Yield.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Thread/src/main/java/com/rain/basic/Yield.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="410">
-              <caret line="21" column="0" lean-forward="true" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="State.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Thread/src/main/java/com/rain/basic/State.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="539">
-              <caret line="117" column="48" lean-forward="true" selection-start-line="117" selection-start-column="48" selection-end-line="117" selection-end-column="48" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -275,6 +40,14 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
   </component>
   <component name="GradleLocalSettings">
     <option name="externalProjectsViewState">
@@ -442,7 +215,7 @@
     <property name="SearchEverywhereHistoryKey" value="bench&#9;FILE&#9;file://E:/IntelliJ IDEA 2017.3.2 Code/Java_Workspace/HelloJavaSomeFeatures/Thread/并发编程代码/concurrent/jmh_eliminate_locks/target/classes/com/itcast/MyBenchmark.class" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/Reflect/target/classes/reflection/util" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Modules" />
@@ -464,7 +237,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.DeadLock.createDeadLock">
+  <component name="RunManager" selected="JUnit.Interrupt.testTwoPhaseTermination">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="HTML_USED" value="false" />
       <option name="WIDTH" value="400" />
@@ -472,8 +245,8 @@
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <module />
     </configuration>
-    <configuration name="CreateThread" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.rain.basic.CreateThread" />
+    <configuration name="WaitNotify" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.rain.basic.WaitNotify" />
       <module name="Thread" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <extension name="coverage">
@@ -492,18 +265,70 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
       <option name="arquillianRunConfiguration">
         <value>
           <option name="containerStateName" value="" />
         </value>
       </option>
+      <option name="TEST_OBJECT" value="CLASS" />
+      <properties />
+      <listeners />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Interrupt.testTwoPhaseTermination" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Thread" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.rain.basic.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.rain.basic" />
+      <option name="MAIN_CLASS_NAME" value="com.rain.basic.Interrupt" />
+      <option name="METHOD_NAME" value="testTwoPhaseTermination" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Synchronize" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Thread" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.rain.advance.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.rain.advance" />
+      <option name="MAIN_CLASS_NAME" value="com.rain.advance.Synchronize" />
       <option name="TEST_OBJECT" value="class" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="CreateThread.threadTypes" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="Synchronize.testSynchronize" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Thread" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.rain.advance.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.rain.advance" />
+      <option name="MAIN_CLASS_NAME" value="com.rain.advance.Synchronize" />
+      <option name="METHOD_NAME" value="testSynchronize" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="WaitNotify.testWaitNotify" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="Thread" />
       <extension name="coverage">
         <pattern>
@@ -512,59 +337,8 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="com.rain.basic" />
-      <option name="MAIN_CLASS_NAME" value="com.rain.basic.CreateThread" />
-      <option name="METHOD_NAME" value="threadTypes" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="DeadLock.createDeadLock" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="Thread" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.rain.basic.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.rain.basic" />
-      <option name="MAIN_CLASS_NAME" value="com.rain.basic.DeadLock" />
-      <option name="METHOD_NAME" value="createDeadLock" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="State.differentState" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="Thread" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.rain.test.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.rain.basic" />
-      <option name="MAIN_CLASS_NAME" value="com.rain.basic.State" />
-      <option name="METHOD_NAME" value="differentState" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="State.testState" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="Thread" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.rain.test.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.rain.basic" />
-      <option name="MAIN_CLASS_NAME" value="com.rain.basic.State" />
-      <option name="METHOD_NAME" value="testState" />
+      <option name="MAIN_CLASS_NAME" value="com.rain.basic.WaitNotify" />
+      <option name="METHOD_NAME" value="testWaitNotify" />
       <option name="TEST_OBJECT" value="method" />
       <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
       <method v="2">
@@ -598,11 +372,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.DeadLock.createDeadLock" />
-        <item itemvalue="JUnit.CreateThread.threadTypes" />
-        <item itemvalue="Application.CreateThread" />
-        <item itemvalue="JUnit.State.differentState" />
-        <item itemvalue="JUnit.State.testState" />
+        <item itemvalue="JUnit.Interrupt.testTwoPhaseTermination" />
+        <item itemvalue="JUnit.WaitNotify.testWaitNotify" />
+        <item itemvalue="Application.WaitNotify" />
+        <item itemvalue="JUnit.Synchronize.testSynchronize" />
+        <item itemvalue="JUnit.Synchronize" />
       </list>
     </recent_temporary>
   </component>
@@ -642,6 +416,7 @@
       <workItem from="1613444833308" duration="85000" />
       <workItem from="1613445495954" duration="172000" />
       <workItem from="1613445893115" duration="20463000" />
+      <workItem from="1613962543267" duration="13735000" />
     </task>
     <servers />
   </component>
@@ -868,14 +643,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar://E:/java/jdk1.8.0_151/jre/lib/rt.jar!/sun/misc/Unsafe.class">
+    <entry file="jar://$PROJECT_DIR$/../../java/jdk1.8.0_151/jre/lib/rt.jar!/sun/misc/Unsafe.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="105">
           <caret line="353" column="53" lean-forward="true" selection-start-line="353" selection-start-column="53" selection-end-line="353" selection-end-column="53" />
         </state>
       </provider>
     </entry>
-    <entry file="jar://E:/java/jdk1.8.0_151/src.zip!/java/util/concurrent/locks/LockSupport.java">
+    <entry file="jar://$PROJECT_DIR$/../../java/jdk1.8.0_151/src.zip!/java/util/concurrent/locks/LockSupport.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="651">
           <caret line="304" column="5" lean-forward="true" selection-start-line="304" selection-start-column="5" selection-end-line="304" selection-end-column="5" />
@@ -896,7 +671,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar://E:/java/jdk1.8.0_151/src.zip!/java/lang/Thread.java">
+    <entry file="jar://$PROJECT_DIR$/../../java/jdk1.8.0_151/src.zip!/java/lang/Thread.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1138">
           <caret line="549" column="11" lean-forward="false" selection-start-line="549" selection-start-column="11" selection-end-line="549" selection-end-column="11" />
