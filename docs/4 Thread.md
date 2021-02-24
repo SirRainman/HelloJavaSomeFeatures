@@ -1003,7 +1003,7 @@ CAS 指令包含 3 个参数：
 
 **CAS 必须借助volatile才能读取到共享变量的最新值来实现比较并交换的效果**
 
-* cas保证原子性，配合volatile实现线程安全
+* CAS保证原子性，配合volatile实现线程安全
 
 ## ABA问题
 
@@ -1759,9 +1759,9 @@ JMM 即 Java Memory Model，它定义了主存、工作内存抽象概念，底�
 
 JMM 体现在以下几个方面
 
-* 原子性 - 保证指令不会受到线程上下文切换的影响
-* 可见性 - 保证指令不会受 cpu 缓存的影响
-* 有序性 - 保证指令不会受 cpu 指令并行优化的影响
+* **原子性 - 保证指令不会受到线程上下文切换的影响**（上下文切换导致指令执行到一半就中断了）
+* **可见性 - 保证指令不会受 cpu 缓存的影响**
+* **有序性 - 保证指令不会受 cpu 指令并行优化的影响**
 
 
 
@@ -1773,9 +1773,16 @@ JMM 体现在以下几个方面
 
 
 
+**volatile的自身特性：**
+
+* **可见性：对volatile变量的读，在任意一个线程中总是能看到对这个volatile变量最后的写入。**
+* **原子性：对任意单个volatile变量的读/写具有原子性，但是对于复合型操作并不具备原子性。**
+
+
+
 **CAS 必须借助volatile才能读取到共享变量的最新值来实现比较并交换的效果**
 
-* cas保证原子性，配合volatile实现线程安全
+* CAS保证原子性，配合volatile实现线程安全
 
 
 
@@ -1890,18 +1897,18 @@ public class Singleton {
 不加volatile的字节码：
 
 ```
-0: getstatic #2 		// Field INSTANCE:Lcn/itcast/n5/Singleton;
+0: getstatic #2 		// Field INSTANCE:Lcn/itCASt/n5/Singleton;
 3: ifnonnull 37			// 跳转到37行
-6: ldc #3 				// class cn/itcast/n5/Singleton
+6: ldc #3 				// class cn/itCASt/n5/Singleton
 8: dup
 9: astore_0
 10: monitorenter
-11: getstatic #2 		// Field INSTANCE:Lcn/itcast/n5/Singleton;
+11: getstatic #2 		// Field INSTANCE:Lcn/itCASt/n5/Singleton;
 14: ifnonnull 27
-17: new #3 				// class cn/itcast/n5/Singleton
+17: new #3 				// class cn/itCASt/n5/Singleton
 20: dup
 21: invokespecial #4 	// Method "<init>":()V
-24: putstatic #2 		// Field INSTANCE:Lcn/itcast/n5/Singleton;
+24: putstatic #2 		// Field INSTANCE:Lcn/itCASt/n5/Singleton;
 27: aload_0
 28: monitorexit
 29: goto 37
@@ -1910,7 +1917,7 @@ public class Singleton {
 34: monitorexit
 35: aload_1
 36: athrow
-37: getstatic #2 		// Field INSTANCE:Lcn/itcast/n5/Singleton;
+37: getstatic #2 		// Field INSTANCE:Lcn/itCASt/n5/Singleton;
 40: areturn
 ```
 
@@ -1945,18 +1952,18 @@ public class Singleton {
 
 ```
 						// -------------------------------------> 加入对 INSTANCE 变量的读屏障
-0: getstatic #2 		// Field INSTANCE:Lcn/itcast/n5/Singleton;
+0: getstatic #2 		// Field INSTANCE:Lcn/itCASt/n5/Singleton;
 3: ifnonnull 37
-6: ldc #3 				// class cn/itcast/n5/Singleton
+6: ldc #3 				// class cn/itCASt/n5/Singleton
 8: dup
 9: astore_0
 10: monitorenter 		-----------------------> 保证原子性、可见性
-11: getstatic #2 		// Field INSTANCE:Lcn/itcast/n5/Singleton;
+11: getstatic #2 		// Field INSTANCE:Lcn/itCASt/n5/Singleton;
 14: ifnonnull 27
-17: new #3 				// class cn/itcast/n5/Singleton
+17: new #3 				// class cn/itCASt/n5/Singleton
 20: dup
 21: invokespecial #4 	// Method "<init>":()V
-24: putstatic #2 		// Field INSTANCE:Lcn/itcast/n5/Singleton;
+24: putstatic #2 		// Field INSTANCE:Lcn/itCASt/n5/Singleton;
 						// -------------------------------------> 加入对 INSTANCE 变量的写屏障
 27: aload_0
 28: monitorexit 		------------------------> 保证原子性、可见性
@@ -1966,7 +1973,7 @@ public class Singleton {
 34: monitorexit
 35: aload_1
 36: athrow
-37: getstatic #2 		// Field INSTANCE:Lcn/itcast/n5/Singleton;
+37: getstatic #2 		// Field INSTANCE:Lcn/itCASt/n5/Singleton;
 40: areturn
 ```
 
@@ -2002,7 +2009,7 @@ volatile 的底层实现原理是内存屏障，Memory Barrier（Memory Fence）
 
 
 
-常见内存屏障：
+常见**内存屏障完成一系列的屏障和数据同步功能**：
 
 1. LoadLoad屏障：禁止下面的普通读和上面的volatile读重排序
 2. StoreStore屏障：禁止上面的普通写和volatile写重排序
@@ -2011,14 +2018,30 @@ volatile 的底层实现原理是内存屏障，Memory Barrier（Memory Fence）
 
 
 
-volatile 采用保守内存屏障策略：
+**volatile 采用保守内存屏障策略**：
 
-1. 在每个volatile写操作前插入StoreStore屏障，在写操作后插入StoreLoad屏障；
-2. 在每个volatile读操作后插入LoadLoad屏障，然后插入LoadStore屏障；
+```
+普通读
+普通写
+StoreStore屏障 // 禁止 上面的普通写 和 下面的volatile写 重排序
+
+volatile 写
+
+StoreLoad屏障  // 禁止 上面的volatile写 与 下面可能有的volatile读/写重排序
+
+volatile 读
+
+LoadLoad屏障   // 禁止 下面的普通读 和 上面的volatile读重排序
+LoadStore屏障  // 禁止 下面的普通写 和 上面的volatile读重排序
+普通读
+普通写
+```
+
+
 
 ### 1 如何保证可见性？
 
-1. **写屏障（sfence）保证在该屏障之前的，对共享变量的改动，都同步到主存当中**
+1. **写屏障（store fence）保证在该屏障之前的，对共享变量的改动，都同步到主存当中**
 
     ```java
     public void actor2(I_Result r) {
@@ -2028,7 +2051,7 @@ volatile 采用保守内存屏障策略：
     }
     ```
 
-2. **读屏障（lfence）保证在该屏障之后，对共享变量的读取，加载的是主存中最新数据**
+2. **读屏障（load fence）保证在该屏障之后，对共享变量的读取，加载的是主存中最新数据**
 
     ```java
     public void actor1(I_Result r) {
@@ -2149,12 +2172,425 @@ Happens-before原则有哪些？
 
 # 六、线程池
 
+线程池提供了一种限制和管理资源（包括执行一个任务）。 
+
+* 每个线程池还维护一些基本统计信息，例如已完成任务的数量。
 
 
 
+**线程池解决的问题是什么**？
+
+线程池**解决的核心问题就是资源管理问题**。在并发环境下，系统不能够确定在任意时刻中，有多少任务需要执行，有多少资源需要投入。
+
+1. **频繁申请/销毁资源和调度资源**，将带来额外的消耗，可能会非常巨大。
+2. 对资源**无限申请缺少抑制手段**，易引发系统资源耗尽的风险。
+3. 系统**无法合理管理内部的资源分布**，会降低系统的稳定性。
 
 
 
+**线程池的优点**：
+
+* **复用线程，线程生命周期的开销非常高，减少了创建和销毁线程的次数**
+    * **降低资源消耗**：通过池化技术重复利用已创建的线程，降低线程创建和销毁造成的损耗。
+    * **提高响应速度**：任务到达时，无需等待线程创建即可立即执行。
+* **提高线程的可管理性。**
+    * 线程是稀缺资源，如果无限制的创建，不仅会消耗系统资源，还会因为线程的不合理分布导致资源调度失衡，降低系统的稳定性。使用线程池可以进行统一的分配、调优和监控。
+* **线程池功能可拓展**：允许开发人员向其中增加更多的功能。比如延时定时线程池ScheduledThreadPoolExecutor，就允许任务延期执行或定期执行。
 
 
- 
+
+池化思想在其他地方上的应用：
+
+1. **内存池**(Memory Pooling)：预先申请内存，提升申请内存速度，减少内存碎片。
+2. **连接池**(Connection Pooling)：预先申请数据库连接，提升申请连接的速度，降低系统的开销。
+3. **实例池**(Object Pooling)：循环使用对象，减少资源在初始化和释放时的昂贵损耗
+
+## 自定义线程池
+
+![img](http://haoimg.hifool.cn/img/16477f7912b4552a)
+
+线程池的主要组成部分：
+
+1. 线程池管理器（ThreadPool）：用于创建并管理线程池，包括 创建线程池，销毁线程池，添加新任务；
+2. 工作线程（WorkThread）：线程池中线程，在没有任务时处于等待状态，可以循环的执行任务；
+3. 任务接口（Task）：每个任务必须实现的接口，以供工作线程调度任务的执行，它主要规定了任务的入口，任务执行完后的收尾工作，任务的执行状态等；
+4. 任务队列（taskQueue）：用于存放没有处理的任务。提供一种缓冲机制。
+
+> 看一下自己写的线程池部分的代码
+
+
+
+## ThreadPoolExecutor
+
+![ThreadPoolExecutor UML类图](http://haoimg.hifool.cn/img/912883e51327e0c7a9d753d11896326511272.png)
+
+* Executor：**将任务提交和任务执行进行解耦**。用户无需关注如何创建线程，如何调度线程来执行任务，用户只需提供Runnable对象，将任务的运行逻辑提交到执行器(Executor)中，由Executor框架完成线程的调配和任务的执行部分。
+* ExecutorService：
+    1. 扩充执行任务的能力，补充可以为一个或一批异步任务生成Future的方法
+    2. 提供了管控线程池的方法，比如停止线程池的运行。
+* AbstractExecutorService：将执行任务的流程串联了起来，保证下层的实现只需关注一个执行任务的方法即可。
+* ThreadPoolExecutor：
+    1. 维护自身线程池的生命周期
+    2. 管理线程和任务
+
+
+
+ThreadPoolExecutor总体设计：
+
+![ThreadPoolExecutor运行流程](http://haoimg.hifool.cn/img/77441586f6b312a54264e3fcf5eebe2663494.png)
+
+线程池在内部实际上构建了一个生产者消费者模型，将线程和任务两者解耦，并不直接关联，从而良好的缓冲任务，复用线程。
+
+线程池的运行主要分成两部分：
+
+* 任务管理：充当生产者的角色，当任务提交后，线程池会判断该任务后续的流转：
+    1. 直接申请线程执行该任务
+    2. 缓冲到队列中等待线程执行
+    3. 拒绝该任务。
+* 线程管理：是消费者，它们被统一维护在线程池内，根据任务请求进行线程的分配，当线程执行完任务后则会继续获取新的任务去执行，最终当线程获取不到任务的时候，线程就会被回收。
+
+
+
+工作方式：**新建线程 -> 达到核心数 -> 加入队列 -> 新建线程（救急线程） -> 达到最大数 -> 触发拒绝策略**
+
+```mermaid
+graph LR
+
+subgraph 阻塞队列
+size=2
+t3(任务3)
+t4(任务4)
+end
+
+subgraph 线程池coreSize=2,maxSize=3
+ct1(核心线程1)
+ct2(核心线程2)
+mt1(救急线程1)
+ct1 --> t1(任务1)
+ct2 --> t2(任务2)
+end
+
+style ct1 fill:#ccf,stroke:#f66,stroke-width:2px
+style ct2 fill:#ccf,stroke:#f66,stroke-width:2px
+style mt1 fill:#ccf,stroke:#f66,stroke-width:2px,stroke-dasharray: 5, 5
+```
+
+1. 线程池中刚开始没有线程，当一个任务提交给线程池后，线程池会创建一个新线程来执行任务。
+2. 当线程数达到 corePoolSize 并没有线程空闲，这时再加入任务，新加的任务会被加入workQueue 队列排队，直到有空闲的线程。
+3. 如果队列选择了有界队列，那么任务超过了队列大小时，会创建 (maximumPoolSize - corePoolSize) 数目的救急线程来救急。
+4. 如果线程到达 maximumPoolSize 仍然有新任务时，这时会执行拒绝策略。
+5. 当高峰过去后，超过corePoolSize 的救急线程如果一段时间没有任务做，需要结束节省资源，这个时间由keepAliveTime 和 unit 来控制。
+
+
+
+###  1 线程池状态
+
+线程池的状态分为两部分：
+
+1. 运行状态 runState
+2. 线程数量 workerCount
+
+在实现的过程中，线程池的状态统一的由ctl这个AtomicInteger类型的变量进行维护，高 3 位来表示线程池状态，低 29 位表示线程数量。
+
+* 用一个变量去存储两个值，可以用一次 CAS 原子操作对两个状态进行赋值，可避免在做相关决策时，出现不一致的情况，不必为了维护两者的一致，而占用锁资源。
+
+```java
+private final AtomicInteger ctl = new AtomicInteger(ctlOf(RUNNING, 0));
+```
+
+ctl 变量内部判断线程池运行状态和线程数量是基于位运算的方法进行判断的，速度会快很多。
+
+```java
+CAPACITY // 线程池内部线程的数量
+private static int runStateOf(int c)     { return c & ~CAPACITY; } //计算当前运行状态
+private static int workerCountOf(int c)  { return c & CAPACITY; }  //计算当前线程数量
+private static int ctlOf(int rs, int wc) { return rs | wc; }   //通过状态和线程数生成ctl
+```
+
+![image-20210223223853774](http://haoimg.hifool.cn/img/image-20210223223853774.png)
+
+从数字上比较，TERMINATED > TIDYING > STOP > SHUTDOWN > RUNNING
+
+
+
+![img](http://haoimg.hifool.cn/img/170f73cc0dad76a5)
+
+1. 线程池的初始化状态是**RUNNING**，能够**接收新任务**，以及对已添加的任务进行处理。
+2. 线程池处在**SHUTDOWN**状态时，**不接收新任务，但能处理已添加的任务**。  调用线程池的shutdown()接口时，线程池由RUNNING -> SHUTDOWN。
+3. 线程池处在**STOP**状态时，**不接收新任务，不处理已添加的任务，并且会中断正在处理的任务**。 调用线程池的shutdownNow()接口时，线程池由(RUNNING or SHUTDOWN ) -> STOP。
+4. **当所有的任务已终止**，ctl记录的”任务数量”为0，线程池会变为**TIDYING**状态。
+    - 当线程池在SHUTDOWN状态下，阻塞队列为空并且线程池中执行的任务也为空时，就会由 SHUTDOWN -> TIDYING。
+    - 当线程池在STOP状态下，线程池中执行的任务为空时，就会由STOP -> TIDYING。 线程池彻底终止，就变成TERMINATED状态。
+    - 当线程池变为TIDYING状态时，会执行钩子函数terminated()。terminated()在ThreadPoolExecutor类中是空的，若用户想在线程池变为TIDYING时，进行相应的处理；可以通过重载terminated()函数来实现。
+5. 线程池处在TIDYING状态时，执行完terminated()之后，就会由 TIDYING -> TERMINATED。
+
+### 2 任务管理
+
+#### 1 任务调度
+
+任务调度是线程池的主要入口，当用户提交了一个任务，决定该任务如何执行。
+
+所有任务的调度都是由execute() 方法完成的：
+
+1. 检查现在线程池的运行状态、运行线程数、运行策略，
+2. 决定接下来执行的流程，是直接申请线程执行，或是缓冲到队列中执行，亦或是直接拒绝该任务。
+
+execute() 执行过程如下：
+
+1. 首先检测线程池运行状态，如果不是RUNNING，则直接拒绝，线程池要保证在RUNNING的状态下执行任务。
+2. 如果workerCount < corePoolSize，则创建并启动一个线程来执行新提交的任务。
+3. 如果workerCount >= corePoolSize，且线程池内的阻塞队列未满，则将任务添加到该阻塞队列中。
+4. 如果workerCount >= corePoolSize && workerCount < maximumPoolSize，且线程池内的阻塞队列已满，则创建并启动一个线程来执行新提交的任务。
+5. 如果workerCount >= maximumPoolSize，并且线程池内的阻塞队列已满, 则根据拒绝策略来处理该任务, 默认的处理方式是直接抛异常。
+
+![任务调度流程](http://haoimg.hifool.cn/img/31bad766983e212431077ca8da92762050214.png)
+
+#### 2 任务缓冲
+
+线程池中是以生产者消费者模式，通过一个阻塞队列来实现缓存任务的，工作线程从阻塞队列中获取任务。
+
+阻塞队列(BlockingQueue)是一个支持两个附加操作的队列。
+
+1. 在队列为空时，获取元素的线程会等待队列变为非空。
+2. 当队列满时，存储元素的线程会等待队列可用。
+
+使用不同的队列可以实现不一样的任务存取策略：
+
+![img](http://haoimg.hifool.cn/img/725a3db5114d95675f2098c12dc331c3316963.png)
+
+#### 3 任务申请
+
+任务申请模块中，线程需要从任务缓存模块的阻塞队列中不断地取任务执行，实现线程管理模块和任务管理模块之间的通信。
+
+任务的执行有两种可能：
+
+1. 一种是任务直接由新创建的线程执行，仅出现在线程初始创建的时候。
+2. 大多数的情况下，线程从任务队列中获取任务然后执行，执行完任务的空闲线程会再次去从队列中申请任务再去执行。
+
+
+
+任务申请部分策略由getTask方法实现，getTask部分会进行多次判断，为的是控制线程的数量，使其符合线程池的状态。
+
+* 如果线程池现在不应该持有那么多线程，则会返回null值。
+* 工作线程Worker会不断接收新任务去执行，而当工作线程Worker接收不到任务的时候，就会开始被回收。
+
+![获取任务流程图](http://haoimg.hifool.cn/img/49d8041f8480aba5ef59079fcc7143b996706.png)
+
+#### 4 任务拒绝
+
+任务拒绝模块是线程池的保护部分，线程池有一个最大的容量，当线程池的任务缓存队列已满，并且线程池中的线程数目达到maximumPoolSize时，就需要拒绝掉该任务，采取任务拒绝策略，保护线程池。
+
+拒绝策略是一个接口，其设计如下：
+
+```Java
+public interface RejectedExecutionHandler {
+    void rejectedExecution(Runnable r, ThreadPoolExecutor executor);
+}
+```
+
+用户可以通过实现这个接口去定制拒绝策略，拒绝策略 jdk 提供了 4 种实现
+
+1. AbortPolicy（默认策略）：抛RejectedExecutionException 异常，并拒绝新任务的处理。在系统不能承载较大并发量时，能够及时的返回程序的运行状态，并能够通过异常发现。
+2. DiscardPolicy：不处理新任务，直接丢弃掉但不抛出异常。
+3. DiscardOldestPolicy：放弃队列中最早的任务，提交当前任务。
+4. CallerRunsPolicy：把任务交给调用线程（提交任务的线程）处理。
+    1. 也就是在调用execute()方法的线程中运行( run )被拒绝的任务，如果执行程序已关闭，则会丢弃该任务。因此这种策略会降低对于新任务提交速度，影响程序的整体性能。
+    2. 这个策略喜欢增加队列容量。如果应用程序可以承受此延迟，并且不能丢弃任何一个任务请求的话，可以选择这个策略。
+
+其它著名框架也提供了实现：
+
+1. Dubbo 的实现，在抛出 RejectedExecutionException 异常之前会记录日志，并 dump 线程栈信息，方便定位问题
+2. Netty 的实现，是创建一个新线程来执行任务
+3. ActiveMQ 的实现，带超时等待（60s）尝试放入队列，类似我们之前自定义的拒绝策略
+4. PinPoint 的实现，它使用了一个拒绝策略链，会逐一尝试策略链中每种拒绝策略
+
+### 3 线程管理
+
+#### 1 Worker线程
+
+ThreadPoolExecutor线程池为了掌握线程的状态并维护线程的生命周期，设计了线程池内的工作线程Worker。
+
+
+
+```Java
+private final class Worker extends AbstractQueuedSynchronizer implements Runnable{
+    final Thread thread;//Worker持有的线程
+    Runnable firstTask;//初始化的任务，可以为null
+}
+```
+
+Worker
+
+1. 实现了Runnable接口：
+2. 持有一个线程thread：thread是在调用构造方法时通过ThreadFactory来创建的线程，可以用来执行任务
+3. 持有一个初始化的任务firstTask：firstTask用它来保存传入的第一个任务，这个任务可以有也可以为null。
+    1. 如果这个值是非空的，那么线程就会在启动初期立即执行这个任务，也就对应核心线程创建时的情况；
+    2. 如果这个值是null，那么就需要创建一个线程去执行任务列表（workQueue）中的任务，也就是非核心线程的创建。
+
+Worker执行任务的模型如下图所示：
+
+![Worker执行任务](http://haoimg.hifool.cn/img/03268b9dc49bd30bb63064421bb036bf90315.png)
+
+线程池需要管理线程的生命周期，需要在线程长时间不运行的时候进行回收。
+
+* 线程池使用一张Hash表去持有线程的引用，这样可以通过添加引用、移除引用这样的操作来控制线程的生命周期。
+
+    
+
+如何判断线程是否在运行？
+
+* Worker是通过继承AQS，使用AQS来实现独占锁这个功能。没有使用可重入锁ReentrantLock，而是使用AQS，为的就是实现不可重入的特性去反应线程现在的执行状态。
+
+1. lock方法一旦获取了独占锁，表示当前线程正在执行任务中。 
+2. 如果正在执行任务，则不应该中断线程。 
+3. 如果该线程现在不是独占锁的状态，也就是空闲的状态，说明它没有在处理任务，这时可以对该线程进行中断。 
+4. 线程池在执行shutdown方法或tryTerminate方法时会调用interruptIdleWorkers方法来中断空闲的线程，interruptIdleWorkers方法会使用tryLock方法来判断线程池中的线程是否是空闲状态；如果线程是空闲状态则可以安全回收。
+
+#### 2 Worker线程增加
+
+增加线程是通过线程池中的addWorker方法增加一个线程，这个分配线程的策略是在上个步骤完成的，该步骤仅仅完成增加线程，并使它运行，最后返回是否成功这个结果。
+
+addWorker方法有两个参数：
+
+1. firstTask：用于指定新增的线程执行的第一个任务，该参数可以为空；
+2. core：
+    1. core参数为true表示在新增线程时会判断当前活动线程数是否少于corePoolSize
+    2. false表示新增线程前需要判断当前活动线程数是否少于maximumPoolSize
+
+![申请线程执行流程图](http://haoimg.hifool.cn/img/49527b1bb385f0f43529e57b614f59ae145454.png)
+
+#### 3 Worker线程回收
+
+![线程池回收过程](http://haoimg.hifool.cn/img/9d8dc9cebe59122127460f81a98894bb34085.png)
+
+线程池中线程的销毁依赖JVM自动的回收
+
+* 线程池做的工作是根据当前线程池的状态维护一定数量的线程引用，防止这部分线程被JVM回收，
+* 当线程池决定哪些线程需要回收时，只需要将其引用消除即可。
+* Worker被创建出来后，就会不断地进行轮询，然后获取任务去执行，核心线程可以无限等待获取任务，非核心线程要限时获取任务。
+* 当Worker无法获取到任务，也就是获取的任务为空时，循环会结束，Worker会主动消除自身在线程池内的引用。
+
+```Java
+try {
+  	while (task != null || (task = getTask()) != null) {
+    	//执行任务
+  	}
+} finally {
+  	processWorkerExit(w, completedAbruptly);//获取不到任务时，主动回收自己
+}
+```
+
+线程回收的工作是在processWorkerExit方法完成的。
+
+![线程销毁流程](http://haoimg.hifool.cn/img/90ea093549782945f2c968403fdc39d415386.png)
+
+事实上，在这个方法中，将线程引用移出线程池就已经结束了线程销毁的部分。但由于引起线程销毁的可能性有很多，线程池还要判断是什么引发了这次销毁，是否要改变线程池的现阶段状态，是否要根据新状态，重新分配线程。
+
+#### 4 Worker线程执行任务
+
+在Worker类中的run方法调用了runWorker方法来执行任务，runWorker方法的执行过程如下：
+
+1. while循环不断地通过getTask()方法获取任务。 
+2. getTask()方法从阻塞队列中取任务。 
+3. 如果线程池正在停止，那么要保证当前线程是中断状态，否则要保证当前线程不是中断状态。 
+4. 执行任务。 
+5. 如果getTask结果为null则跳出循环，执行processWorkerExit()方法，销毁线程。
+
+执行流程如下图所示：
+
+![执行任务流程](http://haoimg.hifool.cn/img/879edb4f06043d76cea27a3ff358cb1d45243.png)
+
+### 4 构造方法 & 参数介绍
+
+```JAVA
+public ThreadPoolExecutor(int corePoolSize,
+                            int maximumPoolSize,
+                            long keepAliveTime,
+                            TimeUnit unit,
+                            BlockingQueue<Runnable> workQueue,
+                            ThreadFactory threadFactory,
+                            RejectedExecutionHandler handler)
+```
+
+* corePoolSize：线程池核心线程个数 (最多保留的线程数)。当提交一个任务到线程池时，线程池会创建一个线程来执行任务，即使其他空闲的基本线程能够执行新任务也会创建线程，等到需要执行的任务数大于线程池基本大小时就不再创建。如果调用了线程池的prestartAllCoreThreads方法，线程池会提前创建并启动所有基本线程。
+* maximumPoolSize：线程池最大线程数量。
+* keepAliveTime 生存时间 - 针对救急线程。如果当前线程池中的线程数量比核心线程数量多（多出来的这些线程是救急线程），并且是闲置状态，则这些闲置的线程能存活的最大时间。救急线程最多有=(maximumPoolSize - corePoolSize) 个。
+* unit：存活时间的时间单位 - 针对救急线程
+* workQueue：用于保存等待执行的任务的阻塞队列，比如基于数组的有界ArrayBlockingQueue 、基于链表的无界LinkedBlockingQueue 、最多只有一个元素的同步队列SynchronousQueue 及优先级队列PriorityBlockingQueue 等。
+* threadFactory ：创建线程的工厂 - 可以在线程创建时起名字
+* RejectedExecutionHandler：拒绝策略， 当队列满并且线程个数达到maximunPoolSize 后采取的策略， 比如AbortPolicy （抛出异常〉、CallerRunsPolicy （使用调用者所在线程来运行任务） 、DiscardOldestPolicy （调用poll 丢弃一个任务，执行当前任务）及DiscardPolicy （默默丢弃，不抛出异常〉
+
+
+
+![image-20210223225257837](http://haoimg.hifool.cn/img/image-20210223225257837.png)
+
+根据这个构造方法，JDK Executors 类中提供了众多工厂方法来创建各种用途的线程池
+
+
+
+### 5 不同场景的线程池
+
+#### 1 newFixedThreadPool
+
+```java
+public static ExecutorService newFixedThreadPool(int nThreads) {
+    return new ThreadPoolExecutor(nThreads, nThreads,
+                                  0L, TimeUnit.MILLISECONDS,
+                                  new LinkedBlockingQueue<Runnable>());
+}
+```
+
+特点:
+
+* **核心线程数 == 最大线程数（没有救急线程被创建），因此也无需超时时间**
+* **阻塞队列是无界的，可以放任意数量的任务**
+
+评价：
+
+* **适用于任务量已知，相对耗时的任务**
+
+#### 2 newCachedThreadPool
+
+```java
+public static ExecutorService newCachedThreadPool() {
+    return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
+                                  60L, TimeUnit.SECONDS,
+                                  new SynchronousQueue<Runnable>());
+}
+```
+
+特点：
+
+* 核心线程数是 0， 最大线程数是 Integer.MAX_VALUE，救急线程的空闲生存时间是 60s，
+    * **全部都是救急线程（60s 后可以回收）**
+    * **救急线程可以无限创建**
+* 队列采用了 SynchronousQueue 
+    * 实现特点是，它没有容量，没有线程来取是放不进去的（一手交钱、一手交货）
+
+评价：
+
+* 整个线程池表现为线程数会根据任务量不断增长，没有上限，当任务执行完毕，空闲 1分钟后释放线程。
+* **适合任务数比较密集，但每个任务执行时间较短的情况**
+
+#### 3 newSingleThreadExecutor
+
+```java
+public static ExecutorService newSingleThreadExecutor() {
+    return new FinalizableDelegatedExecutorService
+        (new ThreadPoolExecutor(1, 1,
+                                0L, TimeUnit.MILLISECONDS,
+                                new LinkedBlockingQueue<Runnable>()));
+}
+```
+
+使用场景：
+
+* 希望多个任务排队执行。**线程数固定为 1，任务数多于 1 时，会放入无界队列排队**，任务执行完毕，这唯一的线程也不会被释放。
+
+区别：
+
+* **自己创建一个单线程串行执行任务，如果任务执行失败而终止那么没有任何补救措施，而线程池还会新建一个线程，保证池的正常工作**
+* Executors.newSingleThreadExecutor() **线程个数始终为1，不能修改**
+    * FinalizableDelegatedExecutorService 应用的是装饰器模式，只对外暴露了 ExecutorService 接口，因此不能调用 ThreadPoolExecutor 中特有的方法
+* Executors.newFixedThreadPool(1) **初始时为1，以后还可以修改**
+    * 对外暴露的是 ThreadPoolExecutor 对象，可以强转后调用 setCorePoolSize 等方法进行修改
