@@ -389,6 +389,24 @@ public static void main(String[] args) {
 
 ## join()
 
+join() 的作用：让“主线程”等待“子线程”结束之后才能继续运行。
+
+join原理：是调用者轮询检查线程 alive 状态
+
+* join 体现的是【保护性暂停】模式
+
+```java
+// 等价于下面的代码
+synchronized (t1) {
+    // 调用者线程进入 t1 的 waitSet 等待, 直到 t1 运行结束
+    while (t1.isAlive()) {
+    	t1.wait(0);
+    }
+}
+```
+
+
+
 ## wait() / notify( ) / notifyAll( )
 
 ![image-20210223112427312](http://haoimg.hifool.cn/img/image-20210223112427312.png)
@@ -510,7 +528,77 @@ public class WaitNotify {
 
 
 
+## park() / unpark()
 
+是 LockSupport 类中的方法，用来暂停当前线程和恢复mdfadfsaf 十分大方线程
+
+与 Object 的 wait & notify 相比:
+
+* **wait/notify/notifyAll 必须配合 Object Monitor 一起使用**，而 park，unpark 不必
+* **park & unpark 是以线程为单位来【阻塞】和【唤醒】线程**，而 notify 只能随机唤醒一个等待线程，notifyAll 是唤醒所有等待线程，就不那么【精确】
+* **park & unpark 可以先 unpark，而 wait & notify 不能先 notify**
+
+```java
+@Slf4j(topic = "c.Park")
+public class Park {
+    public static void main(String[] args) {
+        Thread t = new Thread(() -> {
+            for (int i = 0; i < 5; i++) {
+                log.info("park");
+                LockSupport.park();
+                log.info("interrupted = {}", Thread.interrupted());
+//                log.info("isInterrupted = {}", Thread.currentThread().isInterrupted());
+            }
+        }, "t");
+        t.start();
+
+        Sleeper.sleep(1);
+        t.interrupt();
+
+
+        for (int i = 0; i < 5; i++) {
+            log.info("unpark");
+            LockSupport.unpark(t);
+            Sleeper.sleep(1);
+        }
+    }
+}
+```
+
+### park() / unpack() 原理
+
+每个线程都有一个自己的Parker对象，Parker对象由三部分组成
+
+* _counter
+* _cond
+* _mutex
+
+1. 运行时调用park()
+    2. 检查 _counter ，本情况为 0，这时，获得 _mutex 互斥锁
+    3. 线程进入 _cond 条件变量阻塞
+    4. 设置 _counter = 0
+
+![image-20210225154823767](http://haoimg.hifool.cn/img/image-20210225154823767.png)
+
+2. 线程阻塞时调用unpark()
+    1. 调用 Unsafe.unpark(Thread_0) 方法，设置 _counter 为 1
+    2. 唤醒 _cond 条件变量中的 Thread_0
+    3. Thread_0 恢复运行
+    4. 设置 _counter 为 0
+
+![image-20210225155056643](http://haoimg.hifool.cn/img/image-20210225155056643.png)
+
+
+
+3. 线程运行时调用unpack() 再调用park()
+    1. 调用 Unsafe.unpark(Thread_0) 方法，设置 _counter 为 1
+    2. 线程正常运行，不需要阻塞
+    3. ...
+    4. 当前线程调用 Unsafe.park() 方法
+    5. 检查 _counter ，本情况为 1，这时线程无需阻塞，继续运行
+    6. 设置 _counter 为 0
+
+![image-20210225155312983](http://haoimg.hifool.cn/img/image-20210225155312983.png)
 
 ---
 
@@ -2324,6 +2412,14 @@ private static int ctlOf(int rs, int wc) { return rs | wc; }   //通过状态和
     - 当线程池变为TIDYING状态时，会执行钩子函数terminated()。terminated()在ThreadPoolExecutor类中是空的，若用户想在线程池变为TIDYING时，进行相应的处理；可以通过重载terminated()函数来实现。
 5. 线程池处在TIDYING状态时，执行完terminated()之后，就会由 TIDYING -> TERMINATED。
 
+
+
+
+
+---
+
+
+
 ### 2 任务管理
 
 #### 1 任务调度
@@ -2403,6 +2499,8 @@ public interface RejectedExecutionHandler {
 2. Netty 的实现，是创建一个新线程来执行任务
 3. ActiveMQ 的实现，带超时等待（60s）尝试放入队列，类似我们之前自定义的拒绝策略
 4. PinPoint 的实现，它使用了一个拒绝策略链，会逐一尝试策略链中每种拒绝策略
+
+
 
 ### 3 线程管理
 
@@ -2500,6 +2598,12 @@ try {
 
 ![执行任务流程](http://haoimg.hifool.cn/img/879edb4f06043d76cea27a3ff358cb1d45243.png)
 
+
+
+---
+
+
+
 ### 4 构造方法 & 参数介绍
 
 ```JAVA
@@ -2528,6 +2632,10 @@ public ThreadPoolExecutor(int corePoolSize,
 
 
 
+---
+
+
+
 ### 5 不同场景的线程池
 
 #### 1 newFixedThreadPool
@@ -2537,6 +2645,26 @@ public static ExecutorService newFixedThreadPool(int nThreads) {
     return new ThreadPoolExecutor(nThreads, nThreads,
                                   0L, TimeUnit.MILLISECONDS,
                                   new LinkedBlockingQueue<Runnable>());
+}
+```
+
+```java
+public static void main(String[] args) {
+    // ExecutorService threadPool = Executors.newFixedThreadPool(2);
+    // 重新命名
+    ExecutorService threadPool = Executors.newFixedThreadPool(2, new ThreadFactory() {
+        private AtomicInteger threadCount = new AtomicInteger(1);
+        @Override
+        public Thread newThread(Runnable r) {
+            return new Thread(r, "myPool_t_" + threadCount.getAndIncrement());
+        }
+    });
+    for(int i = 0; i < 3; i++) {
+        int index = i;
+        threadPool.execute(() -> {
+            log.info("{}", index);
+        });
+    }
 }
 ```
 
@@ -2564,8 +2692,8 @@ public static ExecutorService newCachedThreadPool() {
 * 核心线程数是 0， 最大线程数是 Integer.MAX_VALUE，救急线程的空闲生存时间是 60s，
     * **全部都是救急线程（60s 后可以回收）**
     * **救急线程可以无限创建**
-* 队列采用了 SynchronousQueue 
-    * 实现特点是，它没有容量，没有线程来取是放不进去的（一手交钱、一手交货）
+* 队列采用了 **SynchronousQueue** 
+    * 实现特点是，它没有容量，**没有线程来取是放不进去的**（一手交钱、一手交货）
 
 评价：
 
@@ -2590,7 +2718,715 @@ public static ExecutorService newSingleThreadExecutor() {
 区别：
 
 * **自己创建一个单线程串行执行任务，如果任务执行失败而终止那么没有任何补救措施，而线程池还会新建一个线程，保证池的正常工作**
-* Executors.newSingleThreadExecutor() **线程个数始终为1，不能修改**
-    * FinalizableDelegatedExecutorService 应用的是装饰器模式，只对外暴露了 ExecutorService 接口，因此不能调用 ThreadPoolExecutor 中特有的方法
-* Executors.newFixedThreadPool(1) **初始时为1，以后还可以修改**
-    * 对外暴露的是 ThreadPoolExecutor 对象，可以强转后调用 setCorePoolSize 等方法进行修改
+* 与Executors.newFixedThreadPool(1)的区别？ 
+    * Executors.newSingleThreadExecutor() **线程个数始终为1，不能修改**
+        * FinalizableDelegatedExecutorService 应用的是装饰器模式，只对外暴露了 ExecutorService 接口，因此不能调用 ThreadPoolExecutor 中特有的方法
+    * Executors.newFixedThreadPool(1) **初始时为1，以后还可以修改**
+        * 对外暴露的是 ThreadPoolExecutor 对象，可以强转后调用 setCorePoolSize 等方法进行修改
+
+#### 4 Timer
+
+```java
+/**
+ * Timer 的优点在于简单易用，但由于所有任务都是由同一个线程来调度，因此所有任务都是串行执行的，
+ * 同一时间只能有一个任务在执行，前一个任务的延迟或异常都将会影响到之后的任务。
+ * 其中一个线程有错误也会耽误其他的线程
+ */
+public static void testTimer() {
+    Timer timer = new Timer();
+    TimerTask task1 = new TimerTask() {
+        @Override
+        public void run() {
+            log.debug("task 1");
+            sleep(2);
+        }
+    };
+    TimerTask task2 = new TimerTask() {
+        @Override
+        public void run() {
+            log.debug("task 2");
+        }
+    };
+    // 使用 timer 添加两个任务，希望它们都在 1s 后执行
+    // 但由于 timer 内只有一个线程来顺序执行队列中的任务，因此『任务1』的延时，影响了『任务2』的执行
+    timer.schedule(task1, 1000);
+    timer.schedule(task2, 1000);
+}
+```
+
+---
+
+
+
+#### 5 ScheduledExecutorService
+
+```java
+/**
+ * 整个线程池表现为：
+ * 线程数固定，任务数多于线程数时，会放入无界队列排队。
+ * 任务执行完毕，这些线程也不会被释放, 用来执行延迟或反复执行的任务
+ */
+public static void testScheduled() {
+    ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
+
+    // 添加两个任务，它们都在 1s 后执行
+    executor.schedule(() -> {
+        System.out.println("任务1，执行时间：" + new Date());
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+        }
+    }, 1000, TimeUnit.MILLISECONDS);
+
+    executor.schedule(() -> {
+        System.out.println("任务2，执行时间：" + new Date());
+    }, 1000, TimeUnit.MILLISECONDS);
+}
+
+public static void testScheduled2() {
+    ScheduledExecutorService pool = Executors.newScheduledThreadPool(1);
+    log.debug("start...");
+    // pool.scheduleAtFixedRate(() -> {
+    //     log.debug("running...");
+    // }, 1, 1, TimeUnit.SECONDS);
+
+    // 一开始，延时 1s，接下来，由于任务执行时间 > 间隔时间，间隔被『撑』到了 2s
+    pool.scheduleAtFixedRate(() -> {
+        log.debug("running...");
+        sleep(2);
+    }, 1, 1, TimeUnit.SECONDS);
+
+    // 一开始，延时 1s，scheduleWithFixedDelay 的间隔是 上一个任务结束 <-> 延时 <-> 下一个任务开始 所以间隔都是 3s
+    pool.scheduleWithFixedDelay(()-> {
+        log.debug("running...");
+        sleep(2);
+    }, 1, 1, TimeUnit.SECONDS);
+}
+```
+
+
+
+#### 6 ForkJoinPool
+
+Fork/Join 是 JDK 1.7 加入的新的线程池实现，它体现的是一种**分治思想，适用于能够进行任务拆分的 cpu 密集型运算**
+
+* 所谓的任务拆分，是将一个大任务拆分为算法上相同的小任务，直至不能拆分可以直接求解。
+* 跟递归相关的一些计算，如归并排序、斐波那契数列、都可以用分治思想进行求解
+
+**Fork/Join 在分治的基础上加入了多线程，可以把每个任务的分解和合并交给不同的线程来完成**，进一步提升了运算效率
+
+* Fork/Join 默认会创建与 cpu 核心数大小相同的线程池
+
+提交给 Fork/Join 线程池的任务，需要继承 ：
+
+* RecursiveTask（有返回值）
+* RecursiveAction（没有返回值）
+
+```java
+// 面定义了一个对 1~n 之间的整数求和的任务
+public class ForkJoin {
+    public static void main(String[] args) {
+        // TODO: 想一想只启动一个线程去执行会不会饥饿？
+        //  为什么不会饥饿？
+        ForkJoinPool pool = new ForkJoinPool(2);
+        System.out.println(pool.invoke(new AddTask2(1, 4)));
+    }
+}
+
+@Slf4j
+class AddTask2 extends RecursiveTask<Integer> {
+    int begin, end;
+
+    public AddTask2(int begin, int end) {
+        this.begin = begin;
+        this.end = end;
+    }
+
+    @Override
+    protected Integer compute() {
+        if(begin == end) return begin;
+
+        int mid = begin + end >> 1;
+        AddTask2 t1 = new AddTask2(begin, mid);
+        t1.fork();
+        AddTask2 t2 = new AddTask2(mid + 1, end);
+        t2.fork();
+        log.debug("fork() {} + {} = ?", t1, t2);
+
+        int res = t1.join() + t2.join();
+        log.debug("join() {} + {} = {}", t1, t2, res);
+        return res;
+    }
+
+    @Override
+    public String toString() {
+        return "{" + begin + ", " + end + "}";
+    }
+}
+```
+
+---
+
+
+
+### 6 向线程池中提交任务的方法
+
+```java
+// 执行任务
+void execute(Runnable command);
+
+// 提交任务 task，用返回值 Future 获得任务执行结果，callable接口有返回值
+<T> Future<T> submit(Callable<T> task);
+
+// 提交 tasks 中所有任务
+<T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks)
+throws InterruptedException;
+
+// 提交 tasks 中所有任务，带超时时间
+<T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks,
+long timeout, TimeUnit unit)
+throws InterruptedException;
+
+// 提交 tasks 中所有任务，哪个任务先成功执行完毕，返回此任务执行结果，其它任务取消
+<T> T invokeAny(Collection<? extends Callable<T>> tasks)
+throws InterruptedException, ExecutionException;
+```
+
+
+
+---
+
+
+
+### 7 关闭线程池的方法
+
+#### 1 shutdown
+
+```Java
+/*
+线程池状态变为 SHUTDOWN
+- 不会接收新任务
+- 但已提交任务会执行完
+- 此方法不会阻塞调用线程的执行
+*/
+void shutdown();
+```
+
+```Java
+public void shutdown() {
+    final ReentrantLock mainLock = this.mainLock;
+    mainLock.lock();
+    try {
+        checkShutdownAccess();
+        // 修改线程池状态
+        advanceRunState(SHUTDOWN);
+        // 仅会打断空闲线程
+        interruptIdleWorkers();
+        onShutdown(); // 扩展点 ScheduledThreadPoolExecutor
+     } finally {
+    	mainLock.unlock();
+     }
+    // 尝试终结(没有运行的线程可以立刻终结，如果还有运行的线程也不会等)
+    tryTerminate();
+}
+```
+
+#### 2 shutdown
+
+```Java
+/*
+线程池状态变为 STOP
+- 不会接收新任务
+- 会将队列中的任务返回
+- 并用 interrupt 的方式中断正在执行的任务
+*/
+List<Runnable> shutdownNow();
+```
+
+```Java
+public void shutdownNow() {
+    List<Runnable> tasks;
+    final ReentrantLock mainLock = this.mainLock;
+    mainLock.lock();
+    try {
+        checkShutdownAccess();
+        // 修改线程池状态
+        advanceRunState(STOP);
+        // 打断所有线程
+        interruptWorkers();
+        // 获取队列中剩余任务
+        tasks = drainQueue();
+     } finally {
+        mainLock.unlock();
+     }
+    // 尝试终结
+    tryTerminate();
+    return tasks; 
+}
+```
+
+
+
+#### 3 其他方法关闭线程
+
+```java
+// 不在 RUNNING 状态的线程池，此方法就返回 true
+boolean isShutdown();
+// 线程池状态是否是 TERMINATED
+boolean isTerminated();
+// 调用 shutdown 后，由于调用线程并不会等待所有任务运行结束，因此如果它想在线程池 TERMINATED 后做些事
+情，可以利用此方法等待
+boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException;
+```
+
+
+
+---
+
+
+
+### 8 线程中抛出异常
+
+```java
+public static void testException() {
+    ExecutorService pool = Executors.newFixedThreadPool(1);
+
+    // 方法1：主动捉异常
+    pool.submit(() -> {
+        try {
+            log.debug("task1");
+            int i = 1 / 0;
+        } catch (Exception e) {
+            log.error("error:", e);
+        }
+    });
+
+    // 方法2：使用 Future
+    Future<Boolean> f = pool.submit(() -> {
+        log.debug("task1");
+        int i = 1 / 0;
+        return true;
+    });
+    log.debug("result:{}", f.get());
+}
+```
+
+
+
+### 9 线程池合适的线程大小
+
+大小 不合适：
+
+1. 过小会导致程序不能充分地利用系统资源、容易导致饥饿
+2. 过大会导致更多的线程上下文切换，占用更多内存
+
+**CPU 密集型运算**
+
+* 通常采用 cpu 核数 + 1 能够实现最优的 CPU 利用率，+1 是保证当线程由于页缺失故障（操作系统）或其它原因导致暂停时，额外的这个线程就能顶上去，保证 CPU 时钟周期不被浪费
+
+**I/O密集型运算**
+
+* CPU 不总是处于繁忙状态，例如，当你执行业务计算时，这时候会使用 CPU 资源，但当你执行 I/O 操作时、远程RPC 调用时，包括进行数据库操作时，这时候 CPU 就闲下来了，你可以利用多线程提高它的利用率。
+
+* 经验公式如下：
+
+    * 线程数 = 核数 * 期望 CPU 利用率 * 总时间(CPU计算时间+等待时间) / CPU 计算时间
+
+    * 例如 4 核 CPU 计算时间是 50% ，其它等待时间是 50%，期望 cpu 被 100% 利用，
+
+        套用公式 4 * 100% * 100% / 50% = 8
+
+    * 例如 4 核 CPU 计算时间是 10% ，其它等待时间是 90%，期望 cpu 被 100% 利用
+
+        套用公式 4 * 100% * 100% / 10% = 40
+
+        
+
+---
+
+
+
+# 七、JUC
+
+## AQS 
+
+AQS( AbstractQueuedSynchronizer ) 定义了一套**多线程访问共享资源**的同步器框架
+
+主要用到AQS的并发工具类：
+
+![image-20210225142916942](http://haoimg.hifool.cn/img/image-20210225142916942.png)
+
+特点：
+
+* 用 state 属性来表示资源的状态（分独占模式和共享模式），子类需要定义如何维护这个状态，控制如何获取锁和释放锁
+    1. getState - 获取 state 状态，**AQS** 的state状态值表示线程获取该锁的可重入次数
+        1. state=0：表示当前锁没有被任何线程持有
+        2. state=1：当一个线程第一次获取该锁时会尝试使用CAS设置state 的值为1，如果CAS 成功则当前线程获取了该锁，然后记录该锁的持有者为当前线程
+        3. state=2：在该线程没有释放锁的情况下第二次获取该锁后，状态值被设置为2 ， 这就是可重入次数。
+    2. setState - 设置 state 状态
+    3. compareAndSetState - CAS 机制设置 state 状态
+    4. 独占模式是只有一个线程能够访问资源，而共享模式可以允许多个线程访问资源
+* AQS提供了基于 FIFO 的等待队列（内置同步队列称为“CLH”队列），类似于 Monitor 的 EntryList，来控制多个线程对共享变量的访问
+    * 该队列由一个一个的Node结点组成，Node是对等待线程的封装，每个Node结点维护一个prev引用和next引用，分别指向自己的前驱和后继结点。
+    * AQS维护两个指针，分别指向队列头部head和尾部tail。
+    * Node节点状态：
+        * **CANCELLED**(1)：表示当前结点已取消调度。当timeout或被中断（响应中断的情况下），会触发变更为此状态，进入该状态后的结点将不会再变化。
+        * **SIGNAL**(-1)：表示后继结点在等待当前结点唤醒。后继结点入队时，会将前继结点的状态更新为SIGNAL。
+        * **CONDITION**(-2)：表示结点等待在Condition上，当其他线程调用了Condition的signal()方法后，CONDITION状态的结点将**从等待队列转移到同步队列中**，等待获取同步锁。
+        * **PROPAGATE**(-3)：共享模式下，前继结点不仅会唤醒其后继结点，同时也可能会唤醒后继的后继结点。
+        * **0**：新结点入队时的默认状态。
+        * **负值表示结点处于有效等待状态，而正值表示结点已被取消。所以源码中很多地方用>0、<0来判断结点的状态是否正常。**
+* AQS的条件变量来实现等待、唤醒机制，支持多个条件变量，类似于 Monitor 的 WaitSet
+
+### AQS子类主要实现方法
+
+（默认抛出 UnsupportedOperationException）
+
+```java
+// 独占式获取同步状态，试着获取，成功返回true，反之为false 
+protected boolean tryAcquire(int arg); 
+
+// 独占式释放同步状态，等待中的其他线程此时将有机会获取到同步状态 
+protected boolean tryRelease(int arg); 
+
+// 共享式获取同步状态，返回值大于等于0，代表获取成功；反之获取失败 
+protected int tryAcquireShared(int arg); 
+
+// 共享式释放同步状态，成功为true，失败为false 
+protected boolean tryReleaseShared(int arg); 
+
+// 是否在独占模式下被线程占用 
+protected boolean isHeldExclusively();
+```
+
+
+
+### 不可重入锁实现
+
+#### 1 自定义同步器
+
+对于使用者来讲，我们无需关心获取资源失败，线程排队，线程阻塞/唤醒等一系列复杂的实现，这些都在AQS中为我们处理好了。
+
+* 我们只需要负责好自己的那个环节就好，也就是获取/释放共享资源state的姿势。
+* 很经典的模板方法设计模式的应用，AQS为我们定义好顶级逻辑的骨架，并提取出公用的线程入队列/出队列，阻塞/唤醒等一系列复杂逻辑的实现，将部分简单的可由使用者决定的操作逻辑延迟到子类中去实现即可。
+
+```java
+public class MySynchronizer extends AbstractQueuedSynchronizer {
+    @Override
+    protected boolean tryAcquire(int acquires) {
+        if (acquires == 1) {
+            if (compareAndSetState(0, 1)) { // 通过CAS方式进行修改，这里修改的是state吗？
+                setExclusiveOwnerThread(Thread.currentThread()); // 设置为Owner
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    protected boolean tryRelease(int acquires) {
+        if (acquires == 1) {
+            if(getState() == 0) { // state 是 volatile 类型的变量;
+                throw new IllegalMonitorStateException();
+            }
+            setExclusiveOwnerThread(null);
+            // TODO：这里有一个细节，state是volatile类型的变量，
+            //  这里对volatile变量进行修改后，会有一个写屏障，前面所有对共享变量对修改都会写入到内存区
+            setState(0);
+            return true;
+        }
+        return false;
+    }
+
+    // 判断是否是独占锁
+    @Override
+    protected boolean isHeldExclusively() {
+        return getState() == 1;
+    }
+
+    protected Condition newCondition() {
+        return new ConditionObject();
+    }
+}
+```
+
+#### 2 自定义不可重入锁
+
+```java
+class MyLock implements Lock {
+    static MySynchronizer sync = new MySynchronizer();
+
+    @Override
+    // 尝试，不成功，进入等待队列
+    public void lock() {
+        sync.acquire(1);
+    }
+
+    @Override
+    // 尝试，不成功，进入等待队列，可打断
+    public void lockInterruptibly() throws InterruptedException {
+        sync.acquireInterruptibly(1);
+    }
+
+    @Override
+    // 尝试一次，不成功返回，不进入队列
+    public boolean tryLock() {
+        return sync.tryAcquire(1);
+    }
+
+    @Override
+    // 尝试，不成功，进入等待队列，有时限
+    public boolean tryLock(long time, TimeUnit unit) throws InterruptedException {
+        return sync.tryAcquireNanos(1, unit.toNanos(time));
+    }
+
+    @Override
+    // 释放锁
+    public void unlock() {
+        sync.release(1);
+    }
+
+    @Override
+    // 生成条件变量
+    public Condition newCondition() {
+        return sync.newCondition();
+    }
+}
+```
+
+#### 3 测试
+
+```java
+public class AQSLockExample {
+    public static void main(String[] args) {
+        MyLock lock = new MyLock();
+        new Thread(() -> {
+            lock.lock();
+            lock.lock();
+            try {
+                log.debug("locking...");
+                sleep(1);
+            } finally {
+                log.debug("unlocking...");
+                lock.unlock();
+            }
+        },"t1").start();
+        new Thread(() -> {
+            lock.lock();
+            try {
+                log.debug("locking...");
+            } finally {
+                log.debug("unlocking...");
+                lock.unlock();
+            }
+        },"t2").start();
+    }
+}
+```
+
+### 互斥(独占)模式
+
+#### 1 acquire()
+
+```java
+public final void acquire(int arg) {
+    if (!tryAcquire(arg) &&
+        acquireQueued(addWaiter(Node.EXCLUSIVE), arg))
+        selfInterrupt();
+}
+```
+
+![image-20210225143050326](http://haoimg.hifool.cn/img/image-20210225143050326.png)
+
+  1. 调用自定义同步器的tryAcquire()尝试直接去获取资源，
+       1. 如果成功则直接返回；
+ 2. 如果没成功，则addWaiter()将该线程加入等待队列的尾部，并标记为独占模式；
+ 3. acquireQueued()使线程在等待队列中休息，有机会时（轮到自己，会被unpark()）会去尝试获取资源。获取到资源后才返回。如果在整个等待过程中被中断过，则返回true，否则返回false。 
+ 4. 如果线程在等待过程中被中断过，它是不响应的。只是获取资源后才再进行自我中断selfInterrupt()，将中断补上。
+
+#### 2 release()
+
+```java
+public final boolean release(int arg) {
+    if (tryRelease(arg)) {
+        Node h = head;
+        if (h != null && h.waitStatus != 0)
+            unparkSuccessor(h);
+        return true;
+    }
+    return false;
+}
+```
+
+1. 调用自定义同步器的tryRelease()尝试释放资源
+    1. 如果释放失败直接返回false
+    2. 如果释放资源成功，根据等待队列中的 node节点的waitStatus，调用unparkSuccessor()方法，唤醒等待队列中下一个需要唤醒的线程。
+
+### 共享模式
+
+共享式地获取同步状态。
+
+* 对于独占式同步组件来讲，同一时刻只有一个线程能获取到同步状态，其他线程都得去排队等待，其待重写的尝试获取同步状态的方法tryAcquire返回值为boolean，这很容易理解；
+* 对于共享式同步组件来讲，同一时刻可以有多个线程同时获取到同步状态，这也是“共享”的意义所在。其待重写的尝试获取同步状态的方法tryAcquireShared返回值为int。
+    * 当返回值大于0时，表示获取同步状态成功，同时还有剩余同步状态可供其他线程获取；
+    * 当返回值等于0时，表示获取同步状态成功，但没有可用同步状态了；
+    * 当返回值小于0时，表示获取同步状态失败。
+
+#### 1 acquireShared()
+
+```java
+public final void acquireShared(int arg) {
+    if (tryAcquireShared(arg) < 0)
+        doAcquireShared(arg);
+}
+```
+
+```java
+private void doAcquireShared(int arg) {
+    final Node node = addWaiter(Node.SHARED);
+    boolean failed = true;
+    try {
+        boolean interrupted = false;
+        for (;;) {
+            final Node p = node.predecessor();
+            if (p == head) {
+                int r = tryAcquireShared(arg);
+                if (r >= 0) {
+                    setHeadAndPropagate(node, r);
+                    p.next = null; // help GC
+                    if (interrupted)
+                        selfInterrupt();
+                    failed = false;
+                    return;
+                }
+            }
+            if (shouldParkAfterFailedAcquire(p, node) &&
+                parkAndCheckInterrupt())
+                interrupted = true;
+        }
+    } finally {
+        if (failed)
+            cancelAcquire(node);
+    }
+}
+```
+
+1. 调用自定义同步器的tryAcquireShared()方法获取资源。
+    1. tryAcquireShared() 返回值小于0，获取资源失败，进入排队。
+2. addWaiter()将该线程加入等待队列的尾部，并标记为SHARED模式
+3. 然后独占式的acquireQueued差别不大，区别在于排队中的老二获取到同步状态时，如果有可用的资源，会继续传播下去。
+
+
+
+#### 2 releaseShared()
+
+```java
+public final boolean releaseShared(int arg) {
+    if (tryReleaseShared(arg)) {
+        doReleaseShared();
+        return true;
+    }
+    return false;
+}
+```
+
+```java
+private void doReleaseShared() {
+    /*
+     * Ensure that a release propagates, even if there are other
+     * in-progress acquires/releases.  This proceeds in the usual
+     * way of trying to unparkSuccessor of head if it needs
+     * signal. But if it does not, status is set to PROPAGATE to
+     * ensure that upon release, propagation continues.
+     * Additionally, we must loop in case a new node is added
+     * while we are doing this. Also, unlike other uses of
+     * unparkSuccessor, we need to know if CAS to reset status
+     * fails, if so rechecking.
+     */
+    for (;;) {
+        Node h = head;
+        if (h != null && h != tail) {
+            int ws = h.waitStatus;
+            if (ws == Node.SIGNAL) {
+                if (!compareAndSetWaitStatus(h, Node.SIGNAL, 0))
+                    continue;            // loop to recheck cases
+                unparkSuccessor(h);
+            }
+            else if (ws == 0 &&
+                     !compareAndSetWaitStatus(h, 0, Node.PROPAGATE))
+                continue;                // loop on failed CAS
+        }
+        if (h == head)                   // loop if head changed
+            break;
+    }
+}
+```
+
+共享模式，释放同步状态也是多线程的，此处采用了CAS自旋来保证。
+
+
+
+## 可重入锁ReentrantLock
+
+ReentrantLock 与 synchronized 一样，都支持可重入
+
+* 可重入锁：同一个线程如果首次获得了这把锁，那么因为它是这把锁的拥有者，因此有权利再次获取这把锁
+* 不可重入锁：同一个线程在第二次尝试获得锁时，该线程自己也会被锁挡住
+
+**但ReentrantLock 相对于 synchronized 它具备如下特点**：
+
+* 可中断
+    * synchronized 的问题是，持有锁 A 后，如果尝试获取锁 B 失败，那么线程就进入阻塞状态，一旦发生死锁，就没有任何机会来唤醒阻塞的线程。
+    * reentrantLock.lockInterruptibly(); 在等待锁的过程中，该锁会被中断，并不会一直处于等待状态
+    * 注意如果是不可中断模式，那么即使使用了 interrupt 也不会让等待中断
+* 可以设置超时时间
+    * 如果线程在一段时间之内没有获取到锁，不是进入阻塞状态，而是返回一个错误，那这个线程也有机会释放曾经持有的锁。这样也能破坏不可抢占条件。
+* 可以设置为公平锁
+    * 每个等待锁的线程会进入一个FIFO队列，都有机会获取到该锁
+    * ReentrantLock 默认是不公平的，但公平锁的并发性很低，不公平锁可以通过tryLock() 失败时返回结果的方式，让每个等待锁的线程都可以获得到锁
+* 支持多个条件变量
+    * synchronized只支持单个条件变量，不满足条件的线程都在一间休息室等消息 
+    * ReentrantLock 支持多间休息室，有专门等烟的休息室、专门等早餐的休息室、唤醒时也是按休息室来唤醒
+    * 使用要点：
+        * await 前需要获得锁
+        * await 执行后，会释放锁，进入 conditionObject 等待
+        * await 的线程被唤醒（或打断、或超时）取重新竞争 lock 锁
+        * 竞争 lock 锁成功后，从 await 后继续执行
+
+```java
+// 获取锁
+reentrantLock.lock();
+    try {
+    	// 临界区
+    } finally {
+    	// 释放锁
+    	reentrantLock.unlock();
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
