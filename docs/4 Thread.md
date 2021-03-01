@@ -1,19 +1,22 @@
 # 背景
 
-## 什么是进程和线程？
+## 进程、线程
 
 ### 1 什么是进程？
 
 * 程序：一段静态的代码，一组指令的有序集合，它本身没有任何运行的含义。
-* 进程：是程序的一次执行过程，是系统运行程序时进行资源分配和调度的基本单位，因此进程是动态的。
-    * 进程对应着从代码加载，执行至执行完毕的一个完整的过程，是一个动态的实体，它有自己的生命周期。它因创建而产生，因调度而运行，因等待资源或事件而被处于等待状态，因完成任务而被撤消。
-    * 进程反映了一个程序在一定的数据集上运行的全部动态过程。通过进程控制块(PCB)唯一的标识某个进程。同时进程占据着相应的资源（例如包括cpu的使用 ，轮转时间以及一些其它设备的权限）。
+* 进程：是程序的一次执行过程，是系统运行程序时进行**资源分配和调度的基本单位**，因此进程是动态的。
+    * **进程对应着从代码加载，执行至执行完毕的一个完整的过程**，是一个动态的实体，它有自己的生命周期。它因创建而产生，因调度而运行，因等待资源或事件而被处于等待状态，因完成任务而被撤消。
+        * 通过进程控制块(PCB)唯一的标识某个进程。
+    * 进程占据着相应的资源（例如包括cpu的使用 ，轮转时间以及一些其它设备的权限）。
 * 例：在 Java 中，当启动 main 函数时其实就是启动了一个 JVM 的进程，而 main 函数所在的线程就是这个进程中的一个线程，也称主线程。
 
 ### 2 什么是线程？
 
-* 线程与进程相似，但线程是一个比进程更小的执行单位。一个进程在其执行的过程中可以产生多个线程。
-    * 与进程不同的是，同进程下的多个线程共享进程的**堆**和**方法区**等内存空间资源，但每个线程有自己的**程序计数器**、**虚拟机栈**和**本地方法栈**，所以系统在产生一个线程，或是在各个线程之间作切换工作时，负担要比进程小得多，也正因为如此，线程也被称为轻量级进程。
+* 线程与进程相似，但**线程是一个比进程更小的执行单位**。一个进程在其执行的过程中可以产生多个线程。
+    * 同进程下的多个线程共享进程的**堆**和**方法区**等内存空间资源，
+    * 但每个线程有自己的**程序计数器**、**虚拟机栈**和**本地方法栈**
+    * 所以系统在产生一个线程，或是在各个线程之间作切换工作时，负担要比进程小得多，也正因为如此，线程也被称为轻量级进程。
 
 通过 JMX 查看 的 Java 程序 线程的种类
 
@@ -41,33 +44,27 @@ public void threadTypes() {
 
 > 上面线程的种类那些都是干嘛的？
 
-## 进程 和 线程的联系、区别？
+## 进程、线程的联系、区别？
 
 **根本区别**：
 
-* 进程是操作系统**资源分配**和**调度**的**独立单位**，使程序之间可以并发的执行，提高资源的利用率和系统的吞吐率
+* 进程是操作系统**资源分配和调度**的**独立单位**，使程序之间可以并发的执行，提高资源的利用率和系统的吞吐率
 * 而线程是操作系统**任务调度和执行**的**基本单位**
 
 **资源开销**：
 
-* 每个进程都有独立的代码和数据空间（程序上下文），进程的创建、销毁、切换产生大量的时间和空间的开销，程序之间的切换会有较大的开销；
-* 线程可以看做轻量级的进程，同一类线程共享代码和数据空间，每个线程都有自己独立的运行栈、寄存器和程序计数器（PC），线程之间切换的开销小。
+* **每个进程都有独立的代码和数据空间（程序上下文）**，进程的创建、销毁、切换产生大量的时间和空间的开销，程序之间的切换会有较大的开销；
+* 线程可以看做轻量级的进程，同一类线程共享代码和数据空间，每个线程都有自己**独立的运行栈、寄存器和程序计数器（PC）**，线程之间切换的开销小。
 
 **包含关系**：
 
 * 如果一个进程内有多个线程，则执行过程不是一条线的，而是多条线（线程）共同完成的；
-* 线程是进程的一部分，所以线程也被称为轻权进程或者轻量级进程。
-
-**内存分配**：
-
-* 同一进程的线程共享本进程的地址空间和资源
-* 进程之间的地址空间和资源是相互独立的
 
 **影响关系**：
 
 * 多进程为什么比多线程健壮？
-* 一个进程崩溃后，在保护模式下不会对其他进程产生影响
-* 一个线程崩溃整个进程都死掉。
+    * **一个进程崩溃后，在保护模式下不会对其他进程产生影响**
+    * **一个线程崩溃整个进程都死掉。**
 
 **执行过程**：
 
@@ -80,13 +77,12 @@ public void threadTypes() {
 
 关系：
 
-* 一个进程中可以有多个线程，线程是进程划分成的更小的运行单位。
-* 多个线程共享进程的**堆**和**方法区 (JDK1.8 之后的元空间)\**资源，但是每个线程有自己的\**程序计数器**、**虚拟机栈** 和 **本地方法栈**。
+* 多个线程共享进程的**堆**和**方法区 (JDK1.8 之后的元空间)资源**，但是每个线程有自己的**程序计数器**、**虚拟机栈** 和 **本地方法栈**。
 
 总结： 
 
-* 线程和进程最大的不同在于基本上各进程是独立的，而各线程则不一定，因为同一进程中的线程极有可能会相互影响。
-* 线程执行开销小，但不利于资源的管理和保护；而进程正相反。
+* 线程和进程最大的不同在于基本上各**进程是独立**的，而各线程则不一定，因为同一进程中的线程极有可能会相互影响。
+* **线程执行开销小**，但不利于资源的管理和保护；而进程正相反。
 
 > 为什么**程序计数器**、**虚拟机栈**和**本地方法栈**是线程私有的呢？
 >
@@ -94,17 +90,21 @@ public void threadTypes() {
 
 ### 1 为什么**程序计数器**是线程私有的？
 
-* 程序计数器私有主要是**为了线程切换后能恢复到正确的执行位置**。
+* **为了线程切换后能恢复到正确的执行位置**。
 * **程序计数器**主要有下面两个作用：
-    1. **字节码解释器**通过改变程序计数器来依次读取指令，从而实现代码的流程控制，如：顺序执行、选择、循环、异常处理。
+    1. **字节码解释器通过改变程序计数器来依次读取指令**，从而实现代码的流程控制，如：顺序执行、选择、循环、异常处理。
     2. 在多线程的情况下，**程序计数器**记录当前线程执行的位置，从而当线程被切换回来的时候能够知道该线程上次运行到哪儿了。
     3. 需要注意的是，如果执行的是 native 方法，那么程序计数器记录的是 undefined 地址，只有执行的是 Java 代码时程序计数器记录的才是下一条指令的地址。
 
 ### 2 为什么**虚拟机栈 和 本地方法栈** 是私有的？
 
-- 虚拟机栈和本地方法栈是线程私有的，主要是为了**保证线程中的局部变量不被别的线程访问到**
-- **虚拟机栈：** 每个 Java 方法在执行的同时会创建一个**栈帧用于存储局部变量表、操作数栈、常量池引用等信息**。从方法调用直至执行完成的过程，就对应着一个栈帧在 Java 虚拟机栈中入栈和出栈的过程。
-- **本地方法栈：** 和虚拟机栈所发挥的作用非常相似，区别是： **虚拟机栈为虚拟机执行 Java 方法 （也就是字节码）服务，而本地方法栈则为虚拟机使用到的 Native 方法服务。** 在 HotSpot 虚拟机中和 Java 虚拟机栈合二为一。
+- 主要是为了**保证线程中的局部变量不被别的线程访问到**
+- **虚拟机栈：** 
+    - 每个 **Java 方法**在执行的同时会创建一个**栈帧用于存储局部变量表、操作数栈、常量池引用等信息**。
+    - 从方法调用直至执行完成的过程，就对应着一个栈帧在 Java 虚拟机栈中入栈和出栈的过程。
+- **本地方法栈：** 
+    - 和虚拟机栈所发挥的作用非常相似，
+    - 区别是： 虚拟机栈为虚拟机执行 Java 方法 （也就是字节码）服务，而本地方法栈则为虚拟机使用到的 Native 方法服务。
 
 ### 3 为什么 **堆和方法区** 是共享的？
 
@@ -201,19 +201,23 @@ public class DeadLock {
 
 同时满足以下四种条件则会产生死锁：
 
-1. 互斥条件：该资源任意一个时刻只由一个线程占用。
-2. 请求与保持条件：一个进程因请求资源而阻塞时，对已获得的资源保持不放。
-3. 不剥夺条件：线程已获得的资源在未使用完之前不能被其他线程强行剥夺，只有自己使用完毕后才释放资源。
-4. 循环等待条件：若干进程之间形成一种头尾相接的循环等待资源关系。
+1. **互斥条件**：该资源任意一个时刻只由一个线程占用。
+2. **请求与保持条件**：一个进程因请求资源而阻塞时，对已获得的资源保持不放。
+3. **不剥夺条件**：线程已获得的资源在未使用完之前不能被其他线程强行剥夺，只有自己使用完毕后才释放资源。
+4. **循环等待条件**：若干进程之间形成一种头尾相接的循环等待资源关系。
 
 ### 2 消除死锁
 
 为了避免死锁，只要破坏产生死锁的四个条件中的其中一个就可以了：
 
-1. **破坏互斥条件** ：这个条件破坏，因为锁是使临界资源互斥访问的。
-2. **破坏请求与保持条件** ：要一次性申请所有的资源。
-3. **破坏不剥夺条件** ：占用部分资源的线程进一步申请其他资源时，如果申请不到，可以主动释放它占有的资源。
-4. **破坏循环等待条件** ：靠按序申请资源来预防。按某一顺序申请资源，释放资源则反序释放。破坏循环等待条件。
+1. **破坏互斥条件** ：
+    1. 这个条件不能被破坏，因为锁是使临界资源互斥访问的。
+2. **破坏请求与保持条件** ：
+    1. 要一次性申请所有的资源。
+3. **破坏不剥夺条件** ：
+    1. 占用部分资源的线程进一步申请其他资源时，如果申请不到，可以主动释放它占有的资源。
+4. **破坏循环等待条件** ：
+    1. 靠按序申请资源来预防。按某一顺序申请资源，释放资源则反序释放。破坏循环等待条件。
 
 
 
@@ -254,14 +258,14 @@ if( table.get("key") == null) {
 
 ## 1 创建线程的三种方法
 
-1. 继承Thread类
-2. 实现Runnable接口
-3. 实现Callable接口
+1. **继承Thread类**
+2. **实现Runnable接口**
+3. **实现Callable接口**
 
-三种方式的比较：实现接口的方式更好
+三种方式的比较：**实现接口的方式更好**
 
-* Java不支持多重继承，继承了一个类并不能继承其他的类，但可以实现多个接口
-* 类可能只要求可执行就行，继承整个 Thread 类开销过大。
+* **Java不支持多重继承，继承了一个类并不能继承其他的类，但可以实现多个接口**
+* **类可能只要求可执行就行，继承整个 Thread 类开销过大**。
 
 ```java
 public static void main(String[] args) throws ExecutionException, InterruptedException {
@@ -316,12 +320,12 @@ public static void main(String[] args) throws ExecutionException, InterruptedExc
 
 ## 2 run()与start()区别
 
-- start()：线程对象初始化完成进入NEW状态之后，调用start()方法会创建一个新线程并执行run()方法。
+- start()：**线程对象初始化完成进入NEW状态之后，调用start()方法会创建一个新线程并执行run()方法**。
     1. start() 启动一个线程时：当前线程（parent线程）同步告知JVM，只要线程规划器空闲，应立即启动 调用start()方法的线程（即子进程进入到了就绪RUNNABLE状态）。
     2. 然后子进程通过此Thread类调用方法run()完成运行的操作， 这里方法run()称为线程体， 它包含了新开的线程要执行的的内容，
     3. run方法运行结束， 此线程终止， CPU再运行其它线程，start()不能被重复调用。
-    4. 注：只有处于**NEW**状态的线程才可以调用 start() 方法，否则会抛出 IllegalThreadStateException 。也就是说，一个线程不能调用两次start方法，此时线程处于终止或者其他非NEW状态，不可以再次启动。
-- run()： 子类需要覆盖Thread类的run方法。
+    4. 注：**只有处于NEW状态的线程才可以调用 start() 方法**，否则会抛出 IllegalThreadStateException 。也就是说，**一个线程不能调用两次start方法**，此时线程处于终止或者其他非NEW状态，不可以再次启动。
+- **run()： 子类需要覆盖Thread类的run方法。**
     - run()就和普通的成员方法一样，可以被重复调用。直接调用run方法并不会创建新的线程，只是作为一个普通的方法调用，在当前线程串行的执行run()方法中的代码。
 
 ---
@@ -336,7 +340,7 @@ Thread.sleep(millisec) 方法会休眠当前正在执行的线程(放弃CPU)。
 
 需要注意的亮点：
 
-1. sleep() 可能会抛出 InterruptedException，因为异常不能跨线程传播回 main() 中，因此必须在本地进行处理。
+1. **sleep() 可能会抛出 InterruptedException，因为异常不能跨线程传播回 main() 中，因此必须在本地进行处理。**
     1. 线程中抛出的其它异常也同样需要在本地进行处理。 
     2. sleep() 等会抛出InterruptedException的方法，**抛出中断异常前会清除线程中断标记位！**然后再抛出异常。
 2. **在线程休眠阶段，仍然会持有锁，并不会释放锁。**
@@ -376,16 +380,18 @@ public static void main(String[] args) {
 }
 ```
 
-对静态方法 Thread.yield() 的调用声明了：当前线程已经完成了生命周期中最重要的部分，使当前线程由“运行状态”进入到“就绪状态”，可以切换给其它线程来执行。
+对静态方法 Thread.yield() 的调用声明了：
 
-* yield()方法主要是为了保障线程间调度的连续性，防止某个线程一直长时间占用cpu资源。
-* 一般不推荐使用，它主要用于debug和测试程序，用来减少bug以及对于并发程序结构的设计。
+* **当前线程已经完成了生命周期中最重要的部分，使当前线程由“运行状态”进入到“就绪状态”**，可以切换给其它线程来执行。
+
+* yield()方法主要是为了保障线程间调度的连续性，**防止某个线程一直长时间占用cpu资源**。
+* **一般不推荐使用**，它主要用于debug和测试程序，用来减少bug以及对于并发程序结构的设计。
 
 需要注意的几点：
 
 1. **该方法只是对线程调度器的一个建议**，而且也只是建议具有相同优先级的其它线程可以运行。如果没有正在等待的线程，或者所有正在等待的线程的优先级都比较低，那么该线程会继续运行。
-2. yield方法不保证当前的线程会暂停或者停止，但是可以保证当前线程在调用yield方法时会放弃CPU。
-3. 执行了yield方法的线程什么时候会继续运行由线程调度器来决定，不同的厂商可能有不同的行为。
+2. **yield方法不保证当前的线程会暂停或者停止**，**但是可以保证当前线程在调用yield方法时会放弃CPU。**
+3. **执行了yield方法的线程什么时候会继续运行由线程调度器来决定**，不同的厂商可能有不同的行为。
 
 ## join()
 
@@ -530,9 +536,9 @@ public class WaitNotify {
 
 ## park() / unpark()
 
-是 LockSupport 类中的方法，用来暂停当前线程和恢复线程
+**LockSupport 类中的方法，用来暂停当前线程和恢复线程**
 
-与 Object 的 wait & notify 相比:
+### 1 与 Object 的 wait & notify 相比:
 
 * **wait/notify/notifyAll 必须配合 Object Monitor 一起使用**，而 park，unpark 不必
 * **park & unpark 是以线程为单位来【阻塞】和【唤醒】线程**，而 notify 只能随机唤醒一个等待线程，notifyAll 是唤醒所有等待线程，就不那么【精确】
@@ -565,7 +571,7 @@ public class Park {
 }
 ```
 
-### park() / unpack() 原理
+### 2 park() / unpack() 原理
 
 每个线程都有一个自己的Parker对象，Parker对象由三部分组成
 
@@ -606,17 +612,17 @@ public class Park {
 
 ## sleep()、wait()、yield() 的区别
 
-作用对象上的不同：
+**作用对象上的不同：**
 
-- sleep和yeild是Thread的静态方法，作用对象是当前线程。
-- wait是Object的方法，作用对象是实例。
+- sleep和yeild是Thread的静态方法，**作用对象是当前线程。**
+- wait是Object的方法，**作用对象是实例。**
 
-锁资源释放的不同：
+**锁资源释放的不同：**
 
 - sleep方法会让当前线程放弃CPU，休眠一段时间，**在此期间线程仍然会持有锁**。
 - **wait()执行前，当前线程一定要获取到锁资源， 挂起期间，线程会释放锁**
-- yield()不会释放锁，只是通知线程调度器自己可以让出cpu时间片，而且也只是建议而已。
-- join() 不会释放锁。当前线程(parent线程) 等待调用join方法的线程结束，再继续执行。join()有资格释放资源其实是通过调用wait()来实现的
+- **yield()不会释放锁**，只是通知线程调度器自己可以让出cpu时间片，而且也只是建议而已。
+- **join() 不会释放锁**。当前线程(parent线程) 等待调用join方法的线程结束，再继续执行。join()有资格释放资源其实是通过调用wait()来实现的
 
 > 哪种方法会释放锁？sleep() / join() / yield / wait
 >
@@ -699,7 +705,7 @@ public static boolean Thread.interrupted() // Thread类静态方法。判断当�
 
 线程中断的异常处理：
 
-* 与线程相关的一些方法可能会抛出 InterruptedException，因为异常不能跨线程传播回 main() 中，因此必须在本地进行处理。
+* 与线程相关的一些方法可能会抛出 InterruptedException，因为**异常不能跨线程传播回 main() 中，因此必须在本地进行处理**。
     1. 线程中抛出的其它异常也同样需要在本地进行处理。 
     2. sleep() 等会抛出InterruptedException的方法，**抛出中断异常前会清除线程中断标记位！**然后再抛出异常。
 
@@ -750,8 +756,8 @@ public class Interrupt {
 
 终止一个线程不推荐的做法（可能会产生很多问题）：
 
-- 使用线程对象的 stop() 方法停止线程
-    - stop 方法会真正杀死线程，如果这时线程锁住了共享资源，那么当它被杀死后就再也没有机会释放锁
+- **使用线程对象的 stop() 方法停止线程**
+    - **stop 方法会真正杀死线程，如果这时线程锁住了共享资源，那么当它被杀死后就再也没有机会释放锁**
     - 子线程当前执行的任务可能必须要原子的执行，即其要么成功执行，要么就不执行，直接杀死不满足目标
     - 当前任务队列中还有未执行完的任务，直接终止线程可能导致这些任务被丢弃；
     - 当前线程占用了某些外部资源，比如打开了某个文件，或者使用了某个Socket对象，这些都是无法被垃圾回收的对象，必须由调用方进行清理。
@@ -760,61 +766,15 @@ public class Interrupt {
 
 
 
-在一个线程 T1 中如何“优雅”终止线程 T2？
+**在一个线程 T1 中如何“优雅”终止线程 T2？**
 
-* 这里的优雅指的是给 T2 一个料理后事的机会。
+* **这里的优雅指的是给 T2 一个料理后事的机会**。
 
 ![image-20210223134745884](http://haoimg.hifool.cn/img/image-20210223134745884.png)
 
 
 
-```java
-@Test
-public void testTwoPhaseTermination () {
-    TwoPhaseTermination twoPhaseTermination = new TwoPhaseTermination();
-
-    twoPhaseTermination.start();
-
-    Sleeper.sleep(3.5);
-
-    log.info("end monitoring");
-    twoPhaseTermination.stop();
-}
-
-class TwoPhaseTermination {
-    private Thread monitorThread;
-
-    public void start() {
-        monitorThread = new Thread(() -> {
-            while (true) {
-                Thread currentThread = Thread.currentThread();
-                if (currentThread.isInterrupted()) {
-                    log.info("monitor thread is interrupted, do something to end");
-                    break;
-                }
-
-                try {
-                    Thread.sleep(1000);
-                    log.info("nothing, just save result");
-                } catch (InterruptedException e) { // current thread is interrupted while sleeping
-                    // 在睡眠时出现异常后，会清楚打断标记，需要重置打断标记
-                    log.info("{}", e);
-                    currentThread.interrupt();
-                }
-            }
-        }, "MonitorThread");
-        monitorThread.start();
-    }
-
-    public void stop() {
-        monitorThread.interrupt();
-    }
-}
-```
-
-
-
-优化后的版本：
+volatile 优化后的版本：
 
 ```java
 class TwoPhaseTermination2 {
@@ -886,20 +846,21 @@ public enum State {
 }
 ```
 
-| 状态名称                    | 说明                                                         |
-| --------------------------- | ------------------------------------------------------------ |
-| NEW(初始化状态）            | 初始状态，线程刚刚创建，还没调用start方法                    |
-| RUNNABLE（运行/就绪状态）   | Java线程将操作系统中的就绪状态 和 运行状态 统称为Runnable状态。表示线程正在执行 或 正在等待某种资源（CPU、IO等） |
-| BLOCKED（阻塞状态）         | 表示线程处于阻塞状态，正在等待锁的释放                       |
-| WAITING(无时限等待状态)     | 表示线程处于无时限等待状态，正在等待其他线程的特定动作（通知 或 中断）以便唤醒该线程。 |
-| TIMED_WAITING（有时限等待） | 表示线程处于有时限等待状态，等待其他线程唤醒 或者 超时自己自行唤醒返回（这是区别于waiting的地方） |
-| TERMINATED（终止状态）      | 线程已经执行完毕                                             |
+| 状态名称                        | 说明                                                         |
+| ------------------------------- | ------------------------------------------------------------ |
+| **NEW**(初始化状态）            | 初始状态，线程刚刚创建，还没调用start方法                    |
+| **RUNNABLE**（运行/就绪状态）   | Java线程将操作系统中的就绪状态 和 运行状态 统称为Runnable状态。表示线程正在执行 或 正在等待某种资源（CPU、IO等） |
+| **BLOCKED**（阻塞状态）         | 表示线程处于阻塞状态，正在等待锁的释放                       |
+| **WAITING**(无时限等待状态)     | 表示线程处于无时限等待状态，正在等待其他线程的特定动作（通知 或 中断）以便唤醒该线程。 |
+| **TIMED_WAITING**（有时限等待） | 表示线程处于有时限等待状态，等待其他线程唤醒 或者 超时自己自行唤醒返回（这是区别于waiting的地方） |
+| **TERMINATED**（终止状态）      | 线程已经执行完毕                                             |
 
 需要注意的地方：
 
 * RUNNABLE 状态 表示操作系统中的运行和就绪这两种状态
+    * RUNNABLE 是jvm虚拟机的概念，对于jvm来讲，只要是可以运行（运行/就绪）的都归类到RUNNABLE中
 * BLOCKED 状态表示线程阻塞 在进入Synchronized修饰的方法或代码块时 的等待锁的状态
-    * 但阻塞状态在java.concurrent包中Lock接口的线程状态却是等待状态，因为java.concurrent包中Lock接口对于阻塞的实现均使用了LockSupport类中的相关方法。
+    * **但阻塞状态在java.concurrent包中Lock接口的线程状态却是等待状态**，因为java.concurrent包中Lock接口对于阻塞的实现均使用了LockSupport类中的相关方法。
 
 > 但阻塞状态在java.concurrent包中Lock接口的线程状态却是等待状态，因为java.concurrent包中Lock接口对于阻塞的实现均使用了LockSupport类中的相关方法。
 >
@@ -929,15 +890,15 @@ public enum State {
 
 三种场景会触发这种转换。
 
-1. 获得对象synchronized 隐式锁的线程
+1. **获得对象synchronized 隐式锁**的线程
     1. 调用无参数的 Object.wait() 方法，线程从 RUNNABLE --> WAITING。
     2. 调用 obj.notify() ， obj.notifyAll() ， t.interrupt() 时
         1. 竞争锁成功，t 线程从 WAITING --> RUNNABLE
         2. 竞争锁失败，t 线程从 WAITING --> BLOCKED
-2. 当前线程调用 thread.join() 方法时，当前线程从 RUNNABLE --> WAITING
+2. 当前线程**调用 thread.join()** 方法时，当前线程从 RUNNABLE --> WAITING
     1. 注意是当前线程在thread 线程对象的监视器上等待
     2. thread 线程运行结束，或调用了当前线程的 interrupt() 时，当前线程从 WAITING --> RUNNABLE
-3. 当前线程调用 LockSupport.park() 方法会让当前线程从 RUNNABLE --> WAITING。
+3. 当前线程**调用 LockSupport.park()** 方法会让当前线程从 RUNNABLE --> WAITING。
     1. 调用 LockSupport.unpark(目标线程) 或调用了线程 的 interrupt() ，会让目标线程从 WAITING --> RUNNABLE
 
 ### 4  RUNNABLE 与 TIMED_WAITING 的状态转换
@@ -1131,12 +1092,12 @@ ABA问题是指：
 
 ## CAS 的特点
 
-1. 结合 CAS 和 volatile 可以实现无锁并发，适用于线程数少、多核 CPU 的场景下。
+1. **结合 CAS 和 volatile 可以实现无锁并发，适用于线程数少、多核 CPU 的场景下**。
+    1. CAS 体现的是无锁并发、无阻塞并发
 2. CAS 是基于**乐观锁**的思想：最乐观的估计，不怕别的线程来修改共享变量，不断的尝试修改。
 3. synchronized 是基于**悲观锁**的思想：最悲观的估计，得防着其它线程来修改共享变量。
-4. **CAS 体现的是无锁并发、无阻塞并发**
-5. 因为没有使用 synchronized，所以线程不会陷入阻塞，这是效率提升的因素之一
-6. 但如果竞争激烈，可以想到重试必然频繁发生，反而效率会受影响
+4. 因为没有使用 synchronized，所以线程不会陷入阻塞，这是效率提升的因素之一
+5. 但如果竞争激烈，可以想到重试必然频繁发生，反而效率会受影响
 
 
 
@@ -1144,15 +1105,14 @@ ABA问题是指：
 
 1. **ABA问题**：
 2. **循环时间长开销大**：
-    1. 自旋CAS （不成功，就一直循环执行，直到成功）如果长时间不成功，会给CPU带来非常大的执行开销。
-    2. 如果JVM 能支持处理器提供的pause 指令那么效率会有一定的提升， pause 指令有两个作用，
+    1. **自旋CAS** （不成功，就一直循环执行，直到成功）如果长时间不成功，会给CPU带来非常大的执行开销。
+    2. **如果JVM 能支持处理器提供的pause 指令那么效率会有一定的提升**， pause 指令有两个作用，
         1. 可以延迟流水线执行指令（ de-pipeline ）,使CPU 不会消耗过多的执行资源，延迟的时间取决于具体实现的版本，在一些处理器上延迟时间是零。
         2. 可以避免在退出循环的时候因内存顺序冲突（ memory order violation ）而引起CPU流水线被清空（ CPU pipeline flush ），从而提高CPU的执行效率。
 3. **只能保证一个共享变量的原子操作**： 
     1. 当对一个共享变量执行操作时，我们可以使用循环CAS的方式来保证原子操作，
     2. 但是对多个共享变量操作时，循环CAS就无法保证操作的原子性，这个时候就可以用锁，
         1. 或者有一个取巧的办法，就是把多个共享变量合并成一个共享变量来操作。
-        2. 比如有两个共享变量i ＝ 2 , j = a ，合并一下ij = 2a ，然后用CAS 来操作ij。
         3. 从Java 1.5 开始JDK提供了AtomicReference 类来保证引用对象之间的原子性，你可以把多个变量放在一个对象里来进行CAS 操作。
 
 ## AtomicInteger 类
@@ -1191,7 +1151,15 @@ synchronized是排它锁，当一个线程获得锁之后，其他线程必须�
 
 
 
-## 锁粒度
+**synchronized需要注意的地方：**
+
+1. **synchronized 在发生异常时，会自动释放线程占有的锁**，因此不会导致死锁现象发生；
+2. 使用synchronized时，等待的线程会一直等待下去，**不能够响应中断**
+3. synchronized不知道有没有成功获取锁
+
+
+
+## 4.1 锁粒度
 
 ### 1 同步代码块
 
@@ -1321,7 +1289,7 @@ public void func () {
 
 
 
-## 锁优化
+## 4.2 锁优化
 
 JDK1.6 对synchronized 锁的实现引入了大量的优化，如偏向锁、轻量级锁、自旋锁、适应性自旋锁、锁消除、锁粗化等技术来减少锁操作的开销。
 
@@ -1335,7 +1303,7 @@ Java中的synchronized 有三种，他们会随着竞争的激烈而逐渐升级
 
 *以32位虚拟机为例*
 
-Java对象在内存中实际包含：
+**Java对象在内存中实际包含：**
 
 1. 对象头
 2. 实例数据
@@ -1370,7 +1338,7 @@ Mark Word 结构：
 
 Monitor 被翻译为监视器或管程
 
-* 监视器锁本质依赖于底层的操作系统的Mutex Lock**来实现的**
+* 监视器锁本质**依赖于底层的操作系统的Mutex Lock来实现的**
 
 **每个 Java 对象都可以关联一个 Monitor 对象**
 
@@ -1388,13 +1356,13 @@ Monitor 被翻译为监视器或管程
 2. 当 Thread-2 执行 synchronized(obj) 时，**obj对象的对象头中的Mark Word就会指向该Monitor**，然后**JVM将 Monitor对象中的 Owner 置为 Thread-2**，Monitor中只能有一个 Owner。
 3. 在 Thread-2 上锁的过程中，如果 Thread-3，Thread-4，Thread-5 也来执行 synchronized(obj)，这些**线程就会进入EntryList，进入BLOCKED状态**
 4. Thread-2 执行完同步代码块的内容，然后**唤醒 EntryList 中等待的线程来竞争锁**，竞争的时是非公平的。
-5. 图中 **WaitSet** 中的 Thread-0，Thread-1 是**之前获得过锁，但条件不满足，调用wait() 方法，进入 WAITING 状态的线程**
+5. 图中 **WaitSet** 中的 Thread-0，Thread-1 是**wait() 之前获得过锁，但条件不满足，调用wait() 方法，进入 WAITING 状态的线程**
     1. 当其他的线程notify()时，Thread-0，Thread-1再重新进入到EntryList中重新进行竞争锁
 
 注意：
 
 * **synchronized 必须是进入同一个对象的 monitor 才有上述的效果**
-* 不加 synchronized 的对象不会关联监视器，不遵从以上规则
+* **不加 synchronized 的对象不会关联监视器**，不遵从以上规则
 
 ----
 
@@ -1475,14 +1443,16 @@ public static void main(java.lang.String[]);
 
 重量级锁时，对象头的Mark Word存放monitor对象指针 。
 
-monitor调用的是操作系统底层的互斥量(mutex)。
+monitor**调用的是操作系统底层的互斥量(mutex)**。
 
 * **JVM会阻塞未获取到锁的线程，使用互斥量进行同步，阻塞和唤醒操作需要从用户态切换到内核态，开销很大**。
 
 synchronized 同步语句块的情况：
 
-* monitorenter 指令指向同步代码块的开始位置，monitorexit 指令则指明同步代码块的结束位置。
-* 每个对象都有一个monitor监视器，调用monitorenter就是尝试获取这个对象，成功获取到了就将值+1，离开就将值减1。如果是线程重入，再将值+1，说明monitor对象是支持可重入的。
+* monitorenter 指令指向同步代码块的开始位置
+* monitorexit 指令则指明同步代码块的结束位置。
+* 每个对象都有一个monitor监视器，调用monitorenter就是尝试获取这个对象，成功获取到了就将值+1，离开就将值减1。
+    * 如果是线程重入，再将值+1，说明monitor对象是支持可重入的。
 
 synchronized 修饰方法的的情况：
 
@@ -1498,7 +1468,7 @@ synchronized 修饰方法的的情况：
 
 * 轻量锁的本意是在**没有多线程竞争的前提下，减少传统的重量级锁使用互斥量产生的性能消耗**。
 
-轻量级锁的**使用场景**：
+轻量级锁的优化依据：
 
 * 如果一个对象**虽然被多个线程用来加锁，但加锁的时间是错开的（多个对象之间对锁没有竞争）**，那么可以使用轻量级锁来优化。
 * **轻量级锁能提升程序同步性能的依据是“对于绝大部分的锁，在整个同步周期内都是不存在竞争的”这一经验法则。**
@@ -1513,20 +1483,7 @@ synchronized 修饰方法的的情况：
     - 如果线程获得轻量级锁成功，则可以顺利进入临界区。
     - 如果轻量级锁加锁失败，则表示其他线程抢先争夺到了锁，那么当前线程的锁请求就会膨胀为重量级锁。
 
-```java
-static final Object obj = new Object();
-public static void method1() {
-    synchronized( obj ) {
-        // 同步块 A
-        method2();
-    }
-}
-public static void method2() {
-    synchronized( obj ) {
-    	// 同步块 B
-    }
-}
-```
+
 
 **轻量级锁的实现过程：**
 
@@ -1575,32 +1532,11 @@ public static void method2() {
     * 如果一个线程获得了锁，那么锁就进入偏向模式。
     * 当这个线程**再次请求锁时，只需检查锁对象的对象头中的Mark Word 是不是该线程自己的线程ID，无须再做任何同步操作(加锁、解锁）**，节省了大量有关锁申请的操作，从而提高了程序性能。
 * **适用场景**：
-    * **很少进行锁竞争的场合**。
+    * **多个线程很少进行锁竞争的场合**。
     * 偏向锁可以**提高带有同步但无竞争的程序性能**，但它同样是一个带有效益权衡（Trade Off）性质的优化，也就是说它并非总是对程序运行有利。
     * **如果程序中大多数的锁都总是被多个不同的线程访问，那偏向模式就是多余的**
 
-Java 6 中引入了偏向锁来做进一步优化：只有第一次使用 CAS 将线程 ID 设置到对象的 Mark Word 头，之后发现这个线程 ID 是自己的就表示没有竞争，不用重新 CAS。以后只要不发生竞争，这个对象就归该线程所有
 
-```java
-static final Object obj = new Object();
-public static void m1() {
-    synchronized( obj ) {
-        // 同步块 A
-        m2();
-    }
-}
-public static void m2() {
-    synchronized( obj ) {
-        // 同步块 B
-        m3();
-    }
-}
-public static void m3() {
-    synchronized( obj ) {
-        // 同步块 C
-    }
-}
-```
 
 ![image-20210222192404367](http://haoimg.hifool.cn/img/image-20210222192404367.png)
 
@@ -1781,7 +1717,7 @@ public static void method1() {
 
 ### 锁消除
 
-锁消除是指JVM检测到一些同步的代码块，完全不存在数据竞争的场景，**对于被检测出不可能存在竞争的共享数据的锁进行消除**。
+锁消除是指**JVM检测到一些同步的代码块不存在数据竞争**，**对于被检测出不可能存在竞争的共享数据的锁进行消除**。
 
 锁消除主要是通过逃逸分析来支持：
 
@@ -1870,26 +1806,21 @@ public static String concatString(String s1, String s2, String s3) {
 
 JMM 即 Java Memory Model，它定义了**主存**、**工作内存**的抽象概念，底层对应着 CPU 寄存器、缓存、硬件内存、CPU 指令优化等。
 
-随着CPU和内存的发展速度差异的问题，导致CPU的速度远快于内存，所以现在的CPU加入了高速缓存，高速缓存一般可以分为L1、L2、L3三级缓存。
+CPU的发展带来的一些问题：
 
 * **缓存会导致缓存一致性的问题**，所以加入了缓存一致性协议，同时会导致内存可见性的问题，
-* **编译器和CPU的重排序导致了原子性和有序性的问题**，
+    * 随着CPU和内存的发展速度差异的问题，导致CPU的速度远快于内存，所以现在的CPU加入了高速缓存，高速缓存一般可以分为L1、L2、L3三级缓存。
+* **编译器和CPU的重排序导致了原子性和有序性的问题**
+    * **原子性 - 保证指令不会受到线程上下文切换的影响**（上下文切换导致指令执行到一半就中断了）
+    * **有序性 - 保证指令不会受 cpu 指令并行优化的影响**
 * JMM内存模型正是对多线程操作下的一系列规范约束，因为不可能让代码去兼容所有的CPU，通过JMM我们才屏蔽了不同硬件和操作系统内存的访问差异，这样保证了Java程序在不同的平台下达到一致的内存访问效果，同时也是保证在高效并发的时候程序能够正确执行。
-
-
-
-JMM 体现在以下几个方面：
-
-* **原子性 - 保证指令不会受到线程上下文切换的影响**（上下文切换导致指令执行到一半就中断了）
-* **可见性 - 保证指令不会受 cpu 缓存的影响**
-* **有序性 - 保证指令不会受 cpu 指令并行优化的影响**
 
 
 
 **volatile的自身特性：**
 
-* **可见性：对volatile变量的读，在任意一个线程中总是能看到对这个volatile变量最后的写入。**
-* **原子性：对任意单个volatile变量的读/写具有原子性，但是对于复合型操作并不具备原子性。**
+* **可见性**：对volatile变量的读，在任意一个线程中总是能看到对这个volatile变量最后的写入。
+* **原子性**：对任意单个volatile变量的读/写具有原子性，但是对于复合型操作并不具备原子性。
 
 
 
@@ -1909,13 +1840,13 @@ JMM 体现在以下几个方面：
 
 volatile 的优点：
 
-* 相比synchronized的加锁方式来解决共享变量的内存可见性问题，volatile就是更轻量的选择，他**没有上下文切换的额外开销成本**。
-* 使用volatile声明的变量，可以**确保值被更新的时候对其他线程立刻可见**。
-* **volatile使用内存屏障来保证不会发生指令重排**，解决了内存可见性的问题。
+* **切换**：相比synchronized的加锁方式来解决共享变量的内存可见性问题，volatile就是更轻量的选择，他**没有上下文切换的额外开销成本**。
+* **可见性**：使用volatile声明的变量，可以**确保值被更新的时候对其他线程立刻可见**。
+    * **volatile使用内存屏障来保证不会发生指令重排**，解决了内存可见性的问题。
 
 
 
-## 可见性
+## 5.1 可见性
 
 **可见性：保证的是在多个线程之间，一个线程对volatile变量的修改对另一个线程可见**
 
@@ -1956,11 +1887,11 @@ public static void main(String[] args) throws InterruptedException {
 * **volatile 可以用来修饰成员变量和静态成员变量，可以避免线程从自己的工作缓存中查找变量的值，必须到主存中获取它的值，**
 * **线程操作 volatile 变量都是直接操作主存**
 
-## 原子性
+## 5.2 原子性
 
-可见性保证的是在多个线程之间，一个线程对 volatile 变量的修改对另一个线程可见， **但volatile并不能不能保证原子性**
+可见性保证的是在多个线程之间，一个线程对 volatile 变量的修改对另一个线程可见，
 
-* 即**volatile 变量不能保证语句指令交错执行时，带来的影响**
+* **volatile 变量不能保证语句指令交错执行时，带来的影响**
 
 注意：
 
@@ -1968,7 +1899,7 @@ public static void main(String[] args) throws InterruptedException {
     * **如果变量的生命周期在synchronized块内，则synchronized也可以保证语句的有序性，但如果不是，则不能保证有序性**
 * 但缺点是**synchronized 是属于重量级操作，性能相对更低**
 
-## 有序性
+## 5.3 有序性
 
 JVM 会在不影响正确性的前提下，可以调整语句的执行顺序。
 
@@ -1997,7 +1928,7 @@ public class Singleton {
 
 
 
-**为什么要在变量singleton之间加上volatile关键字？**
+**为什么要在变量singleton之间加上volatile关键字？** - 重拍带来的危害
 
 * 对象的构造过程，实例化一个对象三个步骤：
     1. 分配内存空间。
@@ -2018,6 +1949,27 @@ public class Singleton {
 * 首次使用 getInstance() 才使用 synchronized 加锁，后续使用时无需加锁 
 
 ### 1 不使用Volatile
+
+```java
+public class Singleton {
+    public static Singleton singleton;
+    
+    //构造函数私有，禁止外部实例化
+    private Singleton() {};
+    
+    public static Singleton getInstance() {
+        if (singleton == null) { // 在synchronized保护范围外
+            // 首次访问会同步，而之后的使用没有 synchronized
+            synchronized (singleton) {
+                if (singleton == null) {
+                    singleton = new Singleton();
+                }
+            }
+        }
+        return singleton;
+    }
+}
+```
 
 **在多线程环境下，上面的代码中，如果变量singleton之间不加上volatile关键字是有问题的**：
 
@@ -2114,9 +2066,9 @@ public class Singleton {
 
 
 
-## Volatile 原理
+## 5.4 Volatile 原理
 
-volatile 的底层实现原理是内存屏障，Memory Barrier（Memory Fence）
+**volatile 的底层实现原理是内存屏障**，Memory Barrier（Memory Fence）
 
 1. 对 volatile 变量的写指令后会加入写屏障
 2. 对 volatile 变量的读指令前会加入读屏障
@@ -2242,7 +2194,7 @@ LoadStore屏障  // 禁止 下面的普通写 和 上面的volatile读重排序
 
 
 
-## Happens-before 原则
+## 5.5 Happens-before 原则
 
 java 内存模型 JMM(Java Memory Model) 并**不能保证**：**一个线程对共享变量的写操作，对于其他线程对该共享变量的读操作可见**
 
@@ -2257,45 +2209,45 @@ java 内存模型 JMM(Java Memory Model) 并**不能保证**：**一个线程对
 
 Happens-before原则有哪些？
 
-1. 程序顺序性原则
+1. **程序顺序性原则**
 
     在一个线程中，按照程序顺序，前面的操作Happen-Before于后续的任意操作。
 
-2. synchronized原则
+2. **synchronized原则**
 
     对锁对象解锁之前的写操作， 对于接下来对锁对象加锁的其他线程的读操作可见。
 
-3. volatile原则
+3. **volatile原则**
 
     对一个 volatile 变量的写操作，对于后续其他线程对这个 volatile 变量的读操作可见。
 
-4. start() 原则
+4. **start() 原则**
 
     主线程 A start() 启动子线程 B 后，子线程 B 能够看到主线程在启动子线程 B 前的操作
 
-5. 线程join() 原则
+5. **线程join() 原则**
 
     某线程在结束前对共享变量的写操作，对于得知它结束后的其他线程的读操作是可见的。通过调用该线程 的 join() 方法实现。
 
-6. 线程interrupt原则
+6. **线程interrupt原则**
 
     线程A 修改共享变量的写操作，在线程A调用线程B的interrupt() 方法后，对线程B通过Thread.interrupted()方法检测到中断发生后的读操作可见。
 
-7. 默认值修改原则
+7. **默认值修改原则**
 
     对变量默认值（0，false，null）的写操作，对其他变量对该共享变量的读操作是可见的。
 
-8. 对象终结原则
+8. **对象终结原则**
 
     一个对象的初始化完成(构造函数执行结束)先行发生于它的finalize()方法的开始。
 
-9. 传递性原则
+9. **传递性原则**
 
     如果 A Happens-Before B，且 B Happens-Before C，那么 A Happens-Before C。
 
 
 
-> 看一下黑马并发的代码
+---
 
 
 
@@ -2324,7 +2276,8 @@ Happens-before原则有哪些？
     * **提高响应速度**：任务到达时，无需等待线程创建即可立即执行。
 * **提高线程的可管理性。**
     * 线程是稀缺资源，如果无限制的创建，不仅会消耗系统资源，还会因为线程的不合理分布导致资源调度失衡，降低系统的稳定性。使用线程池可以进行统一的分配、调优和监控。
-* **线程池功能可拓展**：允许开发人员向其中增加更多的功能。比如延时定时线程池ScheduledThreadPoolExecutor，就允许任务延期执行或定期执行。
+* **线程池功能可拓展**：
+    * 允许开发人员向其中增加更多的功能。比如延时定时线程池ScheduledThreadPoolExecutor，就允许任务延期执行或定期执行。
 
 
 
@@ -2472,13 +2425,9 @@ private static int ctlOf(int rs, int wc) { return rs | wc; }   //通过状态和
 1. 检查现在线程池的运行状态、运行线程数、运行策略，
 2. 决定接下来执行的流程，是直接申请线程执行，或是缓冲到队列中执行，亦或是直接拒绝该任务。
 
-execute() 执行过程如下：
 
-1. 首先检测线程池运行状态，如果不是RUNNING，则直接拒绝，线程池要保证在RUNNING的状态下执行任务。
-2. 如果workerCount < corePoolSize，则创建并启动一个线程来执行新提交的任务。
-3. 如果workerCount >= corePoolSize，且线程池内的阻塞队列未满，则将任务添加到该阻塞队列中。
-4. 如果workerCount >= corePoolSize && workerCount < maximumPoolSize，且线程池内的阻塞队列已满，则创建并启动一个线程来执行新提交的任务。
-5. 如果workerCount >= maximumPoolSize，并且线程池内的阻塞队列已满, 则根据拒绝策略来处理该任务, 默认的处理方式是直接抛异常。
+
+execute() 执行过程如下：
 
 ![任务调度流程](http://haoimg.hifool.cn/img/31bad766983e212431077ca8da92762050214.png)
 
@@ -2494,6 +2443,8 @@ execute() 执行过程如下：
 使用不同的队列可以实现不一样的任务存取策略：
 
 ![img](http://haoimg.hifool.cn/img/725a3db5114d95675f2098c12dc331c3316963.png)
+
+
 
 #### 3 任务申请
 
@@ -2974,7 +2925,7 @@ public void shutdown() {
 }
 ```
 
-#### 2 shutdown
+#### 2 shutdownNow
 
 ```Java
 /*
@@ -3099,18 +3050,24 @@ AQS( AbstractQueuedSynchronizer ) 定义了一套**多线程访问共享资源**
 
 ![image-20210225142916942](http://haoimg.hifool.cn/img/image-20210225142916942.png)
 
-特点：
 
-* **用 state 属性来表示需要被保护的资源的状态**（分独占模式和共享模式），子类需要定义如何维护这个状态，控制如何获取锁和释放锁
+
+![image-20210301165729515](http://haoimg.hifool.cn/img/image-20210301165729515.png)
+
+AQS特点：
+
+* **用 state(volatile) 属性来表示需要被保护的资源的状态**（分独占模式和共享模式），子类需要定义如何维护这个状态，控制如何获取锁和释放锁
     1. **AQS的state状态值表示线程获取该锁的可重入次数**，某线程尝试加锁的时候通过CAS(CompareAndSwap)修改state值，如果成功设置为1，并且把当前线程ID赋值，则代表加锁成功，一旦获取到锁，其他的线程将会被阻塞进入阻塞队列自旋，获得锁的线程释放锁的时候将会唤醒阻塞队列中的线程，释放锁的时候则会把state重新置为0，同时当前线程ID置为空。
     2. getState - 获取 state 状态，
         1. state=0：表示当前锁没有被任何线程持有
         2. state=1：当一个线程第一次获取该锁时会尝试使用CAS设置state 的值为1，如果CAS 成功则当前线程获取了该锁，然后记录该锁的持有者为当前线程
+            * 当state=1时，其他线程来加锁时则会失败，加锁失败的线程会被放`FIFO`的等待队列中，
+            * 然后会被`UNSAFE.park()`操作挂起，等待其他获取锁的线程释放锁才能够被唤醒。
         3. state=2：在该线程没有释放锁的情况下第二次获取该锁后，状态值被设置为2 ， 这就是可重入次数。
     3. setState - 设置 state 状态
     4. compareAndSetState - CAS 机制设置 state 状态
     5. **独占模式是只有一个线程能够访问资源，而共享模式可以允许多个线程访问资源**
-* **AQS提供了基于 FIFO 的等待队列**（内置同步队列称为“CLH”队列），类似于 Monitor 的 EntryList，来控制多个线程对共享变量的访问
+* **AQS提供了基于 FIFO 的等待队列**（内置同步队列称为“CLH”队列），多线程争用资源被阻塞时会进入此队列，类似于 Monitor 的 EntryList，来控制多个线程对共享变量的访问
     * 该队列由一个一个的Node结点组成，Node是对等待线程的封装，每个Node结点维护一个prev引用和next引用，分别指向自己的前驱和后继结点。
     * AQS维护两个指针，分别指向队列头部head和尾部tail。
     * **Node节点状态**：
@@ -3455,12 +3412,13 @@ Condition newCondition();
 
 #### 1 Lock 和 synchronized 区别
 
-* **Lock是一个接口**，而synchronized是Java中的关键字，synchronized是内置的语言实现；
+* **Lock是一个接口**，而**synchronized是Java中的关键字**，synchronized是内置的语言实现；
 * **synchronized 在发生异常时，会自动释放线程占有的锁**，因此不会导致死锁现象发生；
     * 而**Lock**在发生异常时，**如果没有主动通过unLock() 去释放锁，则很可能造成死锁现象**，因此使用Lock时需要在finally块中释放锁；
-* **Lock可以让等待锁的线程响应中断**，而synchronized却不行，
+* **Lock可以让等待锁的线程响应中断**，而**synchronized却不响应中断**，
     * 使用synchronized时，等待的线程会一直等待下去，不能够响应中断；
 * **通过Lock可以知道有没有成功获取锁**，而synchronized却无法办到。
+    * 得知没有成功获取到锁后，可以直接放回，而不进入阻塞状态，返回后线程有机会释放曾经持有的锁，也能破坏不可抢占条件。
 * **Lock可以提高多个线程进行读操作的效率**。（可以通过readwritelock 实现读写分离）
 * 性能上来说，**在资源竞争不激烈的情形下，Lock性能稍微比synchronized差点**（编译程序通常会尽可能的进行优化synchronized）。
     * 但是**当同步非常激烈的时候，synchronized的性能一下子能下降好几十倍**。而ReentrantLock 确还能维持常态。
@@ -3475,7 +3433,7 @@ Condition newCondition();
 2. **支持超时**
     * 如果线程在一段时间之内没有获取到锁，不是进入阻塞状态，而是返回一个错误，那这个线程也有机会释放曾经持有的锁。这样也能破坏不可抢占条件。
 3. **非阻塞地获取锁**
-    * 如果尝试获取锁失败，并不进入阻塞状态，而是直接返回，那这个线程也有机会释放曾经持有的锁。这样也能破坏不可抢占条件。
+    * **如果尝试获取锁失败，并不进入阻塞状态，而是直接返回**，那这个线程也有机会释放曾经持有的锁。这样也**能破坏不可抢占条件**。
 
 
 
@@ -3503,6 +3461,8 @@ Condition newCondition();
 
 #### 1 加锁&解锁流程
 
+[源码解析](https://mp.weixin.qq.com/s/trsjgUFRrz40Simq2VKxTA)
+
 #### 2 加锁源码
 
 #### 3 解锁源码
@@ -3516,6 +3476,8 @@ Condition newCondition();
 #### 2 不可打断模式
 
 ### 公平锁原理
+
+
 
 ### 条件变量实现原理
 
@@ -3886,7 +3848,7 @@ public class ConnectionPool_Semaphore {
     // 4. 构造方法初始化
     public ConnectionPool_Semaphore(int poolSize) {
         this.poolSize = poolSize;
-// 让许可数与资源数一致
+		// 让许可数与资源数一致
         this.semaphore = new Semaphore(poolSize);
         this.connections = new Connection[poolSize];
         this.states = new AtomicIntegerArray(new int[poolSize]);
@@ -3930,13 +3892,23 @@ public class ConnectionPool_Semaphore {
 }
 ```
 
+以上实现没有考虑：
+
+* 连接的动态增长与收缩
+* 连接保活（可用性检测）
+* 等待超时处理
+* 分布式 hash
+* 对于关系型数据库，有比较成熟的连接池实现，例如c3p0, druid等 对于更通用的对象池，可以考虑使用apachecommons pool，例如redis连接池可以参考jedis中关于连接池的实现
+
+
+
 ### 原理：
 
 
 
 ## CountdownLatch
 
-用来进行线程同步协作，等待所有线程完成倒计时。
+**用来进行线程同步协作，等待所有线程完成倒计时。**
 
 维护了一个计数器 cnt，其中构造参数用来初始化等待计数值，
 
@@ -3945,7 +3917,7 @@ public class ConnectionPool_Semaphore {
 
 
 
-### CountDownLatch 的缺点：
+### 1 CountDownLatch 的缺点：
 
 1. 没有返回值
 
@@ -3964,11 +3936,11 @@ public class ConnectionPool_Semaphore {
 
 
 
-### CountDownLatch 的原理
+### 2 CountDownLatch 的原理
 
 CountDownLatch 内部持有一个Sync对象。
 
-* Sync类实现AQS类， state 值即为计数器的计数值。
+* Sync类实现AQS类， state（volatile） 值即为计数器的计数值。
 * countDown() 方法把state减1
 * await() 方法判断state值是否为0，否则阻塞。
 
@@ -4048,7 +4020,7 @@ public class CountDownLatchExample {
 
 ## CyclicBarrier
 
-循环栅栏，用来控制多个线程互相等待，只有当多个线程都到达屏障时，这些线程才会继续执行。
+**循环栅栏，用来控制多个线程互相等待，只有当多个线程都到达屏障时，这些线程才会继续执行。**
 
 * 和 CountdownLatch 相似，都是通过维护计数器来实现的。
     * 线程执行 await( ) 方法之后计数器会减 1，并进行等待，
@@ -4142,33 +4114,237 @@ public class CyclicBarrierExample {
             * **读取弱一致性**
             * 遍历时如果发生了修改，**对于非安全容器来讲，使用 fail-fast 机制也就是让遍历立刻失败**，抛出ConcurrentModificationException，不再继续遍历
 
+ 
+
+## ConcurrentHashMap
+
+### 1 重要属性和内部类
+
+```java
+// 默认为 0
+// 当初始化时, 为 -1
+// 当扩容时, 为 -(1 + 扩容线程数)
+// 当初始化或扩容完成后，为 下一次的扩容的阈值大小
+private transient volatile int sizeCtl;
+
+// 整个 ConcurrentHashMap 就是一个 Node[]
+static class Node<K,V> implements Map.Entry<K,V> {}
+
+// hash 表
+transient volatile Node<K,V>[] table;
+
+// 扩容时的 新 hash 表
+private transient volatile Node<K,V>[] nextTable;
+
+// 扩容时如果某个 bin 迁移完毕, 用 ForwardingNode 作为旧 table bin 的头结点
+// 	1 ConcurrentHashMap 在扩容时是线程安全的，当一个线程对一个Node完成了复制工作，其他线程来了看到这个标志就不用再进行重复的复制了
+// 	2 ConcurrentHashMap 在get时，在oldtable上发现该Node时ForwardingNode，则取nextTable上去找
+static final class ForwardingNode<K,V> extends Node<K,V> {}
+
+// 用在 compute 以及 computeIfAbsent 时, 用来占位, 计算完成后替换为普通 Node
+static final class ReservationNode<K,V> extends Node<K,V> {}
+
+// 红黑树
+// 作为 treebin 的头节点, 存储 root 和 first
+static final class TreeBin<K,V> extends Node<K,V> {}
+
+// 作为 treebin 的节点, 存储 parent, left, right
+static final class TreeNode<K,V> extends Node<K,V> {}
+```
 
 
 
+### 2 重要方法
+
+```java
+// 获取 Node[] 中第 i 个 Node
+static final <K,V> Node<K,V> tabAt(Node<K,V>[] tab, int i)
+
+// cas 修改 Node[] 中第 i 个 Node 的值, c 为旧值, v 为新值
+static final <K,V> boolean casTabAt(Node<K,V>[] tab, int i, Node<K,V> c, Node<K,V> v)
+
+// 直接修改 Node[] 中第 i 个 Node 的值, v 为新值
+static final <K,V> void setTabAt(Node<K,V>[] tab, int i, Node<K,V> v)
+```
 
 
 
+###  3 构造器分析
+
+可以看到实现了懒惰初始化，在构造方法中仅仅计算了 table 的大小，以后在第一次使用时才会真正创建
+
+```java
+public ConcurrentHashMap(int initialCapacity,
+                         float loadFactor, int concurrencyLevel) {
+    if (!(loadFactor > 0.0f) || initialCapacity < 0 || concurrencyLevel <= 0)
+        throw new IllegalArgumentException();
+    if (initialCapacity < concurrencyLevel)   // Use at least as many bins
+        initialCapacity = concurrencyLevel;   // as estimated threads
+    long size = (long)(1.0 + (long)initialCapacity / loadFactor);
+    // tableSizeFor 仍然是保证计算的大小是 2^n, 即 16,32,64 ...
+    int cap = (size >= (long)MAXIMUM_CAPACITY) ?
+        MAXIMUM_CAPACITY : tableSizeFor((int)size);
+    this.sizeCtl = cap;
+}
+```
 
 
 
+### 4 get
+
+```java
+public V get(Object key) {
+    Node<K,V>[] tab; Node<K,V> e, p; int n, eh; K ek;
+    // spread 方法能确保返回结果是正数
+    int h = spread(key.hashCode());
+    if ((tab = table) != null && (n = tab.length) > 0 &&
+        (e = tabAt(tab, (n - 1) & h)) != null) {
+        // 如果头结点已经是要查找的 key
+        if ((eh = e.hash) == h) {
+            if ((ek = e.key) == key || (ek != null && key.equals(ek)))
+                return e.val;
+        }
+        else if (eh < 0) // hash 为负数表示该 bin 在扩容中 或 是 treebin, 这时调用 find 方法来查找
+            return (p = e.find(h, key)) != null ? p.val : null;
+        // 正常遍历链表, 用 equals 比较
+        while ((e = e.next) != null) {
+            if (e.hash == h &&
+                ((ek = e.key) == key || (ek != null && key.equals(ek))))
+                return e.val;
+        }
+    }
+    return null;
+}
+```
 
 
 
+### 5 putVal
+
+```java
+public V put(K key, V value) {
+    return putVal(key, value, false);
+}
+```
+
+```java
+final V putVal(K key, V value, boolean onlyIfAbsent) {
+    if (key == null || value == null) throw new NullPointerException();
+    // 其中 spread 方法会综合高位低位, 具有更好的 hash 性
+    int hash = spread(key.hashCode());
+    int binCount = 0;
+    for (Node<K,V>[] tab = table;;) {
+        // f 是链表头节点
+		// fh 是链表头结点的 hash
+		// i 是链表在 table 中的下标
+        Node<K,V> f; int n, i, fh;
+        // 懒惰式初始化，要创建 table
+        if (tab == null || (n = tab.length) == 0)
+            // 初始化 table 使用了 cas, 无需 synchronized 创建成功, 进入下一轮循环
+            tab = initTable();
+        // 要创建链表头节点
+        else if ((f = tabAt(tab, i = (n - 1) & hash)) == null) {
+            // 添加链表头使用了 cas, 无需 synchronized
+            if (casTabAt(tab, i, null,
+                         new Node<K,V>(hash, key, value, null)))
+                break;                   // no lock when adding to empty bin
+        }
+        // 处在扩容状态中，需要帮忙扩容
+        else if ((fh = f.hash) == MOVED)
+            // 帮忙之后, 进入下一轮循环
+            tab = helpTransfer(tab, f);
+        else {
+            V oldVal = null;
+            // 锁住链表头节点
+            synchronized (f) {
+                // 双重检查，再次确认链表头节点没有被移动
+                if (tabAt(tab, i) == f) {
+                    // 链表
+                    if (fh >= 0) {
+                        binCount = 1;
+                        // 遍历链表
+                        for (Node<K,V> e = f;; ++binCount) {
+                            K ek;
+                            // 找到相同的 key
+                            if (e.hash == hash &&
+                                ((ek = e.key) == key ||
+                                 (ek != null && key.equals(ek)))) {
+                                oldVal = e.val;
+                                // 更新
+                                if (!onlyIfAbsent)
+                                    e.val = value;
+                                break;
+                            }
+                            // 已经是最后的节点了, 新增 Node, 追加至链表尾
+                            Node<K,V> pred = e;
+                            if ((e = e.next) == null) {
+                                pred.next = new Node<K,V>(hash, key,
+                                                          value, null);
+                                break;
+                            }
+                        }
+                    }
+                    // 红黑树
+                    else if (f instanceof TreeBin) {
+                        Node<K,V> p;
+                        binCount = 2;
+                        // putTreeVal 会看 key 是否已经在树中, 是, 则返回对应的 TreeNode
+                        if ((p = ((TreeBin<K,V>)f).putTreeVal(hash, key,
+                                                       value)) != null) {
+                            oldVal = p.val;
+                            if (!onlyIfAbsent)
+                                p.val = value;
+                        }
+                    }
+                }
+                // 释放链表头节点的锁
+            }
+            if (binCount != 0) {
+                if (binCount >= TREEIFY_THRESHOLD)
+                    // 如果链表长度 >= 树化阈值(8), 进行链表转为红黑树
+                    treeifyBin(tab, i);
+                if (oldVal != null)
+                    return oldVal;
+                break;
+            }
+        }
+    }
+    // 增加 size 计数，这里也涉及到了多线程的问题
+    addCount(1L, binCount);
+    return null;
+}
+```
 
 
 
+### 6 initTable
 
-
-
-
-
-
-
-
-
-
-
-
+```java
+private final Node<K,V>[] initTable() {
+    Node<K,V>[] tab; int sc;
+    while ((tab = table) == null || tab.length == 0) {
+        if ((sc = sizeCtl) < 0)
+            Thread.yield(); // lost initialization race; just spin
+        // 尝试将 sizeCtl 设置为 -1（表示初始化 table）
+        else if (U.compareAndSwapInt(this, SIZECTL, sc, -1)) {
+            // 获得锁, 创建 table, 这时其它线程会在 while() 循环中 yield 直至 table 创建
+            try {
+                if ((tab = table) == null || tab.length == 0) {
+                    int n = (sc > 0) ? sc : DEFAULT_CAPACITY;
+                    @SuppressWarnings("unchecked")
+                    Node<K,V>[] nt = (Node<K,V>[])new Node<?,?>[n];
+                    table = tab = nt;
+                    sc = n - (n >>> 2);
+                }
+            } finally {
+                sizeCtl = sc;
+            }
+            break;
+        }
+    }
+    return tab;
+}
+```
 
 
 
