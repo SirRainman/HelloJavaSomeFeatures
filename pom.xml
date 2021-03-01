@@ -12,6 +12,7 @@
     <modules>
         <module>thread</module>
         <module>reflect</module>
+        <module>RPC</module>
     </modules>
 
     <properties>
