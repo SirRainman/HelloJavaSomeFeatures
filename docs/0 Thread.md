@@ -408,7 +408,7 @@ synchronized (t1) {
 
 等待/通知 机制 API介绍：
 
-* object.wait() 让进入 object 监视器的线程到 waitSet 等待，从而该线程进入到Waiting状态。
+* object.wait() **让进入 object 监视器的线程到 waitSet 等待，从而该线程进入到Waiting状态**。
 * object.notify() 在 object 上**正在 waitSet 等待的线程中随机挑一个唤醒**
 * object.notifyAll() 让 object 上正在 waitSet 等待的线程全部唤醒
 
@@ -429,8 +429,9 @@ wait() / notify( ) / notifyAll( ) 的关系：
 
 使用需要注意的地方：
 
-* 想要执行wait方法，必须先获得锁
-* 使用 wait() **挂起期间，线程会释放锁**。如果没有释放锁，那么其它线程就无法进入对象的同步方法或者同步控制块中，那么就无法执行 notify() 或者 notifyAll() 来唤醒挂起的线程，造成死锁。
+* **想要执行wait方法，必须先获得锁**
+* 使用 wait() **挂起期间，线程会释放锁**。
+    * 如果没有释放锁，那么其它线程就无法进入对象的同步方法或者同步控制块中，那么就无法执行 notify() 或者 notifyAll() 来唤醒挂起的线程，造成死锁。
 
 
 
@@ -452,9 +453,10 @@ synchronized(lock) {
 
 以上做法的优点：
 
-1. 不用sleep，是因为sleep在TIME_WAITING状态中时，仍会占用锁
+1. **不用sleep，是因为sleep在TIME_WAITING状态中时，仍会占用锁**
 2. 使用notifyAll，是因为当有多个线程都在WaitSet中时， notify只能随机的在WaitSet中唤醒一个线程，可能唤醒的不是正确的线程
-3. 用 notifyAll 仅解决某个线程的唤醒问题，但使用 if + wait 判断仅有一次机会，一旦条件不成立，就没有重新判断的机会了。如果当前的线程被错误的唤醒，且条件不满足，则会再次的进入到WaitSet中。
+3. 用 notifyAll 仅解决某个线程的唤醒问题，但使用 if + wait 判断仅有一次机会，一旦条件不成立，就没有重新判断的机会了。
+    1. 如果当前的线程被错误的唤醒，且条件不满足，则会再次的进入到WaitSet中。
 
 
 
@@ -527,10 +529,12 @@ public class WaitNotify {
 
 **LockSupport 类中的方法，用来暂停当前线程和恢复线程**
 
-### 1 与 Object 的 wait & notify 相比:
+### 1 与 wait & notify 相比:
 
 * **wait/notify/notifyAll 必须配合 Object Monitor 一起使用**，而 park，unpark 不必
-* **park & unpark 是以线程为单位来【阻塞】和【唤醒】线程**，而 notify 只能随机唤醒一个等待线程，notifyAll 是唤醒所有等待线程，就不那么【精确】
+* **park & unpark 是以线程为单位来【阻塞】和【唤醒】线程**，
+    * notify 只能随机唤醒一个等待线程，
+    * notifyAll 是唤醒所有等待线程，就不那么【精确】
 * **park & unpark 可以先 unpark，而 wait & notify 不能先 notify**
 
 ```java
@@ -569,9 +573,9 @@ public class Park {
 * _mutex
 
 1. 运行时调用park()
-    2. 检查 _counter ，本情况为 0，这时，获得 _mutex 互斥锁
-    3. 线程进入 _cond 条件变量阻塞
-    4. 设置 _counter = 0
+2. 检查 _counter ，本情况为 0，这时，获得 _mutex 互斥锁
+3. 线程进入 _cond 条件变量阻塞
+4. 设置 _counter = 0
 
 ![image-20210225154823767](http://haoimg.hifool.cn/img/image-20210225154823767.png)
 
@@ -595,9 +599,9 @@ public class Park {
 
 ![image-20210225155312983](http://haoimg.hifool.cn/img/image-20210225155312983.png)
 
+
+
 ---
-
-
 
 ## sleep()、wait()、yield() 的区别
 
@@ -625,11 +629,7 @@ public class Park {
 
 * `wait()` 通常被用于线程间交互/通信，`sleep() `通常被用于暂停执行。
 
-
-
 ---
-
-
 
 ## Daemon 守护线程
 
@@ -663,13 +663,7 @@ public class Daemon {
 }
 ```
 
-
-
-
-
 ---
-
-
 
 ## interrupt() 线程中断
 
@@ -677,12 +671,10 @@ public class Daemon {
 
 * 中断标记位：表示一个运行中的线程 是否被其他线程进行了中断操作，其他线程通过调用该线程的interrupt() 方法对其进行中断操作。
     * 线程通过检查自身是否被中断来响应，如果自己被中断掉，可以进行相应的处理工作。
-* 对于中断的正确理解是：**中断操作并不会真正的中断一个正在运行的线程，而只是发出中断请求，然后由线程在下一个合适的时刻中断自己（合适的时刻称为取消点）**。
+* **中断操作并不会真正的中断一个正在运行的线程，而只是发出中断请求，然后由线程在下一个合适的时刻中断自己（合适的时刻称为取消点）**。
     * 有些方法（wait / sleep / join)会严格的处理这些中断请求，当他们收到中断请求或者在开始执行时，发现已被设置好的中断状态时，将抛出一个异常。
 
-
-
-与中断有关的三个方法：
+**与中断有关的三个方法**：
 
 ```java
 public void Thread.interrupt() // 中断线程，Thread实例方法。通知目标线程中断，也就是设置中断标志位为true。中断标志位表示当前线程已经被中断了。
@@ -692,13 +684,11 @@ public static boolean Thread.interrupted() // Thread类静态方法。判断当�
 
 
 
-线程中断的异常处理：
+**线程中断的异常处理**：
 
 * 与线程相关的一些方法可能会抛出 InterruptedException，因为**异常不能跨线程传播回 main() 中，因此必须在本地进行处理**。
     1. 线程中抛出的其它异常也同样需要在本地进行处理。 
     2. sleep() 等会抛出InterruptedException的方法，**抛出中断异常前会清除线程中断标记位！**然后再抛出异常。
-
-
 
 ```java
 @Slf4j(topic = "c.Interrupt")
@@ -743,7 +733,7 @@ public class Interrupt {
 
 ### 1 两阶段终止
 
-终止一个线程不推荐的做法（可能会产生很多问题）：
+终止线程不推荐的做法（可能会产生很多问题）：
 
 - **使用线程对象的 stop() 方法停止线程**
     - **stop 方法会真正杀死线程，如果这时线程锁住了共享资源，那么当它被杀死后就再也没有机会释放锁**
@@ -810,13 +800,7 @@ class TwoPhaseTermination2 {
 }
 ```
 
-
-
-
-
 ---
-
-
 
 ## 线程的生命周期
 
@@ -1118,15 +1102,13 @@ boolean compareAndSet(int expect, int update) 	//如果输入的数值等于预�
 public final void lazySet(int newValue)			//最终设置为newValue,使用 lazySet 设置之后可能导致其他线程在之后的一小段时间内还是可以读到旧的值。
 ```
 
-其中的关键是 compareAndSet，它的简称就是 CAS （也有 Compare And Swap 的说法），它必须是原子操作。
+其中的**关键是 compareAndSet**，原子操作
 
 ----
 
-
-
 # 四、synchronized
 
-synchronized是java提供的**原子性内置锁**，这种内置的并且使用者看不到的锁也被称为**监视器锁**，
+synchronized是java提供的**原子性内置锁**，这种内置的并且使用者看不到的锁也被称为**监视器锁**
 
 * **synchronized依赖操作系统底层互斥锁实现**，他的作用主要就是**实现原子性操作**和**解决共享变量的内存可见性**问题
 * 使用synchronized之后，会在编译之后在同步的代码块前后加上**monitorenter**和**monitorexit**字节码指令
@@ -1147,6 +1129,15 @@ synchronized是排它锁，当一个线程获得锁之后，其他线程必须�
 3. synchronized不知道有没有成功获取锁
 
 
+
+ReentrantLock 相比 synchronized 优点：
+
+* **ReentryLock 异常时不会释放锁**
+* ReentrantLock **可中断**
+* ReentrantLock **可以设置超时时间**
+* ReentrantLock  **可以设置为公平锁**
+* ReentrantLock **支持多个条件变量**
+* **ReentryLock 非阻塞地获取锁**，**如果尝试获取锁失败，并不进入阻塞状态，而是直接返回**
 
 ## 4.1 锁粒度
 
@@ -1353,9 +1344,7 @@ Monitor 被翻译为监视器或管程
 * **synchronized 必须是进入同一个对象的 monitor 才有上述的效果**
 * **不加 synchronized 的对象不会关联监视器**，不遵从以上规则
 
-----
-
-
+---
 
 ### synchronize原理 - 字节码角度原理
 
@@ -1420,13 +1409,7 @@ public static void main(java.lang.String[]);
             offset_delta = 4
 ```
 
-
-
-
-
 ---
-
-
 
 ### 重量级锁
 
@@ -1449,8 +1432,6 @@ synchronized 修饰方法的的情况：
 
 ---
 
-
-
 ### 轻量级锁
 
 **“轻量级”是相对于使用操作系统互斥量来实现的重量锁而言的**，操作系统实现线程之间的**切换需要从用户态转换到核心态**，这个成本非常高，状态之间的转换需要相对比较长的时间。
@@ -1471,8 +1452,6 @@ synchronized 修饰方法的的情况：
 - 轻量级锁的操作也很轻便，它只是简单地**将对象头部作为指针，指向持有锁的线程堆栈的内部锁记录，通过对象头来判断一个线程是否持有对象锁**。
     - 如果线程获得轻量级锁成功，则可以顺利进入临界区。
     - 如果轻量级锁加锁失败，则表示其他线程抢先争夺到了锁，那么当前线程的锁请求就会膨胀为重量级锁。
-
-
 
 **轻量级锁的实现过程：**
 
@@ -1511,8 +1490,6 @@ synchronized 修饰方法的的情况：
 
 ---
 
-
-
 ### 偏向锁
 
 **优化：轻量级锁在没有竞争时（就自己这个线程），每次重入仍然需要执行 CAS 操作来替换Mark Word，浪费时间**。
@@ -1524,8 +1501,6 @@ synchronized 修饰方法的的情况：
     * **多个线程很少进行锁竞争的场合**。
     * 偏向锁可以**提高带有同步但无竞争的程序性能**，但它同样是一个带有效益权衡（Trade Off）性质的优化，也就是说它并非总是对程序运行有利。
     * **如果程序中大多数的锁都总是被多个不同的线程访问，那偏向模式就是多余的**
-
-
 
 ![image-20210222192404367](http://haoimg.hifool.cn/img/image-20210222192404367.png)
 
@@ -1567,14 +1542,14 @@ synchronized 修饰方法的的情况：
 
 **Normal正常状态下Mark Word中hashcode需要占用31位的空间，如果处于偏向锁Biased状态时，如上图，就没有相应的状态去存储hashcode了**。
 
-* 因此，当一个对象已经计算过一致性哈希码后，它就再也无法进入偏向锁状态了；
+* **因此，当一个对象已经计算过一致性哈希码后，它就再也无法进入偏向锁状态了；**
 * 而当一个对象当前正处于偏向锁状态，又收到需要计算其**一致性哈希码请求时，它的偏向状态会被立即撤销，并且锁会膨胀为重量级锁。**
 
 在**Heavyweight Locked 重量级锁的状态中**，对象头指向了重量级锁的位置，**代表重量级锁的ObjectMonitor类里有字段可以记录非加锁状态（标志位为“01”）下的Mark Word，其中自然可以存储原来的哈希码。**
 
 #### 3 撤销偏向锁 - 其他线程使用
 
-当有其它线程使用偏向锁对象时，会将偏向锁升级为轻量级锁
+**当有其它线程使用偏向锁对象时，会将偏向锁升级为轻量级锁**
 
 ```java
 private static void test2() throws InterruptedException {
@@ -1612,7 +1587,7 @@ private static void test2() throws InterruptedException {
 
 如果**对象虽然被多个线程访问，升级为了轻量级锁，但没有竞争，这时偏向了线程 T1 的对象仍有机会重新偏向 T2**，重偏向会重置对象的 Thread ID
 
-当撤销偏向锁阈值超过 20 次后，jvm 会这样觉得，我是不是偏向错了呢，于是会在给这些对象加锁时重新偏向至加锁线程
+**当撤销偏向锁阈值超过 20 次后，jvm 会在给这些对象加锁时重新偏向至加锁线程**
 
 **偏向锁重偏向一次之后不可再次重偏向。**
 
@@ -1620,15 +1595,11 @@ private static void test2() throws InterruptedException {
 
 在多线程竞争剧烈的情况下，使用偏向锁将会降低效率，于是乎产生了批量撤销机制。
 
-当撤销偏向锁阈值超过 40 次后，jvm 会这样觉得，自己确实偏向错了，根本就不该偏向。
+**当撤销偏向锁阈值超过 40 次后**，jvm 会这样觉得，自己确实偏向错了，根本就不该偏向。
 
-当某个类已经触发批量撤销机制后，JVM会默认当前类产生了严重的问题，剥夺了该类的新实例对象使用偏向锁的权利
-
-
+**当某个类已经触发批量撤销机制后，JVM会默认当前类产生了严重的问题，剥夺了该类的新实例对象使用偏向锁的权利**
 
 ---
-
-
 
 ### 锁膨胀
 
@@ -1665,8 +1636,6 @@ public static void method1() {
 
 ---
 
-
-
 ### 自旋优化
 
 重量级锁竞争的时候，互斥同步进入阻塞状态的开销都很大，挂起线程和恢复线程的操作都需要转入内核态中完成，这些操作给Java虚拟机的并发性能带来了很大的压力，应该尽量避免。
@@ -1696,13 +1665,7 @@ public static void method1() {
 
 ![image-20210222175408536](http://haoimg.hifool.cn/img/image-20210222175408536.png)
 
-
-
-
-
 ---
-
-
 
 ### 锁消除
 
@@ -1742,8 +1705,6 @@ public static String concatString(String s1, String s2, String s3) {
 
 ---
 
-
-
 ### 锁粗化
 
 如果一系列的连续操作都**对同一个对象反复加锁和解锁，导致线程发生多次重入，频繁的加锁操作就会导致性能损耗**。
@@ -1752,11 +1713,7 @@ public static String concatString(String s1, String s2, String s3) {
 2. 虚拟机将会把加锁的范围扩展（粗化）到整个操作序列的外部。
 3. 对于上一节的示例代码就是扩展到第一个 append() 操作之前直至最后一个 append() 操作之后，这样只需要加锁一次就可以了。
 
-
-
 ---
-
-
 
 ### 不同锁之间的状态转换
 
@@ -1789,7 +1746,7 @@ public static String concatString(String s1, String s2, String s3) {
 | 轻量锁 |           竞争的线程不会阻塞，提高了程序的响应速度           |         若线程长时间竞争不到锁，自旋会消耗 CPU 性能          | 线程交替执行同步块或者同步方法，追求响应时间，锁占用时间很短 |
 | 重量锁 |               线程竞争不使用自旋，不会消耗 CPU               | 线程阻塞，响应时间缓慢，在多线程下，频繁的获取释放锁，会带来巨大的性能消耗 |                  追求吞吐量，锁占用时间较长                  |
 
-
+---
 
 # 五、volatile
 
@@ -1813,7 +1770,7 @@ CPU的发展带来的一些问题：
 
 
 
-**volatile 必须借助 CAS 才能读取到共享变量的最新值来实现比较并交换的效果**
+**volatile 必须借助 CAS， 才能读取到共享变量的最新值来实现比较并交换的效果**
 
 * CAS保证原子性，配合volatile实现线程安全
 
@@ -2238,8 +2195,6 @@ Happens-before原则有哪些？
 
 ---
 
-
-
 # 六、线程池
 
 线程池提供了一种限制和管理资源（包括执行一个任务）。 
@@ -2270,11 +2225,17 @@ Happens-before原则有哪些？
 
 
 
+**新建线程 -> 达到核心数 -> 加入队列 -> 新建线程（救急线程） -> 达到最大数 -> 触发拒绝策略**
+
+
+
 池化思想在其他地方上的应用：
 
 1. **内存池**(Memory Pooling)：预先申请内存，提升申请内存速度，减少内存碎片。
 2. **连接池**(Connection Pooling)：预先申请数据库连接，提升申请连接的速度，降低系统的开销。
 3. **实例池**(Object Pooling)：循环使用对象，减少资源在初始化和释放时的昂贵损耗
+
+
 
 ## 自定义线程池
 
@@ -2619,7 +2580,7 @@ public ThreadPoolExecutor(int corePoolSize,
 
 ### 5 不同场景的线程池
 
-#### 1 newFixedThreadPool
+#### 1 newFixedThreadPool（任务队列无界）
 
 创建一个核心线程个数和最大线程个数都为nThreads 的线程池，并且阻塞队列长度为 Integer.MAX_VALUE。 keepAliveTime=0 说明只要线程个数比核心线程个数多并且当前空闲则回收。
 
@@ -2660,7 +2621,7 @@ public static void main(String[] args) {
 
 * **适用于任务量已知，相对耗时的任务**
 
-#### 2 newCachedThreadPool
+#### 2 newCachedThreadPool（线程数无界）
 
 ```java
 public static ExecutorService newCachedThreadPool() {
@@ -2683,7 +2644,7 @@ public static ExecutorService newCachedThreadPool() {
 * 整个线程池表现为线程数会根据任务量不断增长，没有上限，当任务执行完毕，空闲 1分钟后释放线程。
 * **适合任务数比较密集，但每个任务执行时间较短的情况**
 
-#### 3 newSingleThreadExecutor
+#### 3 newSingleThreadExecutor（任务队列无界）
 
 ```java
 public static ExecutorService newSingleThreadExecutor() {
@@ -2787,7 +2748,7 @@ public static void testScheduled2() {
 }
 ```
 
-
+---
 
 #### 6 ForkJoinPool
 
@@ -3026,8 +2987,6 @@ public static void testException() {
         
 
 ---
-
-
 
 # 七、JUC
 
@@ -3362,8 +3321,6 @@ ReentrantLock 与 synchronized 一样，都支持可重入
 
 * 可重入锁：同一个线程如果首次获得了这把锁，那么因为它是这把锁的拥有者，因此有权利再次获取这把锁
 * 不可重入锁：同一个线程在第二次尝试获得锁时，该线程自己也会被锁挡住
-
-
 
 ```java
 // 获取锁
