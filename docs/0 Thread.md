@@ -4027,8 +4027,9 @@ public class CountDownLatchExample {
     * **直到计数器为 0，所有调用 await() 方法而在等待的线程才能继续执行**。
 * 构造时设置『计数个数』，每个线程执行到某个需要“同步”的时刻调用 await() 方法进行等待，当等待的线程数满足『计数个数』时，继续执行。
 * CyclicBarrier 与 CountDownLatch 的主要区别在于
+    * **CountDownLatch 是一个线程等待其他线程， CyclicBarrier 是多个线程互相等待。**
     * **CyclicBarrier 的计数器通过调用 reset() 方法可以循环使用**，所以它才叫做循环屏障。
-* CyclicBarrier 与线程池的大小要设置成一样的，否则容易出现错误
+* **CyclicBarrier 与线程池的大小要设置成一样的，否则容易出现错误**
 
 
 
