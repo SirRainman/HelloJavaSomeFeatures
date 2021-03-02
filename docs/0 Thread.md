@@ -460,65 +460,41 @@ synchronized(lock) {
 
 
 
-示例：
+示例：轮流打印1 2 3 4
 
 ```java
 @Slf4j
 public class WaitNotify {
-    static boolean flag = true;
-    static Object lock = new Object();
+    static class PrintNumberTask implements Runnable {
+        private byte[] lock;
 
-    @Test
-    public void testWaitNotify() throws InterruptedException {
-        Thread waitThread = new Thread(new Wait(), "WaitThread");
-        waitThread.start();
+        // 类共享变量
+        private static int x = 1;
 
-        Sleeper.sleep(1);
+        public PrintNumberTask(byte[] lock) {
+            this.lock = lock;
+        }
 
-        Thread notifyThread = new Thread(new Notify(), "NotifyThread");
-        notifyThread.start();
-
-        waitThread.join();
-        notifyThread.join();
-    }
-
-    static class Wait implements Runnable {
-
+        @Override
         public void run() {
-            // 加锁，拥有lock的Monitor
-            synchronized (lock) {
-                // 当条件不满足时，继续wait，同时释放了lock的锁
-                while (flag) {
+            while(x < 10) {
+                synchronized (lock) {
+                    log.info("{}", x++);
+                    lock.notify();
                     try {
-                        log.info("flag is true");
                         lock.wait();
                     } catch (InterruptedException e) {
-
+                        e.printStackTrace();
                     }
                 }
-                // 条件满足时，完成工作
-                log.info("flag is false");
             }
         }
     }
 
-    static class Notify implements Runnable {
-        public void run() {
-            // 加锁，拥有lock的Monitor
-            synchronized (lock) {
-                // 获取lock的锁，然后进行通知，通知时不会释放lock的锁，
-                // 直到当前线程释放了lock后，WaitThread才能从wait方法中返回
-                log.info("hold lock, notify()");
-                lock.notifyAll();
-                flag = false;
-                Sleeper.sleep(5);
-            }
-            // 再次加锁
-            synchronized (lock) {
-                log.info("hold lock again");
-                Sleeper.sleep(5);
-            }
-        }
+    public static void main(String[] args) {
+        byte[] lock = new byte[0];
+        new Thread(new PrintNumberTask(lock), "t1").start();
+        new Thread(new PrintNumberTask(lock), "t2").start();
     }
 }
 ```

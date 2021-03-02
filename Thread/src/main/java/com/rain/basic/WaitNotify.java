@@ -4,9 +4,6 @@ import com.rain.util.Sleeper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @program: rain-java-ideas
@@ -71,5 +68,37 @@ public class WaitNotify {
             //}
         }
     }
-}
 
+    static class PrintNumberTask implements Runnable {
+        private byte[] lock;
+
+        private static int x = 1;
+
+        public PrintNumberTask(byte[] lock) {
+            this.lock = lock;
+        }
+
+        @Override
+        public void run() {
+            while(x < 10) {
+                synchronized (lock) {
+                    log.info("{}", x++);
+                    lock.notify();
+                    try {
+                        lock.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        byte[] lock = new byte[0];
+        new Thread(new PrintNumberTask(lock), "t1").start();
+        new Thread(new PrintNumberTask(lock), "t2").start();
+        Sleeper.sleep(1);
+        lock.notify();
+    }
+}
