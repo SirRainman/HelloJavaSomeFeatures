@@ -240,19 +240,9 @@ public class DeadLock {
 * 这些类中的每个方法是原子的，
 * 但是**多个方法的组合不一定是原子**的
 
-```java
-Hashtable table = new Hashtable();
-// 线程1，线程2 同时执行时，可能同时检查的结果都为空
-if( table.get("key") == null) {
-	table.put("key", value);
-}
-```
-
 
 
 ---
-
-
 
 # 一、创建线程
 
@@ -320,17 +310,17 @@ public static void main(String[] args) throws ExecutionException, InterruptedExc
 
 ## 2 run()与start()区别
 
-- start()：**线程对象初始化完成进入NEW状态之后，调用start()方法会创建一个新线程并执行run()方法**。
+- start()：**线程对象初始化完成进入NEW状态之后，调用start()方法会使用native的方式创建一个新线程，并执行run()方法**。
     1. start() 启动一个线程时：当前线程（parent线程）同步告知JVM，只要线程规划器空闲，应立即启动 调用start()方法的线程（即子进程进入到了就绪RUNNABLE状态）。
     2. 然后子进程通过此Thread类调用方法run()完成运行的操作， 这里方法run()称为线程体， 它包含了新开的线程要执行的的内容，
     3. run方法运行结束， 此线程终止， CPU再运行其它线程，start()不能被重复调用。
     4. 注：**只有处于NEW状态的线程才可以调用 start() 方法**，否则会抛出 IllegalThreadStateException 。也就是说，**一个线程不能调用两次start方法**，此时线程处于终止或者其他非NEW状态，不可以再次启动。
-- **run()： 子类需要覆盖Thread类的run方法。**
+- **run()：子类需要覆盖Thread类的run方法。**
     - run()就和普通的成员方法一样，可以被重复调用。直接调用run方法并不会创建新的线程，只是作为一个普通的方法调用，在当前线程串行的执行run()方法中的代码。
 
+
+
 ---
-
-
 
 # 二、线程 - 基础
 
@@ -341,7 +331,6 @@ Thread.sleep(millisec) 方法会休眠当前正在执行的线程(放弃CPU)。
 需要注意的亮点：
 
 1. **sleep() 可能会抛出 InterruptedException，因为异常不能跨线程传播回 main() 中，因此必须在本地进行处理。**
-    1. 线程中抛出的其它异常也同样需要在本地进行处理。 
     2. sleep() 等会抛出InterruptedException的方法，**抛出中断异常前会清除线程中断标记位！**然后再抛出异常。
 2. **在线程休眠阶段，仍然会持有锁，并不会释放锁。**
 
@@ -397,7 +386,7 @@ public static void main(String[] args) {
 
 join() 的作用：让“主线程”等待“子线程”结束之后才能继续运行。
 
-join原理：是调用者轮询检查线程 alive 状态
+join原理：**是调用者轮询检查线程 alive 状态**
 
 * join 体现的是【保护性暂停】模式
 
