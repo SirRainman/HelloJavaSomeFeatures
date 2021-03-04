@@ -252,6 +252,12 @@ set profiling on;
 CREATE INDEX indexName ON mytable(username(length))；
 ALTER table mytable ADD UNIQUE [indexName] (username(length))
 
+索引优点：
+
+* 大大减少服务器需要扫描的数据量
+* 可以帮助服务器避免排序和临时表
+* 将随机IO变为顺序IO
+
 ## B+树索引
 
 B+树是适用于文件系统一种B树的变形树。

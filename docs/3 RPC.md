@@ -139,7 +139,7 @@ JDK **动态代理是利用反射机制生成一个实现代理接口的匿名�
     2. kryo 速度较快，序列化后体积较小，但是跨语言支持较复杂。
 3. Hessian
     1. Hessian 是一个基于二进制的协议，
-4. Protobuf
+4. Protobuf![protobuf 介绍](https://www.jianshu.com/p/a24c88c0526a)
     1. 底层由 C++ 实现，其他平台使用时必须使用 protocol compiler 进行预编译生成 protoc 二进制文件。
     2. 性能主要消耗在文件的预编译上。
     3. 序列化反序列化性能较高，平台无关。
