@@ -21,7 +21,7 @@ public class Server {
         ServerSocket serverSocket = new ServerSocket(8888);
 
         // 服务匹配表
-        HandlerMap.addHandler("com.rain.common.UserService", UserServiceImpl.class);
+        HandlerMap.addHandler("com.rain.service.UserService", UserServiceImpl.class);
 
         while(isRunning) {
             Socket socket = serverSocket.accept();

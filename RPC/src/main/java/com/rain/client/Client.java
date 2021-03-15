@@ -1,6 +1,6 @@
 package com.rain.client;
 
-import com.rain.common.UserService;
+import com.rain.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 
 /**

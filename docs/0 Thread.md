@@ -91,9 +91,9 @@ public void threadTypes() {
 ### 1 为什么**程序计数器**是线程私有的？
 
 * **为了线程切换后能恢复到正确的执行位置**。
-* **程序计数器**主要有下面两个作用：
+* **程序计数器**：
     1. **字节码解释器通过改变程序计数器来依次读取指令**，从而实现代码的流程控制，如：顺序执行、选择、循环、异常处理。
-    2. 在多线程的情况下，**程序计数器**记录当前线程执行的位置，从而当线程被切换回来的时候能够知道该线程上次运行到哪儿了。
+    2. 在多线程的情况下，**程序计数器记录当前线程执行的位置**，从而当线程被切换回来的时候能够知道该线程上次运行到哪儿了。
     3. 需要注意的是，如果执行的是 native 方法，那么程序计数器记录的是 undefined 地址，只有执行的是 Java 代码时程序计数器记录的才是下一条指令的地址。
 
 ### 2 为什么**虚拟机栈 和 本地方法栈** 是私有的？
@@ -108,7 +108,7 @@ public void threadTypes() {
 
 ### 3 为什么 **堆和方法区** 是共享的？
 
-* 方便多个线程共享使用公共资源，否则线程不就和进程一样了嘛。
+* 方便多个线程**共享使用公共资源**，否则线程不就和进程一样了嘛。
 * 堆是进程中最大的一块内存，**主要用于存放新创建的对象** (几乎所有对象都在这里分配内存)
 * 方法区**主要用于存放已被加载的类信息、常量、静态变量、即时编译器编译后的代码等数据**。
 
@@ -147,7 +147,7 @@ CPU 核心在任意时刻只能被一个线程使用，为了让这些线程都�
 
 当一个线程的时间片用完的时候就会先保存自己的状态，重新处于就绪状态让出CPU给其他线程使用，这个过程就属于一次上下文切换。
 
-上下文切换通常是计算密集型的。
+上下文切换通常是**计算密集型**的。
 
 * 上下文切换需要相当可观的处理器时间，事实上，可能是操作系统中时间消耗最大的操作。
 * Linux 相比与其他操作系统（包括其他类 Unix 系统）有很多的优点，其中有一项就是，其上下文切换和模式切换的时间消耗非常少。
@@ -1243,7 +1243,11 @@ public void func () {
 
 **类锁和对象锁是两把不同的锁，不互斥！！！**
 
+* 因为静态成员不属于任何一个实例对象，是类成员（ static 表明这是该类的一个静态资源，不属于对象）。
+* 所以，如果一个线程 A 调用一个实例对象的非静态 synchronized 方法，而线程 B 需要调用这个实例对象所属类的静态 synchronized 方法，是允许的，不会发生互斥现象，
+* 因为访问**静态 synchronized 方法占用的锁是当前类的锁**，而访问**非静态 synchronized 方法占用的锁是当前实例对象锁**。
 
+---
 
 ## 4.2 锁优化
 
@@ -1768,6 +1772,16 @@ volatile 的优点：
 
 
 
+synchronized 关键字和 volatile 关键字的区别
+
+- `synchronized` 关键字和 `volatile` 关键字是两个互补的存在，而不是对立的存在！
+- **`volatile` 关键字**是线程同步的**轻量级实现**，所以**`volatile `性能肯定比`synchronized`关键字要好**。
+- **`volatile` 关键字只能用于变量而 `synchronized` 关键字可以修饰方法以及代码块**。
+- **`volatile` 关键字能保证数据的可见性，但不能保证数据的原子性。`synchronized` 关键字两者都能保证。**
+- **`volatile`关键字主要用于解决变量在多个线程之间的可见性，而 `synchronized` 关键字解决的是多个线程之间访问资源的同步性。**
+
+---
+
 ## 5.1 可见性
 
 **可见性：保证的是在多个线程之间，一个线程对volatile变量的修改对另一个线程可见**
@@ -1825,6 +1839,8 @@ public static void main(String[] args) throws InterruptedException {
 
 JVM 会在不影响正确性的前提下，可以调整语句的执行顺序。
 
+### 1 单例模式：
+
 例子：通过双重检查加锁（DCL）的方式来实现单例模式：
 
 ```java
@@ -1848,8 +1864,6 @@ public class Singleton {
 }
 ```
 
-
-
 **为什么要在变量singleton之间加上volatile关键字？** - 重拍带来的危害
 
 * 对象的构造过程，实例化一个对象三个步骤：
@@ -1870,7 +1884,7 @@ public class Singleton {
 * 懒惰实例化：只有首次调用才会实例化，之后不会再进行实例化操作
 * 首次使用 getInstance() 才使用 synchronized 加锁，后续使用时无需加锁 
 
-### 1 不使用Volatile
+### 2 不使用Volatile
 
 ```java
 public class Singleton {
@@ -1945,7 +1959,7 @@ public class Singleton {
 1. 关键在于 0: getstatic 这行代码在 monitor 控制之外，它就像之前举例中不守规则的人，可以越过 monitor 读取INSTANCE 变量的值
 2. 这时 t1 还未完全将构造方法执行完毕，如果在构造方法中要执行很多初始化操作，那么 t2 拿到的是将是一个未初始化完毕的单例
 
-### 2 使用Volatile
+### 3 使用Volatile
 
 **解决方法**：
 
@@ -2171,7 +2185,104 @@ Happens-before原则有哪些？
 
 ---
 
-# 六、线程池
+# 六、ThreadLocal
+
+**如何解决每一个线程都有自己的专属本地变量呢？**
+
+* `ThreadLocal`类主要解决的就是让每个线程绑定自己的值，
+* 可以将`ThreadLocal`类形象的比喻成存放数据的盒子，盒子中可以存储每个线程的私有数据。
+    * 如果你创建了一个`ThreadLocal`变量，那么访问这个变量的每个线程都会有这个变量的本地副本
+    * 各个线程可以使用 `get` 和 `set` 方法来获取默认值或将其值更改为当前线程所存的副本的值，从而避免了线程安全问题。
+
+## **ThreadLocal 原理**
+
+`Thread` 类中有一个 `threadLocals` 和 一个 `inheritableThreadLocals` 变量，它们都是 `ThreadLocalMap` 类型的变量
+
+*  可以把 `ThreadLocalMap` 理解为`ThreadLocal` 类实现的定制化的 `HashMap`。
+* 默认情况下这两个变量都是 null，只有当前线程调用 `ThreadLocal` 类的 `set`或`get`方法时才创建它们，
+* 实际上调用这两个方法的时候，我们调用的是`ThreadLocalMap`类对应的 `get()`、`set()`方法。
+
+```java
+public class Thread implements Runnable {
+    ......
+    //与此线程有关的ThreadLocal值。由ThreadLocal类维护
+    ThreadLocal.ThreadLocalMap threadLocals = null;
+
+    //与此线程有关的InheritableThreadLocal值。由InheritableThreadLocal类维护
+    ThreadLocal.ThreadLocalMap inheritableThreadLocals = null;
+     ......
+}
+```
+
+`ThreadLocal`类的`set()`方法
+
+```java
+public void set(T value) {
+    Thread t = Thread.currentThread();
+    ThreadLocalMap map = getMap(t);
+    if (map != null)
+        map.set(this, value);
+    else
+        createMap(t, value);
+}
+ThreadLocalMap getMap(Thread t) {
+    return t.threadLocals;
+}
+```
+
+**最终的变量是放在了当前线程的 `ThreadLocalMap` 中，并不是存在 `ThreadLocal` 上，`ThreadLocal` 可以理解为只是`ThreadLocalMap`的封装，传递了变量值。**
+
+*  `ThrealLocal` 类中可以通过`Thread.currentThread()`获取到当前线程对象后，直接通过`getMap(Thread t)`可以访问到该线程的`ThreadLocalMap`对象。
+* **每个`Thread`中都具备一个`ThreadLocalMap`，而`ThreadLocalMap`可以存储以`ThreadLocal`为 key ，Object 对象为 value 的键值对。**
+
+
+
+`ThreadLocalMap`是`ThreadLocal`的静态内部类。
+
+![image-20210315155403596](http://haoimg.hifool.cn/img/image-20210315155403596.png)
+
+同一个线程中声明了两个 `ThreadLocal` 对象的话，会使用 `Thread`内部都是使用仅有那个`ThreadLocalMap` 存放数据的，`ThreadLocalMap`的 key 就是 `ThreadLocal`对象，value 就是 `ThreadLocal` 对象调用`set`方法设置的值。
+
+![ThreadLocal数据结构](http://haoimg.hifool.cn/img/threadlocal%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.png)
+
+## ThreadLocal 内存泄漏问题
+
+`ThreadLocalMap` 中使用的 key 为 `ThreadLocal` 的弱引用,而 value 是强引用。
+
+* 如果 `ThreadLocal` 没有被外部强引用的情况下，在垃圾回收的时候，key 会被清理掉，而 value 不会被清理掉。
+* 这样一来，`ThreadLocalMap` 中就会出现 key 为 null 的 Entry。
+* 假如我们不做任何措施的话，value 永远无法被 GC 回收，这个时候就可能会产生内存泄露。
+* ThreadLocalMap 实现中已经考虑了这种情况，在调用 `set()`、`get()`、`remove()` 方法的时候，会清理掉 key 为 null 的记录。使用完 `ThreadLocal`方法后 最好手动调用`remove()`方法
+
+```java
+static class Entry extends WeakReference<ThreadLocal<?>> {
+    /** The value associated with this ThreadLocal. */
+    Object value;
+
+    Entry(ThreadLocal<?> k, Object v) {
+        super(k);
+        value = v;
+    }
+}
+```
+
+**弱引用介绍：**
+
+> 如果一个对象只具有弱引用，那就类似于**可有可无的生活用品**。
+>
+> 弱引用与软引用的区别在于：
+>
+> * 只具有弱引用的对象拥有更短暂的生命周期。
+> * 在垃圾回收器线程扫描它 所管辖的内存区域的过程中，一旦发现了只具有弱引用的对象，不管当前内存空间足够与否，都会回收它的内存。
+> * 不过，由于垃圾回收器是一个优先级很低的线程， 因此不一定会很快发现那些只具有弱引用的对象。
+>
+> 弱引用可以和一个引用队列（ReferenceQueue）联合使用，如果弱引用所引用的对象被垃圾回收，Java 虚拟机就会把这个弱引用加入到与之关联的引用队列中。
+
+
+
+---
+
+# 七、线程池
 
 线程池提供了一种限制和管理资源（包括执行一个任务）。 
 
@@ -2812,6 +2923,11 @@ throws InterruptedException;
 throws InterruptedException, ExecutionException;
 ```
 
+1. **`execute()`方法用于提交不需要返回值的任务，所以无法判断任务是否被线程池执行成功与否；**
+2. **`submit()`方法用于提交需要返回值的任务。
+    1. **线程池会返回一个 `Future` 类型的对象，通过这个 `Future` 对象可以判断任务是否执行成功**，
+    2. 并且可以通过 `Future` 的 `get()`方法来获取返回值，`get()`方法会阻塞当前线程直到任务完成，而使用 `get（long timeout，TimeUnit unit）`方法则会阻塞当前线程一段时间后立即返回，这时候有可能任务没有执行完。
+
 
 
 ---
@@ -2970,13 +3086,23 @@ public static void testException() {
 
 AQS( AbstractQueuedSynchronizer ) 定义了一套**多线程访问共享资源**的同步器框架
 
+AQS 核心思想
+
+* 如果被请求的共享资源空闲，则将当前请求资源的线程设置为有效的工作线程，并且将共享资源设置为锁定状态。
+* 如果被请求的共享资源被占用，那么就需要一套线程阻塞等待以及被唤醒时锁分配的机制，
+    * 这个机制 AQS 是用 CLH 队列锁实现的，即将暂时获取不到锁的线程加入到队列中。
+    * CLH(Craig,Landin,and Hagersten)队列是一个虚拟的双向队列（虚拟的双向队列即不存在队列实例，仅存在结点之间的关联关系）。
+    * AQS 是将每条请求共享资源的线程封装成一个 CLH 锁队列的一个结点（Node）来实现锁的分配。
+
+
+
 主要用到AQS的并发工具类：
 
 ![image-20210225142916942](http://haoimg.hifool.cn/img/image-20210225142916942.png)
 
 
 
-![image-20210301165729515](http://haoimg.hifool.cn/img/image-20210301165729515.png)
+![image-20210315160452481](http://haoimg.hifool.cn/img/image-20210315160452481.png)
 
 AQS特点：
 
@@ -2991,6 +3117,10 @@ AQS特点：
     3. setState - 设置 state 状态
     4. compareAndSetState - CAS 机制设置 state 状态
     5. **独占模式是只有一个线程能够访问资源，而共享模式可以允许多个线程访问资源**
+        1. **Exclusive（独占）**：只有一个线程能执行，如 ReentrantLock 。
+            - 公平锁：按照线程在队列中的排队顺序，先到者先拿到锁
+            - 非公平锁：当线程要获取锁时，无视队列顺序直接去抢锁，谁抢到就是谁的
+        2. **Share（共享）**：多个线程可同时执行，如` CountDownLatch`、`Semaphore`、`CountDownLatch`、 `CyclicBarrier`、`ReadWriteLock` 。
 * **AQS提供了基于 FIFO 的等待队列**（内置同步队列称为“CLH”队列），多线程争用资源被阻塞时会进入此队列，类似于 Monitor 的 EntryList，来控制多个线程对共享变量的访问
     * 该队列由一个一个的Node结点组成，Node是对等待线程的封装，每个Node结点维护一个prev引用和next引用，分别指向自己的前驱和后继结点。
     * AQS维护两个指针，分别指向队列头部head和尾部tail。

@@ -1,7 +1,7 @@
 package com.rain.server;
 
 import com.rain.common.User;
-import com.rain.common.UserService;
+import com.rain.service.UserService;
 
 /**
  * @Program: rain-java-ideas
