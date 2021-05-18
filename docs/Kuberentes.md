@@ -218,7 +218,7 @@ Kubernetes 将 Pod 调度到指定的节点上：
     - podAffinity：用于规定pod可以和哪些pod部署在同一拓扑结构下。
     - podAntiAffinity：用于规定pod不可以和哪些pod部署在同一拓扑结构下，与podAffinity一起解决pod和pod之间的关系。
 
-
+---
 
 # 数据持久化
 
@@ -240,12 +240,12 @@ Kubernetes 将 Pod 调度到指定的节点上：
         - 不应该将hostPath卷类型用于StatefulSets
 - Local Persistent Volume
     - **利用机器上的磁盘来存放业务需要持久化的数据**，和远端存储类似，此时数据依然独立于 Pod 的生命周期，即使业务 Pod 被删除，数据也不会丢失。
-    - **Local PV和hostPath区别**
+    - **Local PV 和 hostPath区别**
         - 最大的区别是Kubernetes调度程序了解本地持久卷属于哪个节点。
         - 对于HostPath卷，调度程序可能会将引用HostPath卷的pod移至其他节点，从而导致数据丢失。
         - 但是对于本地持久卷，Kubernetes调度程序可确保始终将使用本地持久卷的容器调度到同一节点。
 
-
+----
 
 **Kubernetes 持久化存储方式**
 
@@ -254,3 +254,5 @@ Kubernetes 将 Pod 调度到指定的节点上：
 * StorageClass
     * 由于不同的应用程序对于存储性能的要求也不尽相同，比如：读写速度、并发性能、存储大小等。如果只能通过 PVC 对 PV 进行静态申请，显然这并不能满足任何应用对于存储的各种需求。
     * 通过 StorageClass 的定义，集群管理员可以先将存储资源定义为不同类型的资源，比如快速存储、慢速存储等。
+
+----

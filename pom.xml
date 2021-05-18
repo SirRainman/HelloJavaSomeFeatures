@@ -13,6 +13,8 @@
         <module>thread</module>
         <module>reflect</module>
         <module>RPC</module>
+        <module>DesignPattern</module>
+        <module>Spring</module>
     </modules>
 
     <properties>

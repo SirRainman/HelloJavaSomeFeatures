@@ -1,4 +1,4 @@
-package com.rain.server;
+package com.rain.server.serviceImpl;
 
 import com.rain.common.User;
 import com.rain.service.UserService;
@@ -13,5 +13,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(String id) {
         return new User("001", "Rain", "24");
+    }
+
+    @Override
+    public Integer insertUser(User user) {
+        return 200;
     }
 }
