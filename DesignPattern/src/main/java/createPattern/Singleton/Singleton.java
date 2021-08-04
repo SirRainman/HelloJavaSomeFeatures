@@ -1,4 +1,4 @@
-package createPattern;
+package createPattern.Singleton;
 
 /**
  * @program: DesignPattern

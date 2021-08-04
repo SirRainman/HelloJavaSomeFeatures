@@ -1,4 +1,4 @@
-package createPattern.Factory;
+package createPattern.SimpleFactory;
 
 /**
  * @program: DesignPattern
