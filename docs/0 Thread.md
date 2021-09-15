@@ -1401,7 +1401,7 @@ monitor**调用的是操作系统底层的互斥量(mutex)**。
 
 synchronized 同步语句块的情况：
 
-* monitorenter 指令指向同步代码块的开始位置
+* monitor enter 指令指向同步代码块的开始位置
 * monitorexit 指令则指明同步代码块的结束位置。
 * 每个对象都有一个monitor监视器，调用monitorenter就是尝试获取这个对象，成功获取到了就将值+1，离开就将值减1。
     * 如果是线程重入，再将值+1，说明monitor对象是支持可重入的。

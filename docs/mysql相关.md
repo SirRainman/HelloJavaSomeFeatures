@@ -1421,8 +1421,6 @@ MySQL和NoSQL的应用场景
 
 mysql如何置master-slave？
 
-
-
 ​    mysql里面的日志讲一下，binlog redolog和undolog    
 
 ​    建一张表，如何创建索引，你是怎么去考虑的    
