@@ -240,7 +240,8 @@ public class Aspect{
 
 ## spring设计模式
 
-**工厂模式**
+### **工厂模式**
+
 Spring使用工厂模式可以通过 BeanFactory 或 ApplicationContext 创建 bean 对象。
 
 两者对比：
@@ -253,23 +254,21 @@ ClassPathXmlApplication：把上下文文件当成类路径资源。
 FileSystemXmlApplication：从文件系统中的 XML 文件载入上下文定义信息。
 XmlWebApplicationContext：从Web系统中的XML文件载入上下文定义信息。
 
-单例设计模式
-在我们的系统中，有一些对象其实我们只需要一个，比如说：线程池、缓存、对话框、注册表、日志对象、充当打印机、显卡等设备驱动程序的对象。事实上，这一类对象只能有一个实例，如果制造出多个实例就可能会导致一些问题的产生，比如：程序的行为异常、资源使用过量、或者不一致性的结果。
-
-**单例模式:**
+### 单例设计模式
 
 对于频繁使用的对象，可以省略创建对象所花费的时间，也会减轻 GC 压力，缩短 GC 停顿时间。
 Spring 中 bean 的默认作用域就是 singleton(单例)的。
 
-**代理模式**
+### **代理模式**
+
 AOP 
 
-**模板模式**
+### **模板模式**
 
 
 Spring 中 jdbcTemplate、hibernateTemplate 等以 Template 结尾的对数据库操作的类，它们就使用到了模板模式。一般情况下，我们都是使用继承的方式来实现模板模式，但是 Spring 并没有使用这种方式，而是使用Callback 模式与模板方法模式配合，既达到了代码复用的效果，同时增加了灵活性。
 
-**观察者模式**
+### **观察者模式**
 
 Spring 事件驱动模型中的三种角色
 事件角色
@@ -282,7 +281,7 @@ ContextStoppedEvent：ApplicationContext 停止后触发的事件;
 ContextRefreshedEvent：ApplicationContext 初始化或刷新完成后触发的事件;
 ContextClosedEvent：ApplicationContext 关闭后触发的事件。
 
-**适配器模式**
+### **适配器模式**
 
 **spring AOP中的适配器模式**
 我们知道 Spring AOP 的实现是基于代理模式，但是 Spring AOP 的增强或通知(Advice)使用到了适配器模式，与之相关的接口是AdvisorAdapter 。Advice 常用的类型有：BeforeAdvice（目标方法调用前,前置通知）、AfterAdvice（目标方法调用后,后置通知）、AfterReturningAdvice(目标方法执行结束后，return之前)等等。每个类型Advice（通知）都有对应的拦截器:MethodBeforeAdviceInterceptor、AfterReturningAdviceAdapter、AfterReturningAdviceInterceptor。Spring预定义的通知要通过对应的适配器，适配成 MethodInterceptor接口(方法拦截器)类型的对象（如：MethodBeforeAdviceInterceptor 负责适配 MethodBeforeAdvice）。

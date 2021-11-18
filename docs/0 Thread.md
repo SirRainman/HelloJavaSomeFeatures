@@ -20,31 +20,7 @@
     * 但每个**线程私有**的**程序计数器**、**虚拟机栈**和**本地方法栈**
     * 所以系统在产生一个线程，或是在各个线程之间作切换工作时，负担要比进程小得多，也正因为如此，线程也被称为轻量级进程。
 
-通过 JMX 查看 的 Java 程序 线程的种类
 
-```java
-public void threadTypes() {
-    // 获取 Java 线程管理 MXBean
-    ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
-    // 不需要获取同步的 monitor 和 synchronizer 信息，仅获取线程和线程堆栈信息
-    ThreadInfo[] threadInfos = threadMXBean.dumpAllThreads(false, false);
-    // 遍历线程信息，仅打印线程 ID 和线程名称信息
-    for (ThreadInfo threadInfo : threadInfos) {
-        log.info("[{}] {}", threadInfo.getThreadId(), threadInfo.getThreadName());
-    }
-}
-
-/*
-[6] Monitor Ctrl-Break 监听线程转储或“线程堆栈跟踪”的线程
-[5] Attach Listener 获取当前运行环境的信息 内存 栈 系统信息，添加事件的线程
-[4] Signal Dispatcher 分发处理给 JVM 信号的线程
-[3] Finalizer 在垃圾收集前，调用对象 finalize 方法的线程
-[2] Reference Handler 用于处理引用对象本身（软引用、弱引用、虚引用）的垃圾回收的线程
-[1] main 主线程
-*/
-```
-
-> 上面线程的种类那些都是干嘛的？
 
 ## 进程、线程的联系、区别？
 
@@ -116,8 +92,6 @@ public void threadTypes() {
 
 ---
 
-
-
 ## 并发 和 并行
 
 - **并发：** 同一时间段，多个任务都在执行 (单位时间内不一定同时执行)；
@@ -147,99 +121,22 @@ public void threadTypes() {
 1. 内存泄漏
 2. 死锁
 3. 线程不安全
-4. 。。。
-
-> 还有其他哪些问题？
 
 ---
 
 ## 什么是上下文切换?
 
-**CPU 核心在任意时刻只能被一个线程使用**，为了让这些线程都能得到有效执行，CPU 采取的策略是**为每个线程分配时间片并轮转**的形式。
-
-**当一个线程的时间片用完的时候就会先保存自己的状态**，**重新处于就绪状态让出CPU给其他线程使用，这个过程就属于一次上下文切换**。
+* **CPU 核心在任意时刻只能被一个线程使用**，CPU 为**每个线程分配时间片并轮转**，实现多线程并发执行。
+* **当一个线程的时间片用完的时候就会先保存自己的状态**，**重新处于就绪状态让出CPU给其他线程使用，这个过程就属于一次上下文切换**。
 
 上下文切换通常是**计算密集型**的。
 
 * 上下文切换需要相当可观的处理器时间，事实上，可能是操作系统中时间消耗最大的操作。
-* Linux 相比与其他操作系统（包括其他类 Unix 系统）有很多的优点，其中有一项就是，其上下文切换和模式切换的时间消耗非常少。
-
----
-
-## 什么是死锁？
-
-![线程死锁示意图 ](http://haoimg.hifool.cn/img/68747470733a2f2f6d792d626c6f672d746f2d7573652e6f73732d636e2d6265696a696e672e616c6979756e63732e636f6d2f323031392d342f323031392d34254536254144254242254539253934253831312e706e67.png)
-
-死锁：多个线程同时被阻塞，它们中的一个或者全部都在等待某个资源被释放，最终导致线程无限期被阻塞。
-
-```java
-public class DeadLock {
-    private static Object lock1 = new Object();
-    private static Object lock2 = new Object();
-
-    @Test
-    public void createDeadLock() throws InterruptedException {
-        Thread thread1 = new Thread(() -> {
-            synchronized (lock1) {
-                log.info("{} get lock1", Thread.currentThread());
-                Sleeper.sleep(1);
-                log.info("{} waiting for lock2", Thread.currentThread());
-                synchronized (lock2) {
-                    log.info("{} get lock2", Thread.currentThread());
-                }
-            }
-        }, "t1");
-
-        Thread thread2 = new Thread(() -> {
-            synchronized (lock2) {
-                log.info("{} get lock2", Thread.currentThread());
-                Sleeper.sleep(1);
-                log.info("{} waiting for lock1", Thread.currentThread());
-                synchronized (lock1) {
-                    log.info("{} get lock1", Thread.currentThread());
-                }
-            }
-        }, "t2");
-
-        thread1.start();
-        thread2.start();
-
-        thread1.join();
-        thread2.join();
-    }
-}
-
-```
-
-### 1 产生死锁的条件
-
-同时满足以下四种条件则会产生死锁：
-
-1. **互斥条件**：该资源任意一个时刻只由一个线程占用。
-2. **请求与保持条件**：一个进程因请求资源而阻塞时，对已获得的资源保持不放。
-3. **不剥夺条件**：线程已获得的资源在未使用完之前不能被其他线程强行剥夺，只有自己使用完毕后才释放资源。
-4. **循环等待条件**：若干进程之间形成一种头尾相接的循环等待资源关系。
-
-### 2 消除死锁
-
-为了避免死锁，只要破坏产生死锁的四个条件中的其中一个就可以了：
-
-1. **破坏互斥条件** ：
-    1. 这个条件不能被破坏，因为锁是使临界资源互斥访问的。
-2. **破坏请求与保持条件** ：
-    1. 要一次性申请所有的资源。
-3. **破坏不剥夺条件** ：
-    1. 占用部分资源的线程进一步申请其他资源时，如果申请不到，可以主动释放它占有的资源。
-4. **破坏循环等待条件** ：
-    1. 靠按序申请资源来预防。按某一顺序申请资源，释放资源则反序释放。破坏循环等待条件。
-
-
+* Linux 相比与其他操作系统，其上下文切换和模式切换的时间消耗非常少。
 
 ---
 
 ## 线程安全类
-
-> 线程安全类为什么是线程安全的?
 
 线程安全的是指，多个线程**调用它们同一个实例的某个方法时**，是线程安全的。
 
@@ -1159,7 +1056,7 @@ ReentrantLock 相比 synchronized 优点：
 * **ReentryLock 异常时不会释放锁**
 * ReentrantLock **可中断**
 * ReentrantLock **可以设置超时时间**
-* ReentrantLock  **可以设置为公平锁**
+* ReentrantLock **可以设置为公平锁**
 * ReentrantLock **支持多个条件变量**
 * **ReentryLock 非阻塞地获取锁**，**如果尝试获取锁失败，并不进入阻塞状态，而是直接返回**
 
@@ -1175,119 +1072,19 @@ synchronized 只**作用于同一个对象**，如果调用两个对象上的同
 
 对于以下代码，使用 ExecutorService 执行了两个线程，由于调用的是同一个对象的同步代码块，因此这两个线程会进行同步，当一个线程进入同步语句块时，另一个线程就必须等待。
 
-```java
-public class Synchronize {
-    private static int counter = 0;
-    private Object lock = new Object();
-
-    public void add() {
-        synchronized (this) {
-            for (int i = 0; i < 10; i++) {
-                System.out.print(i + " ");
-            }
-        }
-    }
-
-    public void testSynchronize() throws InterruptedException {
-        Synchronize e1 = new Synchronize();
-        ExecutorService executorService = Executors.newCachedThreadPool();
-        executorService.execute(() -> e1.add());
-        executorService.execute(() -> e1.add());
-    }
-}
-
-// 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9
-```
-
-
-
-```java
-public void testSynchronize() throws InterruptedException {
-    Synchronize e1 = new Synchronize();
-    Synchronize e2 = new Synchronize();
-    ExecutorService executorService = Executors.newCachedThreadPool();
-    executorService.execute(() -> e1.add());
-    executorService.execute(() -> e2.add());
-}
-// 0 0 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9
-```
-
-
-
 ### 2 同步方法
 
 它和同步代码块一样，**作用于同一个对象**。
 
-```java
-public synchronized void func () {
-	// ...
-}
-
-// 等价于
-public void func () {
-	synchronized (this) {
-    	// ...   
-    }
-}
-```
-
-
-
 ### 3 同步类
-
-```java
-public void func() {
-    synchronized (SynchronizedExample.class) {
-    	// ...
-    }
-}
-```
 
 **作用于整个类**，也就是说两个线程调用同一个类的不同对象上的这种同步语句，也会进行同步。
 
-* 类锁是指作用在了类对象上的所
-
-```java
-public class Synchronize {
-    private static int counter = 0;
-    private Object lock = new Object();
-
-    public void add() {
-        synchronized (Synchronized.class) {
-            for (int i = 0; i < 10; i++) {
-                System.out.print(i + " ");
-            }
-        }
-    }
-
-    public void testSynchronize() throws InterruptedException {
-        Synchronize e1 = new Synchronize();
-        Synchronize e2 = new Synchronize();
-        ExecutorService executorService = Executors.newCachedThreadPool();
-        executorService.execute(() -> e1.add());
-        executorService.execute(() -> e2.add());
-    }
-}
-```
-
-
+* 类锁是指作用在了类对象上的锁
 
 ### 4 同步静态方法
 
 **作用于整个类**（获得该类类锁）
-
-```java
-public synchronized static void fun() {
-	// ...
-}
-
-// 等价于
-public void func () {
-	synchronized (this.class) {
-    	// ...   
-    }
-}
-```
 
 ### 5 注意点
 
@@ -1325,13 +1122,10 @@ Java中的synchronized 有三种，他们会随着竞争的激烈而逐渐升级
     1. MarkWord里默认数据是存储对象的HashCode等信息，但是在运行期间，**Mark Word里存储的数据会随着锁标志位（对象锁状态）的变化而变化**。
     2. Mark Word 具体的内容包含对象的**hashcode、分代年龄、偏向锁线程ID、偏向锁时间戳、轻量级锁指针、重量级锁指针、GC标记**。
 2. **Klass Word**：Java类对象的数据保存在方法区，Klass Word 是一个指向方法区中Class类对象信息的指针。
-3. Array Length：只有数组对象保存了这部分数据。
 
 ![image-20210222134830464](http://haoimg.hifool.cn/img/image-20210222134830464.png)
 
-数组对象
 
-![image-20210222135139481](http://haoimg.hifool.cn/img/image-20210222135139481.png)
 
 Mark Word 结构：
 
@@ -1350,7 +1144,7 @@ Monitor 被翻译为监视器或管程
 
 * 监视器锁本质**依赖于底层的操作系统的Mutex Lock来实现的**
 
-**每个 Java 对象都可以关联一个 Monitor 对象**
+**每个锁对象都可以关联一个 Monitor 对象**
 
 * 如果**使用 synchronized 给对象上锁（重量级）之后，该对象头的Mark Word 中就被设置指向 Monitor 对象的指针。**
 
@@ -2284,7 +2078,7 @@ ThreadLocalMap getMap(Thread t) {
 
 **最终的变量是放在了当前线程的 `ThreadLocalMap` 中，并不是存在 `ThreadLocal` 上，`ThreadLocal` 可以理解为只是`ThreadLocalMap`的封装，传递了变量值。**
 
-*  `ThrealLocal` 类中可以通过`Thread.currentThread()`获取到当前线程对象后，直接通过`getMap(Thread t)`可以访问到该线程的`ThreadLocalMap`对象。
+*  通过`Thread.currentThread()`获取到当前线程对象后，可以直接通过`ThrealLocal` 类中`getMap(Thread t)`可以访问到该线程的`ThreadLocalMap`对象。
 * **每个`Thread`中都具备一个`ThreadLocalMap`，而`ThreadLocalMap`可以存储以`ThreadLocal`为 key ，Object 对象为 value 的键值对。**
 
 
@@ -2293,7 +2087,7 @@ ThreadLocalMap getMap(Thread t) {
 
 ![image-20210315155403596](http://haoimg.hifool.cn/img/image-20210315155403596.png)
 
-同一个线程中声明了两个 `ThreadLocal` 对象的话，会使用 `Thread`内部都是使用仅有那个`ThreadLocalMap` 存放数据的，`ThreadLocalMap`的 key 就是 `ThreadLocal`对象，value 就是 `ThreadLocal` 对象调用`set`方法设置的值。
+同一个线程中声明了两个 `ThreadLocal` 对象的话，Thread`内部都是使用仅有那个`ThreadLocalMap` 存放数据的，`ThreadLocalMap`的 key 就是 `ThreadLocal`对象，value 就是 `ThreadLocal` 对象调用`set`方法设置的值。
 
 ![ThreadLocal数据结构](http://haoimg.hifool.cn/img/threadlocal%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.png)
 
@@ -2893,7 +2687,7 @@ public static void testScheduled2() {
 
 Fork/Join 是 JDK 1.7 加入的新的线程池实现，它体现的是一种**分治思想，适用于能够进行任务拆分的 cpu 密集型运算**
 
-* 所谓的任务拆分，是将一个大任务拆分为算法上相同的小任务，直至不能拆分可以直接求解。
+* 任务拆分是将一个大任务拆分为算法上相同的小任务，直至不能拆分可以直接求解。
 * 跟递归相关的一些计算，如归并排序、斐波那契数列、都可以用分治思想进行求解
 
 **Fork/Join 在分治的基础上加入了多线程，可以把每个任务的分解和合并交给不同的线程来完成**，进一步提升了运算效率
@@ -2952,7 +2746,7 @@ class AddTask2 extends RecursiveTask<Integer> {
 
 
 
-### 6 向线程池中提交任务的方法
+### 6 提交任务( execute / submit)
 
 ```java
 // 执行任务
@@ -2976,7 +2770,7 @@ throws InterruptedException, ExecutionException;
 ```
 
 1. **`execute()`方法用于提交不需要返回值的任务，所以无法判断任务是否被线程池执行成功与否；**
-2. **`submit()`方法用于提交需要返回值的任务。
+2. `submit()`方法用于提交需要返回值的任务。
     1. **线程池会返回一个 `Future` 类型的对象，通过这个 `Future` 对象可以判断任务是否执行成功**，
     2. 并且可以通过 `Future` 的 `get()`方法来获取返回值，`get()`方法会阻塞当前线程直到任务完成，而使用 `get（long timeout，TimeUnit unit）`方法则会阻塞当前线程一段时间后立即返回，这时候有可能任务没有执行完。
 
@@ -3138,13 +2932,14 @@ public static void testException() {
 
 AQS( AbstractQueuedSynchronizer ) 定义了一套**多线程访问共享资源**的同步器框架
 
+[源码解析](https://mp.weixin.qq.com/s/trsjgUFRrz40Simq2VKxTA)
+
 AQS 核心思想
 
 * 如果被请求的共享资源空闲，则将当前请求资源的线程设置为有效的工作线程，并且将共享资源设置为锁定状态。
 * 如果被请求的共享资源被占用，那么就需要一套线程阻塞等待以及被唤醒时锁分配的机制，
-    * 这个机制 AQS 是用 CLH 队列锁实现的，即将暂时获取不到锁的线程加入到队列中。
-    * CLH(Craig,Landin,and Hagersten)队列是一个虚拟的双向队列（虚拟的双向队列即不存在队列实例，仅存在结点之间的关联关系）。
-    * AQS 是将每条请求共享资源的线程封装成一个 CLH 锁队列的一个结点（Node）来实现锁的分配。
+    * 这个机制 AQS 是用 CLH 队列锁实现的，CLH(Craig,Landin,and Hagersten)队列是一个虚拟的双向队列（虚拟的双向队列即不存在队列实例，仅存在结点之间的关联关系）。
+    * AQS 是将每条请求共享资源的线程封装成一个 CLH 锁队列的一个结点（Node）来实现锁的分配，将暂时获取不到锁的线程加入到队列中。
 
 
 
@@ -3158,24 +2953,24 @@ AQS 核心思想
 
 AQS特点：
 
-* **用 state(volatile) 属性来表示需要被保护的资源的状态**（分独占模式和共享模式），子类需要定义如何维护这个状态，控制如何获取锁和释放锁
-    1. **AQS的state状态值表示线程获取该锁的可重入次数**，某线程尝试加锁的时候通过CAS(CompareAndSwap)修改state值，如果成功设置为1，并且把当前线程ID赋值，则代表加锁成功，一旦获取到锁，其他的线程将会被阻塞进入阻塞队列自旋，获得锁的线程释放锁的时候将会唤醒阻塞队列中的线程，释放锁的时候则会把state重新置为0，同时当前线程ID置为空。
+* **AQS用 state(volatile) 属性来表示需要被保护的资源的状态**（分独占模式和共享模式），AQS 子类需要定义如何维护这个状态，控制如何获取锁和释放锁
+    1. **AQS的state状态值表示线程获取该锁的可重入次数**，**某线程尝试加锁的时候通过CAS(CompareAndSwap)修改state值**
+        * 如果成功设置为1，并且把当前线程ID赋值，则代表加锁成功，
+        * 一旦获取到锁，其他的线程将会被阻塞进入阻塞队列自旋，
+        * 获得锁的线程释放锁的时候将会唤醒阻塞队列中的线程，释放锁的时候则会把state重新置为0，同时当前线程ID置为空。
     2. getState - 获取 state 状态，
         1. state=0：表示当前锁没有被任何线程持有
         2. state=1：当一个线程第一次获取该锁时会尝试使用CAS设置state 的值为1，如果CAS 成功则当前线程获取了该锁，然后记录该锁的持有者为当前线程
             * 当state=1时，其他线程来加锁时则会失败，加锁失败的线程会被放`FIFO`的等待队列中，
             * 然后会被`UNSAFE.park()`操作挂起，等待其他获取锁的线程释放锁才能够被唤醒。
-        3. state=2：在该线程没有释放锁的情况下第二次获取该锁后，状态值被设置为2 ， 这就是可重入次数。
+        3. state=2：**在该线程没有释放锁的情况下第二次获取该锁后，状态值被设置为2 ， 这就是可重入次数**。
     3. setState - 设置 state 状态
-    4. compareAndSetState - CAS 机制设置 state 状态
-    5. **独占模式是只有一个线程能够访问资源，而共享模式可以允许多个线程访问资源**
+    4. **独占模式是只有一个线程能够访问资源，而共享模式可以允许多个线程访问资源**
         1. **Exclusive（独占）**：只有一个线程能执行，如 ReentrantLock 。
             - 公平锁：按照线程在队列中的排队顺序，先到者先拿到锁
             - 非公平锁：当线程要获取锁时，无视队列顺序直接去抢锁，谁抢到就是谁的
         2. **Share（共享）**：多个线程可同时执行，如` CountDownLatch`、`Semaphore`、`CountDownLatch`、 `CyclicBarrier`、`ReadWriteLock` 。
-* **AQS提供了基于 FIFO 的等待队列**（内置同步队列称为“CLH”队列），多线程争用资源被阻塞时会进入此队列，类似于 Monitor 的 EntryList，来控制多个线程对共享变量的访问
-    * 该队列由一个一个的Node结点组成，Node是对等待线程的封装，每个Node结点维护一个prev引用和next引用，分别指向自己的前驱和后继结点。
-    * AQS维护两个指针，分别指向队列头部head和尾部tail。
+* **AQS提供了基于 FIFO 的等待队列**，多线程争用资源被阻塞时会进入此队列，类似于 Monitor 的 EntryList，来控制多个线程对共享变量的访问
     * **Node节点状态**：
         * **CANCELLED**(1)：表示当前结点已取消调度。当timeout或被中断（响应中断的情况下），会触发变更为此状态，进入该状态后的结点将不会再变化。
         * **SIGNAL**(-1)：表示后继结点在等待当前结点唤醒。后继结点入队时，会将前继结点的状态更新为SIGNAL。
@@ -3207,129 +3002,6 @@ protected boolean isHeldExclusively();
 ```
 
 
-
-### 不可重入锁实现
-
-#### 1 自定义同步器
-
-对于使用者来讲，我们无需关心获取资源失败，线程排队，线程阻塞/唤醒等一系列复杂的实现，这些都在AQS中为我们处理好了。
-
-* 我们只需要负责好自己的那个环节就好，也就是获取/释放共享资源state的姿势。
-* 很经典的模板方法设计模式的应用，AQS为我们定义好顶级逻辑的骨架，并提取出公用的线程入队列/出队列，阻塞/唤醒等一系列复杂逻辑的实现，将部分简单的可由使用者决定的操作逻辑延迟到子类中去实现即可。
-
-```java
-public class MySynchronizer extends AbstractQueuedSynchronizer {
-    @Override
-    protected boolean tryAcquire(int acquires) {
-        if (acquires == 1) {
-            if (compareAndSetState(0, 1)) { // 通过CAS方式进行修改，这里修改的是state吗？
-                setExclusiveOwnerThread(Thread.currentThread()); // 设置为Owner
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    protected boolean tryRelease(int acquires) {
-        if (acquires == 1) {
-            if(getState() == 0) { // state 是 volatile 类型的变量;
-                throw new IllegalMonitorStateException();
-            }
-            setExclusiveOwnerThread(null);
-            // TODO：这里有一个细节，state是volatile类型的变量，
-            //  这里对volatile变量进行修改后，会有一个写屏障，前面所有对共享变量对修改都会写入到内存区
-            setState(0);
-            return true;
-        }
-        return false;
-    }
-
-    // 判断是否是独占锁
-    @Override
-    protected boolean isHeldExclusively() {
-        return getState() == 1;
-    }
-
-    protected Condition newCondition() {
-        return new ConditionObject();
-    }
-}
-```
-
-#### 2 自定义不可重入锁
-
-```java
-class MyLock implements Lock {
-    static MySynchronizer sync = new MySynchronizer();
-
-    @Override
-    // 尝试，不成功，进入等待队列
-    public void lock() {
-        sync.acquire(1);
-    }
-
-    @Override
-    // 尝试，不成功，进入等待队列，可打断
-    public void lockInterruptibly() throws InterruptedException {
-        sync.acquireInterruptibly(1);
-    }
-
-    @Override
-    // 尝试一次，不成功返回，不进入队列
-    public boolean tryLock() {
-        return sync.tryAcquire(1);
-    }
-
-    @Override
-    // 尝试，不成功，进入等待队列，有时限
-    public boolean tryLock(long time, TimeUnit unit) throws InterruptedException {
-        return sync.tryAcquireNanos(1, unit.toNanos(time));
-    }
-
-    @Override
-    // 释放锁
-    public void unlock() {
-        sync.release(1);
-    }
-
-    @Override
-    // 生成条件变量
-    public Condition newCondition() {
-        return sync.newCondition();
-    }
-}
-```
-
-#### 3 测试
-
-```java
-public class AQSLockExample {
-    public static void main(String[] args) {
-        MyLock lock = new MyLock();
-        new Thread(() -> {
-            lock.lock();
-            lock.lock();
-            try {
-                log.debug("locking...");
-                sleep(1);
-            } finally {
-                log.debug("unlocking...");
-                lock.unlock();
-            }
-        },"t1").start();
-        new Thread(() -> {
-            lock.lock();
-            try {
-                log.debug("locking...");
-            } finally {
-                log.debug("unlocking...");
-                lock.unlock();
-            }
-        },"t2").start();
-    }
-}
-```
 
 ### 互斥(独占)模式
 
@@ -3438,35 +3110,7 @@ public final boolean releaseShared(int arg) {
 ```
 
 ```java
-private void doReleaseShared() {
-    /*
-     * Ensure that a release propagates, even if there are other
-     * in-progress acquires/releases.  This proceeds in the usual
-     * way of trying to unparkSuccessor of head if it needs
-     * signal. But if it does not, status is set to PROPAGATE to
-     * ensure that upon release, propagation continues.
-     * Additionally, we must loop in case a new node is added
-     * while we are doing this. Also, unlike other uses of
-     * unparkSuccessor, we need to know if CAS to reset status
-     * fails, if so rechecking.
-     */
-    for (;;) {
-        Node h = head;
-        if (h != null && h != tail) {
-            int ws = h.waitStatus;
-            if (ws == Node.SIGNAL) {
-                if (!compareAndSetWaitStatus(h, Node.SIGNAL, 0))
-                    continue;            // loop to recheck cases
-                unparkSuccessor(h);
-            }
-            else if (ws == 0 &&
-                     !compareAndSetWaitStatus(h, 0, Node.PROPAGATE))
-                continue;                // loop on failed CAS
-        }
-        if (h == head)                   // loop if head changed
-            break;
-    }
-}
+
 ```
 
 共享模式，释放同步状态也是多线程的，此处采用了CAS自旋来保证。
@@ -3480,16 +3124,7 @@ ReentrantLock 与 synchronized 一样，都支持可重入
 * 可重入锁：同一个线程如果首次获得了这把锁，那么因为它是这把锁的拥有者，因此有权利再次获取这把锁
 * 不可重入锁：同一个线程在第二次尝试获得锁时，该线程自己也会被锁挡住
 
-```java
-// 获取锁
-reentrantLock.lock();
-    try {
-    	// 临界区
-    } finally {
-    	// 释放锁
-    	reentrantLock.unlock();
-}
-```
+
 
 ### Lock 接口
 
@@ -3561,33 +3196,22 @@ Condition newCondition();
         * await 的线程被唤醒（或打断、或超时）取重新竞争 lock 锁
         * 竞争 lock 锁成功后，从 await 后继续执行
 
-### 非公平锁原理
 
-#### 1 加锁&解锁流程
 
-[源码解析](https://mp.weixin.qq.com/s/trsjgUFRrz40Simq2VKxTA)
+### 非公平锁 & 公平锁 原理
 
-#### 2 加锁源码
-
-#### 3 解锁源码
-
-### 可重入原理
-
-### 可打断原理
-
-#### 1 可打断模式
-
-#### 2 不可打断模式
-
-### 公平锁原理
+* 公平锁：多个线程按照申请锁的顺序去获得锁，线程会直接进入队列去排队，永远都是队列的第一位才能得到锁。
+    * 优点：所有的线程都能得到资源，不会饿死在队列中。
+    * 缺点：吞吐量会下降很多，队列里面除了第一个线程，其他的线程都会阻塞，cpu唤醒阻塞线程的开销会很大。
+* 非公平锁：多个线程去获取锁的时候，会直接去尝试获取，获取不到，再去进入等待队列，如果能获取到，就直接获取到锁。
+    * 优点：可以减少CPU唤醒线程的开销，整体的吞吐效率会高点，CPU也不必取唤醒所有线程，会减少唤起线程的数量。
+    * 缺点：你们可能也发现了，这样可能导致队列中间的线程一直获取不到锁或者长时间获取不到锁，导致饿死。
 
 
 
-### 条件变量实现原理
 
-#### 1 await 流程
 
-#### 2 signal 流程
+---
 
 ## ReentrantReadWriteLock 读写锁
 
@@ -4222,6 +3846,10 @@ public class CyclicBarrierExample {
  
 
 ## ConcurrentHashMap
+
+
+
+
 
 ### 1 重要属性和内部类
 

@@ -21,71 +21,130 @@
 
 
 
-面试题：
+String.intern()
 
-```java
-public static void main(String[] args) {
-    String str = null;
-    StringBuilder sb = new StringBuilder();
-    sb.append(str);
-
-    System.out.println(sb.length());    //  4
-
-    System.out.println(sb);     //  "null"
-
-    StringBuilder sb1 = new StringBuilder(str); //exception
-    System.out.println(sb1);
-}
-```
-
-appendNull()
+![img](http://haoimg.hifool.cn/img/v2-dc134981965e3023fc2f9fd20e892672_1440w.jpg)
 
 # List
 
-## ArrayList和LinkedList特点及各自应用场景
+## ArrayList 和 LinkedList 特点及各自应用场景
 
-ArrayList：
+### ArrayList：
 
-* ArrayList是基于数组实现的
-* ArryList初始化时，elementData数组大小默认为10；
-* 每次add（）时，先调用ensureCapacity（）保证数组不会溢出，如果此时已满，会扩展为数组length的1.5倍+1，然后用array.copy的方法，将原数组拷贝到新的数组中；
-* ArrayList线程不安全，Vector方法是同步的，线程安全；
+* ArrayList是基于**Object[] elementData 数组**实现的
+* Jdk 7 之前：
+    - `new ArrayList()`底层创建了**长度为10**的`Object[]`数组
+    - `grow()`方法扩容，**默认扩容为原来的1.5倍**
+* Jdk 8 之后：
+    - `new ArrayList()`底层`Object[] elementData`初始化为`{}`，并没有创建长度为10的数组
+    - 第一次调用`add()`时，底层才创建长度为10的数组，延迟数组创建，节省内存
+* 每次add() 时，先**调用ensureCapacity() 保证数组不会溢出**
+    * 如果此时已满，会扩展为数组length的1.5倍+1，然后用array.copy的方法，将原数组拷贝到新的数组中；
+* **ArrayList线程不安全，Vector方法是同步的，线程安全；**
 
 
 
-LinkedList：
+### LinkedList：
 
 * LinkedList是基于双链表实现的
-* 初始化时，有个header Entry，值为null；
-* 使用header的优点是：在任何一个条目（包括第一个和最后一个）都有一个前置条目和一个后置条目，因此在LinkedList对象的开始或者末尾进行插入操作没有特殊的地方；
 
 
 
-使用场景：
+**使用场景：**
 
 * 对于随机访问的get和set方法，ArrayList要优于LinkedList，因为LinkedList要移动指针。
 * 对于新增和删除操作add和remove，LinkedList比较占优势，因为ArrayList要移动数据。
 
+---
+
+# Set - HashSet
+
+1. 底层使用HashMap实现，所有 **value 值使用PRESENT一个Object对象来填充**
+2. 不可重复性：
+    1. 元素插入时先调用hashcode计算存储位置，如果存储位置相同先比较hash值，如果hash值相同再使用equals()方法，如果返回值为true则舍弃新值，否则拉链发同时存储。
+    2. 向Set中添加的数据，其所在类一定要重写hashCode()和equals()方法；
+
+
+
+- **HashSet**
+    - Set接口主要实现类
+    - **可以存储null**
+- **LinkedHashSet**
+    - HashSet子类
+    - **遍历其内部数据时，可以按照添加的顺序遍历**
+    - 在添加数据的同时，每个数据还维护了一个双向链表
+    - 对于频繁的遍历操作，效率较高一些
+- **TreeSet**
+    - 使用**红黑树实现**
+    - **可以按照添加对象指定属性进行排序**
+        - 实现Comparator接口，使用compareTo来比较元素是否相同，传入TreeSet构造方法中
+    - 向TreeSet中添加的数据，要求是相同类的对象。 
+
+
+
+---
+
 # HashMap
 
-HashMap的默认初始化长度为什么是16？
 
-* 16（另：初始化大小最好是2的幂）
-* 需要将所有经过hash运算的key均匀的分不到数组中，**而位与运算比算数计算的效率高了很多**，
-    * index = HashCode（Key） & （Length- 1）
-* 之所以选择16，是为了服务将Key映射到index的算法。
-    * 在使用2的幂的初始化大小时，Length-1的值是所有二进制位全为1，这种情况下，index的结果等同于HashCode后几位的值。
-    * 只要输入的HashCode本身分布均匀，Hash算法的结果就是均匀的
+
+![image-20211115201616145](http://haoimg.hifool.cn/img/image-20211115201616145.png)
+
+* 在Java7叫Entry
+* 在Java8中叫Node
 
 
 
-hashmap的get原理
+## HashMap的默认初始化长度为什么是16？
+
+* 默认数组长度：16（另：初始化大小最好是2的幂）
+    * 之所以选择16，是为了服务将Key映射到index的算法。
+    * 为什么扩容的大小是2的幂？
+        * 只要输入的HashCode本身分布均匀，在保证index计算结果的均匀分布的要求下，**位与运算比取模运算的效率高**
+            * index = HashCode（Key） & （Length- 1）
+            * Length-1的值是所有二进制位全为1，这种情况下，index的结果等同于HashCode后几位的值。
+* `new HashMap()`时，底层还没有创建一个长度为16的数组，第一次add时创建。
+* 链表长度大于8，且mapsize > 64的时候
+    * 链表会转成红黑树
+    * 链表长度大于8，但mapsize < 64时，会优先进行扩容操作
+
+
+
+## get()
 
 1. 调用get(key)的时候，会调用key的hashcode方法获得hashcode.
-2. 根据hashcode获取相应的bucket。
+2. 根据hashcode计算相应的index。
 3. 由于一个bucket对应的链表中可能存有多个Entry,
-    1. 这个时候会调用key的equals方法来找到对应的Entry
+    1. 如果在bucket里的第一个节点里直接命中，则直接返回； 
+    2. 如果未命中，则通过key.equals(k)去查找对应的Entry;
 4. 最后把值返回
+
+
+
+## put()
+
+1. 调用key1所在类的hashCode()计算key1哈希值
+2. 通过计算（`h & (length - 1)`）得到Entry数组中存放的index位置
+3. 如果此位置上数据为空，则entry添加成功
+4. 如果此位置上的数据不为空，比较当前位置链表上（拉链法）key1和已经存在的一个或多个数据的哈希值：
+    - 如果key1的哈希值与已经存在的数据的哈希值都不相同，此时key1-value1添加成功
+    - 如果key1和已经存在的某一个数据的哈希值相同，继续调用key1所在类的equals()方法
+        - 如果equals()返回false：添加成功
+        - 如果equals()返回true：新值替换旧值
+    - 如果碰撞导致链表过长(大于等于TREEIFY_THRESHOLD)，就把链表转换成红黑树(JDK1.8中的改动)；
+5. 如果bucket满了(超过load factor*current capacity)，就要resize。
+
+
+
+## HashMap - 红黑树
+
+- 数组 + 链表 + 红黑树
+    - 当某一个索引位置上的元素以链表形式存在的数据个数 > 8，且mapsize > 64时，此时链表改为使用红黑树存储
+    - 查询冲突时提高效率 从O(n)  -> O(log n )
+- 用二叉查找树可以么?
+    - 二叉查找树在特殊情况下会变成一条线性结构，遍历查找会非常慢。
+- 当链表转为红黑树后，什么时候退化为链表?
+    - 为6的时候退转为链表，中间有个差值7可以防止链表和树之间频繁的转换。
 
 
 
@@ -128,22 +187,9 @@ HashMap的负载因子初始值为什么是0.75？
 
 
 
-Hashmap中的链表大小超过八个时会自动转化为红黑树，当删除小于六时重新变为链表，为啥呢？
 
-* 根据泊松分布，在负载因子默认为0.75的时候，单个hash槽内元素个数为8的概率小于百万分之一，所以将7作为一个分水岭，等于7的时候不转换，大于等于8的时候才进行转换，小于等于6的时候就化为链表。
 
-## 底层数据结构：
-
-* **数组和链表组合构成**
-
-![image-20210228140615797](http://haoimg.hifool.cn/img/image-20210228140615797.png)
-
-数组中存Key-Value实例，Key-Value实例在数组中存储的位置是由hash决定的，倘若有hash冲突，则存放在该位置的链表中。
-
-* 在Java7叫Entry
-* 在Java8中叫Node
-
-## 节点插入方式
+## Hashmap - 节点插入方式
 
 ### 扩容
 
@@ -180,10 +226,6 @@ Entry节点在插入链表的时候,**头插法**
 源码解析：
 
 1. 死循环的根源在transfer函数
-
-![image-20210228141306802](http://haoimg.hifool.cn/img/image-20210228141306802.png)
-
-
 
 2. transfer函数使用头插法
 
@@ -254,26 +296,21 @@ do {
 
 Entry节点在插入链表的时候,**尾插法**
 
-**java8之后链表有红黑树**的部分
-
 
 
 并发：
 
-Java7在多线程操作HashMap时可能引起死循环，原因是扩容转移后前后链表顺序倒置，在转移过程中修改了原来链表中节点的引用关系。
+* **Java7在多线程操作HashMap时可能生成环形链表，引起死循环**。
+    * 原因是扩容转移后前后链表顺序倒置，在转移过程中修改了原来链表中节点的引用关系。
 
 * Java8在同样的前提下并不会引起死循环，原因是扩容转移后前后链表顺序不变，保持之前节点的引用关系。
 * **但是在并发的情况下会出现数据覆盖的问题（多个线程同时创建节点）**
-* 是否意味着Java8是线程安全的？
-    * 不是，
-    * put/get方法都没有加同步锁，无法保证上一秒put的值，下一秒get的时候还是原值，所以线程安全还是无法保证。
+
+---
 
 ## HashTable
 
-在所有涉及到多线程操作的都加上了synchronized关键字来锁住整个table，这就意味着所有的线程都在竞争一把锁，在多线程的环境下，它是安全的，但是无疑是效率低下的。
-
-Hashtable 跟HashMap不一样点:
-
+* **在所有涉及到多线程操作的都加上了synchronized关键字来锁住整个table**
 * **Hashtable 是不允许键或值为 null 的，HashMap 的键值则都可以为 null。**
     * Hashtable在我们put 空值的时候会直接抛空指针异常，但是HashMap却做了特殊处理。
     * Hashtable使用的是**安全失败机制（fail-safe）**，这种机制会使你此次读到的数据不一定是最新的数据。
@@ -289,9 +326,11 @@ Hashtable 跟HashMap不一样点:
 
 **安全失败（fail—safe）**java.util.concurrent包下的容器都是安全失败，可以在多线程下并发使用，并发修改。
 
+---
+
 ## TreeMap
 
-TreeMap实现SortMap接口，能够把它保存的记录根据键排序,默认是按键值的升序排序，也可以指定排序的比较器，当用Iterator 遍历TreeMap时，得到的记录是排过序的。
+TreeMap实现SortMap接口，能够把它保存的**记录根据键值排序器进行排序。**
 
 ```java
 public TreeMap(Comparator<? super K> comparator){}
@@ -303,17 +342,21 @@ Map<String,String> map = new TreeMap<>(new Comparator<String>(){
 });
 ```
 
+---
+
 
 
 ## LinkedHashMap
 
-LinkedHashMap保存了记录的插入顺序，在用Iterator遍历LinkedHashMap时，先得到的记录肯定是先插入的.也可以在构造时用带参数，按照应用次数排序。
+**LinkedHashMap保存了记录的插入顺序**，也可以在构造时用带参数，按照应用次数排序。
 
 在遍历的时候会比HashMap慢，不过有种情况例外，
 
 * 当HashMap容量很大，实际数据较少时，遍历起来可能会比LinkedHashMap慢，
 * 因为LinkedHashMap的遍历速度只和实际数据有关，和容量无关，
 * 而HashMap的遍历速度和他的容量有关。
+
+
 
 ## SynchronizedMap
 
@@ -331,67 +374,66 @@ SynchronizedMap内部维护了一个普通对象Map，还有排斥锁mutex
 
 HashMap在put的时候，插入的元素超过了容量（由负载因子决定）的范围就会触发扩容操作，就是rehash，
 
-* 这个会重新将原数组的内容重新hash到新的扩容数组中，如果hash值相同，可能出现同时在同一数组下用链表完成数据的插入工作
-* 在多线程的环境下，存在同时其他的元素也在进行put操作，
-    * 在hashmap1.7中 put插入到链表中使用的是头插法，会造成死循环
-    * 在hashmap1.8中 put插入到聊表中使用的是尾插法，不会造成死循环，但是在并发的情况下会出现数据覆盖的问题（多个线程同时创建节点）
-* 如果hash值相同，可能出现同时在同一数组下用链表表示，造成闭环，导致在get时会出现死循环，
-* 所以HashMap是线程不安全的。
-
-高并发场景的多线程可以使用Collections.synchronizedMap同步加锁的方式
 
 
+## JDK版本变动：
 
-JDK版本变动：
-
-* 1.7使用ReentrantLock+Segment+HashEntry 的方式实现
-* 1.8使用synchronized+CAS+HashEntry+红黑树实现，
+* 1.7使用 **ReentrantLock+Segment+HashEntry** 的方式实现
+* 1.8使用 **synchronized+CAS+HashEntry+红黑树** 实现，
     * 加入红黑树，避免链表过长导致性能的问题。
-    * JDK1.8的实现降低锁的粒度
-    * JDK1.8为什么使用内置锁synchronized来代替重入锁ReentrantLock？
-        1. 因为粒度降低了，在相对而言的低粒度加锁方式，synchronized并不比ReentrantLock差，在粗粒度加锁中ReentrantLock可能通过Condition来控制各个低粒度的边界，更加的灵活，而在低粒度中，Condition的优势就没有了
+    * **JDK1.8的实现降低锁的粒度**
+    * JDK1.8为什么使用内置锁 synchronized 来代替重入锁 ReentrantLock？
+        1. 因为粒度降低了，
+            1. 在低粒度加锁方式下，synchronized并不比ReentrantLock差，
+            2. 在粗粒度加锁方式下，ReentrantLock通过Condition来控制各个低粒度的边界，更加的灵活，而在低粒度中，Condition的优势就没有了
         2. 基于JVM的**synchronized优化空间更大**，使用内嵌的关键字比使用API更加自然
-        3. 在大量的数据操作下，对于**JVM的内存压力**，基于API的ReentrantLock会开销更多的内存，虽然不是瓶颈，但是也是一个选择依据
+        3. 在大量的数据操作下，对于**JVM的内存压力**，基于API的ReentrantLock会开销更多的内存
+
+
+
+---
+
+
 
 ## JDK 1.7：分段锁
 
 从结构上说，1.7版本的ConcurrentHashMap采用分段锁机制
 
 * Segment数组，Segment继承于ReentrantLock，
-    * Segment则包含HashEntry的数组，
-        * HashEntry本身就是一个链表的结构，具有保存key、value的能力能指向下一个节点的指针。
-        * HashEntry跟HashMap差不多的，但是不同点是，他使用volatile去修饰了他的数据Value还有下一个节点next。
+    * Segment则包含HashEntry的数组
+        * HashEntry使用volatile去修饰了他的数据Value，还有下一个节点next。
     * 每个**Segment都是一个HashMap**，默认的Segment长度是16，也就是支持16个线程的并发写，Segment之间相互不会受到影响。
 
 ![img](http://haoimg.hifool.cn/img/926638-20170809132445011-2033999443.png)
 
 ### put流程
 
-整个流程和HashMap非常类似，只不过是先定位到具体的Segment，然后通过ReentrantLock去操作而已，和HashMap基本上是一样的。
+整个流程和HashMap非常类似，只不过是先定位到具体的Segment，然后通过ReentrantLock去操作
 
 1. 第一次计算hash，定位到Segment，Segment还没有初始化，即通过CAS操作进行赋值
-2. 第二次hash操作，在HashEntry数组中，找到相应的HashEntry的位置，使用ReentrantLock加锁，如果获取锁失败则尝试自旋，自旋超过次数就阻塞获取，保证一定获取锁成功
+    1. 使用ReentrantLock加锁，如果获取锁失败则尝试自旋，自旋超过次数就阻塞获取，保证一定获取锁成功
+2. 第二次hash操作，在HashEntry数组中，找到相应的HashEntry的位置，
 3. 遍历HashEntry，就是和HashMap一样，数组中key和hash一样就直接替换，不存在就再插入链表，链表同样
 
 
 
 ### get流程
 
-get也很简单，key通过hash定位到segment，再遍历链表定位到具体的元素上，需要注意的是value是volatile的，所以get是不需要加锁的。
-
-ConcurrentHashMap get()
+key通过hash定位到segment，再遍历链表定位到具体的元素上，需要注意的是value是volatile的，所以get是不需要加锁的。
 
 * 第一次key需要经过一次hash定位到Segment的位置，
 * 第二次再hash定位到指定的HashEntry，遍历该HashEntry下的链表进行对比，成功就返回，不成功就返回null
 
+
+
 ### size 流程
 
-计算size的时候，可能会有其他线程在并发的插入数据，可能会导致你计算出来的size和你实际的size有相差（在你return size的时候，插入了多个数据），要解决这个问题，JDK1.7版本用两种方案：
+计算size的时候，可能会有其他线程在并发的插入数据，要解决这个问题，JDK1.7版本用两种方案：
 
 1. 第一种方案他会使用不加锁的模式去尝试多次计算ConcurrentHashMap的size，最多三次，比较前后两次计算的结果，结果一致就认为当前没有元素加入，计算的结果是准确的
 2. 第二种方案是如果第一种方案不符合，他就会给每个Segment加上锁，然后计算ConcurrentHashMap的size返回
 
-
+---
 
 ## JDK 1.8：CAS + synchronized
 
@@ -414,7 +456,7 @@ ConcurrentHashMap get()
 2. 计算hash，遍历node数组，如果node是空的话，就通过CAS+自旋的方式初始化
     1. 如果当前数组位置是空，则直接通过CAS自旋写入数据
     2. 如果hash==MOVED，说明需要扩容，执行扩容
-    3. 如果存在hash冲突，就synchronized加锁来保证线程安全，
+    3. **如果存在hash冲突，就synchronized加锁来保证线程安全，**
         1. 链表长度小于8，链表写入和HashMap的方式一样，key hash一样就覆盖，反之就尾插法
         2. 链表长度超过8就转换成红黑树
 
@@ -422,51 +464,35 @@ ConcurrentHashMap get()
 
 ### get查询
 
-get很简单，通过key计算hash，如果key hash相同就返回，
-
-1. 计算hash值，定位到该table索引位置，如果是首节点符合就返回
+1. 计算hash值，定位索引位置，如果是首节点符合就返回
 2. 如果是红黑树按照红黑树获取，不是就遍历链表获取。
 3. 如果遇到扩容的时候，会调用标志正在扩容节点ForwardingNode的find方法，查找该节点，匹配就返回
 
-### size 计算
 
-**指导思想：** 
 
-* 尽量降低线程冲突，以最快的速度写入 size 的变化。
+### size 计算(不懂)
 
-**如何降低冲突？**
-
-* 如果没有冲突发生，只将 size 的变化写入 baseCount。
-* 一旦发生冲突，就用一个数组（counterCells）来存储后续所有 size 的变化。
-    * counterCells存储的都是value为1的CounterCell对象，而这些对象是因为在CAS更新baseCounter值时，由于高并发而导致失败，最终将值保存到CounterCell中，放到counterCells里。
-    * 这也就是为什么sumCount()中需要遍历counterCells数组，sum累加CounterCell.value值了。
-    * 线程只要对任意一个数组元素写入 size 变化成功即可，数组长度越长，线程发生冲突的可能性就越小。
-
-**关于 counterCells 扩容：**
-
-* 如果 CAS 数组元素连续失败两次，就会进行 counterCells 数组的扩容，直到达到机器的处理器数为止。
-* 比如我的机器是双核四线程，真正能并行的线程数是 4，所以在我机器上 counterCells 初始化后，最多扩容一次。
-
+* 指导思想：尽量降低线程冲突，以最快的速度写入 size 的变化。
+* JDK8求解size有两个重要变量：
+    * baseCount：用于记录节点的个数，是个volatile变量；
+    * counterCells数组：每个counterCell存着部分的节点数量，这样做的目的就是尽可能地减少冲突。
+* ConcurrentHashMap节点的数量=baseCount+counterCells每个cell记录下来的节点数量和。
+    * 统计数量的时候并没有加锁。
+* 总体的原则：先尝试更新baseCount，失败再利用CounterCell。
+    * 通过CAS尝试更新baseCount 
+        * 如果更新成功则完成，
+    * 如果CAS更新失败
+        * 线程通过随机数ThreadLocalRandom.getProbe() & (n-1) 计算出在counterCells数组的位置，
+        * 如果不为null，则CAS尝试在couterCell上直接增加数量，
+        * 如果失败，counterCells数组会进行扩容为原来的两倍，继续随机，继续添加
 
 
 
+----
 
 # 异常
 
-异常包括
-
-* **Error**(栈溢出（StackOverflowError），
-* **OOM（Out of Mem）**
-    * 什么时候OOM？
-* **Exception**
-
-
-
-**Exception分为两种**
-
-![20210210091200](http://haoimg.hifool.cn/img/img20210210091200.png)
-
-![20210210091613](http://haoimg.hifool.cn/img/img20210210091613.png)
+![img](http://haoimg.hifool.cn/img/690102-20160728164909622-1770558953.png)
 
 ### finally
 
@@ -487,3 +513,4 @@ throw与throws的比较
 2. throws表示出现异常的一种可能性，并不一定会发生这些异常；throw则是抛出了异常，执行throw则一定抛出了某种异常对象。
 
 3. 两者都是消极处理异常的方式（这里的消极并不是说这种方式不好），只是抛出或者可能抛出异常，但是不会由函数去处理异常，真正的处理异常由函数的上层调用处理。
+
