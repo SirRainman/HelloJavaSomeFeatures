@@ -515,7 +515,7 @@ consumer.subscribe("ons_test", "*", new MessageListener() {
     * 如果是对mysql **update**操作
         * 那么加个**version**字段做版本控制。
 
-* 如果是**redis**，
+* 如果是**redis**
     * 那么set操作天然就是幂等性的。
 * 如果是**更复杂的业务场景**
     * 根据APPname，接口名，主机名创建一个全局幂等id存入redis，或者内存set，或者数据库的幂等表中，
